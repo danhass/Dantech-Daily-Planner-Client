@@ -292,6 +292,11 @@
       right: 120px;
       transform: rotate(-5deg);
     }
+
+    .dtContainer {
+      width: 80%;
+      color: blue !important;
+    }
   }
 
   @media screen and (max-width: 575px) {
@@ -306,14 +311,15 @@
 
   <!-- Highlight Card -->
   <div class="card highlight-card card-small">    
-      <h2>DanTech Daily Planner</h2> 
+      <h2>DanTech Daily Planner</h2>
   </div>
+  <h4>v.1.0.1</h4> 
 
   <!-- Resources -->
   <div *ngIf="isLoggedIn()">
-    <div class="container">Welcome {{userInfo?.info?.name}} ({{userInfo?.info?.email}})</div>
-    <div class="container">Token: <b>{{accessToken()}}</b></div>
-    <div class="container">
+    <div class="dtContainer">Welcome {{userInfo?.info?.name}} ({{userInfo?.info?.email}})</div>
+    <div class="dtContainer">Token: {{accessToken()}}</div>
+    <div class="dtContainer">
       <button (click)="logout()">Log out</button>
     </div>
   </div>
