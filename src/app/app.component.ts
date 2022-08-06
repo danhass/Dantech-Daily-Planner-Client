@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DtAuthService } from './dt-auth.service';
 import { GoogleApiService, UserInfo } from './google-api.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class AppComponent {
 
   userInfo?: UserInfo;
 
-  constructor(private readonly googleApi: GoogleApiService) {
+  constructor(private readonly googleApi: GoogleApiService, private readonly dtAuth: DtAuthService) {
     googleApi.userProfileSubject.subscribe( info => {
       this.userInfo = info;
     })
@@ -27,6 +28,14 @@ export class AppComponent {
 
   accessToken(): string {
     return this.googleApi.accessToken();
+  }
+
+  dtAuthTest(): string {
+    return this.dtAuth.test();
+  }
+
+  login(): void {
+    return this.dtAuth.authenticate();
   }
 }
   

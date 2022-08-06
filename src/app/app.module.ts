@@ -5,10 +5,12 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { GoogleHandlerComponent } from './google-handler/google-handler.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    GoogleHandlerComponent
   ],
   imports: [
     BrowserModule,
