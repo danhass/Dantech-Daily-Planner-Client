@@ -39,6 +39,5 @@ export class GoogleHandlerComponent implements OnInit {
     let session = this.http.get<session>(url).subscribe(data => { console.log("Data: ", data); this.sessionId=data.sessionId; });
     console.log("Response: " + this.sessionId);
     return this.sessionId;
-    //return "X";
- }
+  }
 }
