@@ -318,7 +318,7 @@
   <!-- Resources -->
   <div *ngIf="isLoggedIn()">
     <div class="dtContainer">Welcome {{userInfo?.info?.name}} ({{userInfo?.info?.email}})</div>
-    <div class="dtContainer">Token: {{accessToken()}}</div>
+    <!--div class="dtContainer">Token: {{accessToken()}}</div-->
     <div class="dtContainer">
       <button (click)="logout()">Log out</button>
     </div>
