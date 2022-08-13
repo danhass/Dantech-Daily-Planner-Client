@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less']
+  styleUrls: ['./app.component.less']  
 })
 export class AppComponent {
   title = 'DanTech';
@@ -16,7 +16,7 @@ export class AppComponent {
   loginComplete = false;
 
   userInfo?: UserInfo;
-  loginInfo: DTLogin | undefined;
+  loginInfo: DTLogin;
 
   constructor(private readonly googleApi: GoogleApiService, 
               private readonly dtAuth: DtAuthService,
@@ -24,38 +24,30 @@ export class AppComponent {
               private readonly constants: DtConstantsService,
               private http: HttpClient
               ) {
-    /*googleApi.userProfileSubject.subscribe( info => {
-      this.userInfo = info;
-    })*/
-  }
+      this.loginInfo = { session: "", email: "", fName: "", lName: "", message: ""};    
+    }
 
   isLoggedIn(): boolean {
     if (!this.loginComplete ){
-      console.log("Attempting to log in.");
       this.sessionId = this.cookies.get(this.constants.dtSessionKey());
-      let url = this.constants.apiTarget() + this.constants.loginEndpoint() + "?sessionId=" + this.sessionId;
-      console.log("Url: " + url);
-      let res = this.http.get<DTLogin>(url).subscribe(data => {
-        console.log("Login data: ", data);
-        console.log("Session: " + data.session);
-        console.log("Email: " + data.email);
-        console.log("First name: " + data.fName);
-        console.log("Last name: " + data.lName);
-        console.log("Message: ", + data.message );
-        this.cookies.set(this.constants.dtSessionKey(), data.session, 7);
-      });
+      if (this.sessionId != null && this.sessionId.length > 0) {
+        let url = this.constants.apiTarget() + this.constants.loginEndpoint() + "?sessionId=" + this.sessionId;
+        let res = this.http.get<DTLogin>(url).subscribe(data => {
+          this.loginInfo = data;
+          if (this.loginInfo == undefined ||
+              this.loginInfo.session === 'null' || 
+              this.loginInfo.session == null || 
+              this.loginInfo.session == undefined ||
+              this.loginInfo.session == "" ) {
+                this.cookies.delete(this.constants.dtSessionKey());
+              } else {
+                this.cookies.set(this.constants.dtSessionKey(), data.session, 7);
+              }
+        });
+      }
       this.loginComplete = true;
-      console.log ("session id: " + this.sessionId);
     }
     return true;
-  }
-
-  logout() {
-    this.googleApi.signOut();
-  }
-
-  accessToken(): string {
-    return this.googleApi.accessToken();
   }
 
   dtAuthTest(): string {
@@ -66,6 +58,13 @@ export class AppComponent {
     return this.dtAuth.authenticate();
   }
 
+  validEmail(): boolean {
+    return this.loginInfo != undefined && 
+           this.loginInfo.email != undefined && 
+           this.loginInfo.email != "null" &&
+           this.loginInfo.email != null &&
+           this.loginInfo.email.length > 0;
+  }
   getLogin(): DTLogin | undefined {
     return this.loginInfo
   }
