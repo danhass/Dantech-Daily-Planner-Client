@@ -29,6 +29,7 @@ export class GoogleApiService {
 
   constructor(private readonly oAuthService: OAuthService) {
     oAuthService.configure(oAuthConfig)
+    /*
     oAuthService.loadDiscoveryDocument().then( () => {
       oAuthService.tryLoginImplicitFlow().then(() => {
         if(!oAuthService.hasValidAccessToken()) {
@@ -41,6 +42,7 @@ export class GoogleApiService {
         }
       })
     })
+    */
    }
 
    isLoggedIn(): boolean{

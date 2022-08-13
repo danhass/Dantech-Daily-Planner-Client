@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 const GoogleAuthEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 const GoogleCalendarScope = "https://www.googleapis.com/auth/calendar";
@@ -6,12 +7,13 @@ const GoogleUserInfoEmailScope = "https://www.googleapis.com/auth/userinfo.email
 const GoogleUserInfoProfileScope = "https://www.googleapis.com/auth/userinfo.profile";
 const GoogleClientId = "849195656550-mi3286esf9mrgk8gkacu2712c1qghi3m.apps.googleusercontent.com";
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class DtAuthService {
 
-  constructor() { }
+  constructor(private cookie: CookieService) { }
 
   test(): string {
     return "dtAuth is live!";
@@ -23,6 +25,7 @@ export class DtAuthService {
     console.log(window.location.port);
     console.log(window.location.href);
 
+
     let url = GoogleAuthEndpoint + 
                 "?state=google_signin" + 
                 "&redirect_uri=" + window.location.protocol + "//" + window.location.hostname;
@@ -32,9 +35,7 @@ export class DtAuthService {
                 "&response_type=code" +
                 "&scope=" + "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar" +
                 "&client_id=" + GoogleClientId;
-
+    this.cookie.set("sentToGoogle", "true");
     window.location.href = url;
-  
-    console.log (url);  
   }
 }

@@ -317,12 +317,13 @@
 
   <!-- Resources -->
   <div *ngIf="isLoggedIn()">
-    <div class="dtContainer">Welcome {{userInfo?.info?.name}} ({{userInfo?.info?.email}})</div>
+    <!--div class="dtContainer">Welcome {{userInfo?.info?.name}} ({{userInfo?.info?.email}})</div -->
     <!--div class="dtContainer">Token: {{accessToken()}}</div-->
-    <div class="dtContainer">
+    <!--div class="dtContainer">
       <button (click)="logout()">Log out</button>
-    </div>
+    </div-->
     <p>dtAuth: {{dtAuthTest()}}</p>
-    <button (click)="login()">Log in</button>
+    <button (click)="login()">Log in</button><br />
+    <button (click)="this.cookieTest()"> Test cookie </button>
   </div>
   <router-outlet></router-outlet>
