@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { DtAuthService } from './dt-auth.service';
-import { GoogleApiService, UserInfo } from './google-api.service';
 import { CookieService } from 'ngx-cookie-service';
-import { DtConstantsService, DTLogin } from './dt-constants.service';
+import { DtConstantsService, DTLogin, DTPlanItem, DTUser } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
+import { DtPlannerService } from './dt-planner.service';
+import { Observable } from 'rxjs';
+
+const sessionId = "";
 
 @Component({
   selector: 'app-root',
@@ -15,14 +18,14 @@ export class AppComponent {
   sessionId = "";
   loginComplete = false;
 
-  userInfo?: UserInfo;
   loginInfo: DTLogin;
+  planItems: Array<DTPlanItem> = this.dtPlanner.PlanItems();
 
-  constructor(private readonly googleApi: GoogleApiService, 
-              private readonly dtAuth: DtAuthService,
+  constructor(private readonly dtAuth: DtAuthService,
               private readonly cookies: CookieService,
               private readonly constants: DtConstantsService,
-              private http: HttpClient
+              private http: HttpClient,
+              private dtPlanner: DtPlannerService
               ) {
       this.loginInfo = { session: "", email: "", fName: "", lName: "", message: ""};    
     }
@@ -42,12 +45,18 @@ export class AppComponent {
                 this.cookies.delete(this.constants.dtSessionKey());
               } else {
                 this.cookies.set(this.constants.dtSessionKey(), data.session, 7);
+                this.dtPlanner.setSession(this.loginInfo.session);
               }
         });
       }
       this.loginComplete = true;
     }
     return true;
+  }
+
+  emailChanged(): void {
+    console.log ("Email changed to: ", this.loginInfo.email);
+    this.dtPlanner.setSession(this.loginInfo.session);
   }
 
   dtAuthTest(): string {
@@ -72,6 +81,6 @@ export class AppComponent {
   cookieTest(): string {
     console.log ("Session Id Cookie:" + this.cookies.get(this.constants.dtSessionKey()));
     return this.cookies.get(this.constants.dtSessionKey());
-  }
+  }  
 }
   

@@ -311,21 +311,27 @@
 
   <!-- Highlight Card -->
   <div class="card highlight-card card-small">    
-      <h2>DanTech Daily Planner</h2>
+      <h2>DanTech Daily Planner (v.1.0.2)</h2>
   </div>
-  <h4>v.1.0.1</h4> 
-
-  <!-- Resources -->
+  
   <div *ngIf="isLoggedIn()">
     <div *ngIf="validEmail() else noValidEmail">
-      <h3>Logged in as {{loginInfo.email}}</h3>
+      <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
       <button (click)="login()">Change login</button>
+      </p>
+      <div>
+        <div *ngFor="let item of planItems">
+          <span>{{item.title}}</span><span>{{item.day}}</span>
+        </div>
+        {{planItems}}
+      </div> 
     </div>
     
     <ng-template #noValidEmail>
       <div>
-        <h3>No login credentials</h3>
+        <p>No login credentials<br />
         <button (click)="login()">Log in</button>
+        </p>
       </div>
     </ng-template>
  </div>
