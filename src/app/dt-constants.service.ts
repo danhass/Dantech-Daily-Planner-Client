@@ -39,8 +39,8 @@ export interface DTPlanItem {
 
 
 const dtSessionKey = "dtSessionId";
-const apiTarget = "https://localhost:44324";
-//const apiTarget = "https://7822-54268.el-alt.com";
+//const apiTarget = "https://localhost:44324";
+const apiTarget = "https://7822-54268.el-alt.com";
 const loginEndpoint = "/login";
 const planItemsEndpoint = "/Planner/PlanItems"
 
