@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DtConstantsService, DTLogin, DTPlanItem, DTUser } from './dt-constants.service';
 
 
@@ -22,13 +22,13 @@ export class DtPlannerService {
     console.log("New session id: ", newSession);
     let url = this.constants.apiTarget() + this.constants.planItemsEndpoint() + "?sessionId=" + this.sessionId;
     console.log(url);
-    
-    this.http.get<[DTPlanItem]>(url).subscribe( data => {
+    let header = new HttpHeaders({'Content-Type':'text/plain'});
+    this.http.get<[DTPlanItem]>(url, {headers: header}).subscribe( data => {
       console.log("Plan items: ", data); 
       for (let i=0; i < data.length; i++)
       {
         console.log(data[i]);
-        this.planItems.push(data[i]);
+        this.planItems.push(data[i]);        
       }
       console.log("Loaded items: ", this.planItems);
     });

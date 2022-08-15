@@ -297,6 +297,22 @@
       width: 80%;
       color: blue !important;
     }
+    
+    .dtTable {
+      display: table;      
+      border-collapse: collapse;
+    }
+
+    .dtTableRow {
+      display: table-row;
+      border: 2px solid black;
+    }
+
+    dt.TableCell {
+      display: table-cell;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
   }
 
   @media screen and (max-width: 575px) {
@@ -320,10 +336,12 @@
       <button (click)="login()">Change login</button>
       </p>
       <div>
-        <div *ngFor="let item of planItems">
-          <span>{{item.title}}</span><span>{{item.day}}</span>
+        <div style="display: table; border-collapse: collapse;">
+          <div style="display: table-row; border: 2px solid black" *ngFor="let item of planItems">        
+            <div style="display: table-cell; padding-left: 10px; padding-right: 10px; border-right: 2px solid black;">{{item.title}}</div>
+            <div style="display: table-cell; padding-left: 10px; padding-right: 10px">{{dayOfWeek(item.day)}}</div>
+          </div>
         </div>
-        {{planItems}}
       </div> 
     </div>
     

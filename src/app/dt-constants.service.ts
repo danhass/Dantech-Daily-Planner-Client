@@ -1,4 +1,4 @@
-import { Time } from '@angular/common';
+import { Time, WeekDay } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { session } from './google-handler/google-handler.component';
 

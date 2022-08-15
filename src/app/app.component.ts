@@ -5,6 +5,7 @@ import { DtConstantsService, DTLogin, DTPlanItem, DTUser } from './dt-constants.
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService } from './dt-planner.service';
 import { Observable } from 'rxjs';
+import { WeekDay } from '@angular/common';
 
 const sessionId = "";
 
@@ -52,6 +53,15 @@ export class AppComponent {
       this.loginComplete = true;
     }
     return true;
+  }
+
+  dayOfWeek(date: any): string {
+    console.log(date);
+    let theDate = new Date(date);
+    return theDate.toLocaleDateString(undefined, {weekday: 'short'}) + " " + 
+      ("0" + (theDate.getMonth() +1)).slice(-2) + "-" + 
+      ("0" + theDate.getDate()).slice(-2) + "-" +
+      theDate.getFullYear();
   }
 
   emailChanged(): void {
