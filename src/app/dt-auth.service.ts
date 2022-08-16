@@ -20,11 +20,6 @@ export class DtAuthService {
   }
 
   authenticate(): void {
-    console.log(window.location.protocol);
-    console.log(window.location.hostname);
-    console.log(window.location.port);
-    console.log(window.location.href);
-
 
     let url = GoogleAuthEndpoint + 
                 "?state=google_signin" + 

@@ -18,15 +18,13 @@ export class DtPlannerService {
   ) {   
     let url = this.constants.apiTarget() + this.constants.planStatiEndpoint();
     let header = new HttpHeaders({'Content-Type':'text/plain'});
-    //console.log (url);
-    /*
+        
     this.http.get<[DTStatus]>(url, {headers: header}).subscribe(data => {
-      console.log("Data: ", data);
       for (let i=0; i < data.length; i++){
         this.stati.push(data[i]);
       }
     });
-    */
+  
   }
 
   setSession(newSession: string): void {

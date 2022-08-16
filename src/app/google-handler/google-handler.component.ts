@@ -41,7 +41,6 @@ export class GoogleHandlerComponent implements OnInit {
     "&domain=" + domain;        
     let session = this.http.get<DTLogin>(url).subscribe(data => {
       this.cookies.delete('sentToGoogle');          
-      console.log("Data: ", data);           
       this.sessionId=data.session;            
       this.cookies.set(this.constants.dtSessionKey(), data.session, 7);          
       window.location.href = domain;      

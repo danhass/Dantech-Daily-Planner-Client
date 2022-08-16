@@ -37,7 +37,6 @@ export class AppComponent {
     if (!this.loginComplete ){
       this.sessionId = this.cookies.get(this.constants.dtSessionKey());
       let code = this.route.snapshot.queryParamMap.get('code');
-      console.log("Code: ", code);
       let flag = this.cookies.get("sentToGoogle");
       if (flag.length==0 && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
         let url = this.constants.apiTarget() + this.constants.loginEndpoint() + "?sessionId=" + this.sessionId;
