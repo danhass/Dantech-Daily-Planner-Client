@@ -29,9 +29,7 @@ export class GoogleHandlerComponent implements OnInit {
   returnFromGoogle(): string {
     let res = "back";
     let flag = this.cookies.get("sentToGoogle");
-    if (flag === 'true') {
-      this.cookies.delete('sentToGoogle');            
-    } else {
+    if (flag !== 'true') {
       res = "multiple processing";
     }
     let code = this.route.snapshot.queryParamMap.get('code');
@@ -41,7 +39,9 @@ export class GoogleHandlerComponent implements OnInit {
     let url = this.constants.apiTarget() +"/google?code=" + code +
     "&useCaller=true" +        
     "&domain=" + domain;        
-    let session = this.http.get<DTLogin>(url).subscribe(data => {           
+    let session = this.http.get<DTLogin>(url).subscribe(data => {
+      this.cookies.delete('sentToGoogle');          
+      console.log("Data: ", data);           
       this.sessionId=data.session;            
       this.cookies.set(this.constants.dtSessionKey(), data.session, 7);          
       window.location.href = domain;      

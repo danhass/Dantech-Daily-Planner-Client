@@ -37,12 +37,19 @@ export interface DTPlanItem {
   title: string
 }
 
+export interface DTStatus {
+  id: number,
+  title: string,
+  note: string | undefined
+}
+
 
 const dtSessionKey = "dtSessionId";
-//const apiTarget = "https://localhost:44324";
-const apiTarget = "https://7822-54268.el-alt.com";
+const apiTarget = "https://localhost:44324";
+//const apiTarget = "https://7822-54268.el-alt.com";
 const loginEndpoint = "/login";
 const planItemsEndpoint = "/Planner/PlanItems"
+const planStatiEndpoint = "/Planner/Stati";
 
 @Injectable({
   providedIn: 'root'
@@ -65,5 +72,9 @@ export class DtConstantsService {
   
   planItemsEndpoint(): string {
     return planItemsEndpoint;
+  }
+
+  planStatiEndpoint(): string {
+    return planStatiEndpoint;
   }
 }

@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { DtConstantsService, DTLogin, DTPlanItem, DTUser } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService } from './dt-planner.service';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WeekDay } from '@angular/common';
 
@@ -26,7 +27,8 @@ export class AppComponent {
               private readonly cookies: CookieService,
               private readonly constants: DtConstantsService,
               private http: HttpClient,
-              private dtPlanner: DtPlannerService
+              private dtPlanner: DtPlannerService,
+              private route: ActivatedRoute
               ) {
       this.loginInfo = { session: "", email: "", fName: "", lName: "", message: ""};    
     }
@@ -34,7 +36,10 @@ export class AppComponent {
   isLoggedIn(): boolean {
     if (!this.loginComplete ){
       this.sessionId = this.cookies.get(this.constants.dtSessionKey());
-      if (this.sessionId != null && this.sessionId.length > 0) {
+      let code = this.route.snapshot.queryParamMap.get('code');
+      console.log("Code: ", code);
+      let flag = this.cookies.get("sentToGoogle");
+      if (flag.length==0 && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
         let url = this.constants.apiTarget() + this.constants.loginEndpoint() + "?sessionId=" + this.sessionId;
         let res = this.http.get<DTLogin>(url).subscribe(data => {
           this.loginInfo = data;
@@ -56,7 +61,6 @@ export class AppComponent {
   }
 
   dayOfWeek(date: any): string {
-    console.log(date);
     let theDate = new Date(date);
     return theDate.toLocaleDateString(undefined, {weekday: 'short'}) + " " + 
       ("0" + (theDate.getMonth() +1)).slice(-2) + "-" + 
@@ -65,7 +69,6 @@ export class AppComponent {
   }
 
   emailChanged(): void {
-    console.log ("Email changed to: ", this.loginInfo.email);
     this.dtPlanner.setSession(this.loginInfo.session);
   }
 
@@ -89,7 +92,6 @@ export class AppComponent {
   }
 
   cookieTest(): string {
-    console.log ("Session Id Cookie:" + this.cookies.get(this.constants.dtSessionKey()));
     return this.cookies.get(this.constants.dtSessionKey());
   }  
 }
