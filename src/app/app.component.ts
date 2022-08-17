@@ -35,11 +35,11 @@ export class AppComponent {
 
   isLoggedIn(): boolean {
     if (!this.loginComplete ){
-      this.sessionId = this.cookies.get(this.constants.dtSessionKey());
+      this.sessionId = this.cookies.get(this.constants.values().dtSessionKey);
       let code = this.route.snapshot.queryParamMap.get('code');
       let flag = this.cookies.get("sentToGoogle");
       if (flag.length==0 && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
-        let url = this.constants.apiTarget() + this.constants.loginEndpoint() + "?sessionId=" + this.sessionId;
+        let url = this.constants.values().apiTarget + this.constants.values().loginEndpoint + "?sessionId=" + this.sessionId;
         let res = this.http.get<DTLogin>(url).subscribe(data => {
           this.loginInfo = data;
           if (this.loginInfo == undefined ||
@@ -47,9 +47,9 @@ export class AppComponent {
               this.loginInfo.session == null || 
               this.loginInfo.session == undefined ||
               this.loginInfo.session == "" ) {
-                this.cookies.delete(this.constants.dtSessionKey());
+                this.cookies.delete(this.constants.values().dtSessionKey);
               } else {
-                this.cookies.set(this.constants.dtSessionKey(), data.session, 7);
+                this.cookies.set(this.constants.values().dtSessionKey, data.session, 7);
                 this.dtPlanner.setSession(this.loginInfo.session);
               }
         });
@@ -91,7 +91,7 @@ export class AppComponent {
   }
 
   cookieTest(): string {
-    return this.cookies.get(this.constants.dtSessionKey());
+    return this.cookies.get(this.constants.values().dtSessionKey);
   }  
 }
   

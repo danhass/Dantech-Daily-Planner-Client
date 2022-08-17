@@ -43,38 +43,42 @@ export interface DTStatus {
   note: string | undefined
 }
 
+export interface DTColorCode {
+  id: number,
+  title: string,
+  note: string | undefined
+}
 
-const dtSessionKey = "dtSessionId";
-//const apiTarget = "https://localhost:44324";
-const apiTarget = "https://7822-54268.el-alt.com";
-const loginEndpoint = "/login";
-const planItemsEndpoint = "/Planner/PlanItems"
-const planStatiEndpoint = "/Planner/Stati";
+export interface DTConstants {
+  dtSessionKey: string,
+  dtPlannerServiceStatusKey: string,
+  apiTarget: string,
+  loginEndpoint: string,
+  planItemsEndpoint: string,
+  planStatiEndpoint: string,
+  planColorCodeEndpoint:string
+}
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class DtConstantsService {
 
+  constants: DTConstants = {
+     dtSessionKey : "dtSessionId",
+     dtPlannerServiceStatusKey : "dtPlannerService",
+     //apiTarget : "https://localhost:44324",
+     apiTarget : "https://7822-54268.el-alt.com",
+     loginEndpoint : "/login",
+     planItemsEndpoint : "/Planner/PlanItems",
+     planStatiEndpoint : "/Planner/Stati",
+     planColorCodeEndpoint : "/Planner/ColorCodes"
+  }
+
   constructor() { }
 
-  dtSessionKey(): string {
-    return dtSessionKey;
-  }
-  
-  apiTarget(): string {
-    return apiTarget;
-  }
-  
-  loginEndpoint(): string {
-    return loginEndpoint;
-  }
-  
-  planItemsEndpoint(): string {
-    return planItemsEndpoint;
-  }
-
-  planStatiEndpoint(): string {
-    return planStatiEndpoint;
-  }
+  values(): DTConstants {
+    return this.constants;
+  }  
 }
