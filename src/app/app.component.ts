@@ -3,8 +3,8 @@ import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
 import { DtConstantsService, DTLogin, DTPlanItem, DTProject, DTProjectOut, DTUser, DTStatus } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
-import { DtPlannerService } from './dt-planner.service';
-import { ActivatedRoute } from '@angular/router';
+import { DtPlannerService, DtProjects } from './dt-planner.service';
+import { ActivatedRoute, TitleStrategy } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WeekDay } from '@angular/common';
 
@@ -13,8 +13,9 @@ const sessionId = "";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.less']  
+  styleUrls: ['./app.component.less']
 })
+
 export class AppComponent {
   title = 'DanTech';
   sessionId = "";
@@ -22,7 +23,7 @@ export class AppComponent {
 
   loginInfo: DTLogin;
   planItems: Array<DTPlanItem> = this.dtPlanner.PlanItems();
-  projects: Array<DTProject> = this.dtPlanner.Projects();
+  projects: Array<DTProject> = DtProjects;
   projectStati: Array<DTStatus> = this.dtPlanner.Stati();
 
   //Add project form items
@@ -35,7 +36,7 @@ export class AppComponent {
               private readonly constants: DtConstantsService,
               private http: HttpClient,
               private dtPlanner: DtPlannerService,
-              private route: ActivatedRoute
+              private route: ActivatedRoute,
               ) {
       this.loginInfo = { session: "", email: "", fName: "", lName: "", message: ""};    
     }
@@ -66,6 +67,11 @@ export class AppComponent {
       this.loginComplete = true;
     }
     return true;
+  }
+
+  hasProjects(): boolean {
+    if (DtProjects && DtProjects.length > 0) return true;
+    return false;
   }
 
   dayOfWeek(date: any): string {
@@ -99,20 +105,27 @@ export class AppComponent {
     return this.loginInfo
   }
 
-  cookieTest(): string {
-    return this.cookies.get(this.constants.values().dtSessionKey);
+  test(): void {
+    console.log("Projects now: ", DtProjects, this.projects);    
   }
   
-  hasProjects(): boolean {
-    return this.projects && this.projects.length > 0;
+  trackProjectsItem (index: number, project: DTProject): number {
+    return project.id;
   }
 
   addProject(): void {
-    console.log("Adding project.");
-    console.log("Title: ", this.newProjectTitle);
-    console.log("Short code:", this.newProjectShortCode);
-    console.log("Status id: ", this.newProjectStatusId);
-    this.dtPlanner.setProject(this.newProjectTitle, this.newProjectShortCode, this.newProjectStatusId);
+    let url = this.constants.values().apiTarget + this.constants.values().setProjectEndpoint;
+    let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
+    this.http.post<[DTProject]>(url, '', {headers: hdrs, params: {
+        sessionId: this.sessionId, 
+        title: this.newProjectTitle, 
+        shortCode: this.newProjectShortCode, 
+        status: this.newProjectStatusId}}).subscribe( data => {
+          let newProjects: Array<DTProject> = [];
+      if (data) { for (let i=0; i < data.length; i++) {  newProjects = [...newProjects, data[i]];  }  }
+      this.dtPlanner.setProjects(newProjects);
+      this.projects = DtProjects;
+    });    
     this.newProjectTitle = '';
     this.newProjectShortCode = '';
     this.newProjectStatusId = 1; 

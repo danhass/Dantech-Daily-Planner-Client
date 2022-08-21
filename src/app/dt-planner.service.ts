@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DTColorCode, DtConstantsService, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
+import { Observable } from 'rxjs';
 
+export let DtProjects: Array<DTProject> = [];
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class DtPlannerService {
   sessionId: string = "";
   planItems: Array<DTPlanItem> = [];
   stati: Array<DTStatus> = [];
   colorCodes: Array<DTColorCode> = [];
-  projects: Array<DTProject> = [];
   
   constructor(
     private readonly constants: DtConstantsService,
@@ -43,10 +45,8 @@ export class DtPlannerService {
             this.planItems.push(data[i]);        
           }
           url = this.constants.values().apiTarget + this.constants.values().projectsEndpoint + "?sessionId=" + this.sessionId;
-          console.log(url);
           this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
-            if (data) { for (let i=0; i < data.length; i++) {  this.projects.push(data[i]);  }  }
-            console.log(this.projects);
+            if (data) { for (let i=0; i < data.length; i++) {  DtProjects.push(data[i]); }  }
             this.cookie.delete(this.constants.values().dtPlannerServiceStatusKey);
           })
         });
@@ -54,13 +54,8 @@ export class DtPlannerService {
     }); 
   }
 
-  setProject(aTitle: string, aShortCode: string, aStatusId: number): void {
-    let url = this.constants.values().apiTarget + this.constants.values().setProjectEndpoint;
-    let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
-    this.http.post<[DTProject]>(url, '', {headers: hdrs, params: {sessionId: this.sessionId, title: aTitle, shortCode: aShortCode, status: aStatusId}}).subscribe( data => {
-      this.projects = [];
-      if (data) { for (let i=0; i < data.length; i++) {  this.projects.push(data[i]);  }  }
-    });    
+  setProjects(aProjects: Array<DTProject>): void {    
+    DtProjects = aProjects;
   }
 
   setSession(newSession: string): void {
@@ -71,8 +66,8 @@ export class DtPlannerService {
     return this.planItems;
   }
 
-  Projects(): Array<DTProject>{
-    return this.projects;
+ getProjects(): Array<DTProject>{
+    return DtProjects;
   }
 
   Stati(): Array<DTStatus>{

@@ -329,7 +329,6 @@
   <div class="card highlight-card card-small">    
       <h2>DanTech Daily Planner (v.1.0.2)</h2>
   </div>
-  
   <div *ngIf="isLoggedIn()">
     <div *ngIf="validEmail() else noValidEmail">
       <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
@@ -347,7 +346,7 @@
               </div>
             </div>
             <div style="display: table-cell;">
-              <div *ngIf="hasProjects() else noProjects" >                
+              <div *ngIf="(projects && projects.length > 0) else noProjects" >                
                 <div style="display: table; border-collapse: collapse">
                   <div style="display: table-row; border: 2px solid black" *ngFor="let project of projects">
                     <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{project.title}}</div>
@@ -387,7 +386,13 @@
           </div>
         </div>
       </div> 
-    </div>
+    </div>      
+  </div>
+
+ 
+  <div>
+    <button (click)="test()">Test</button>
+  </div>
     
     <ng-template #noProjects>
         <div style="display: table; border-collapse: collapse">

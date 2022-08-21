@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { GoogleHandlerComponent } from './google-handler/google-handler.component';
 import { DtConstantsService } from './dt-constants.service';
 import { FormsModule } from '@angular/forms';
+import { DtProjects } from './dt-planner.service';
 
 @NgModule({
   declarations: [
