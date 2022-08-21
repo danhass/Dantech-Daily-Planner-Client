@@ -93,25 +93,3 @@ export interface DTProjectOut {
   shortCode: string,
   statusId: number
 }
-
-@Injectable({
-  providedIn: 'root'
-})
-export class DtConstantsService {
-
-  constants: DTConstants = {
-     dtSessionKey : "dtSessionId",
-     dtPlannerServiceStatusKey : "dtPlannerService",
-     //apiTarget : "https://localhost:44324",
-     apiTarget : "https://7822-54268.el-alt.com",
-     loginEndpoint : "/login",
-     planItemsEndpoint : "/Planner/PlanItems",
-     planStatiEndpoint : "/Planner/Stati",
-     planColorCodeEndpoint : "/Planner/ColorCodes",
-     projectsEndpoint: "/Planner/Projects",
-     sentToGoogleFlag: "sentToGoogle",
-     setProjectEndpoint: "/Planner/SetProject"
-  }
-
-  constructor() { }
-}

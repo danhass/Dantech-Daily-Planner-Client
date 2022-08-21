@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { dtConstants, DTColorCode, DtConstantsService, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser } from './dt-constants.service';
+import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
@@ -17,7 +17,6 @@ export class DtPlannerService {
   colorCodes: Array<DTColorCode> = [];
   
   constructor(
-    private readonly constants: DtConstantsService,
     private http: HttpClient,
     private cookie: CookieService
   ) {   

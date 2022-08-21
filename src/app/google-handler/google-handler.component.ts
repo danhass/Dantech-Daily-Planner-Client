@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { dtConstants, DtConstantsService, DTLogin } from '../dt-constants.service';
+import { dtConstants, DTLogin } from '../dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -22,7 +22,6 @@ export class GoogleHandlerComponent implements OnInit {
   cycleCount = 0;
   constructor(private http: HttpClient, 
               private readonly cookies: CookieService,
-              private readonly constants: DtConstantsService,
               private route: ActivatedRoute) { }
 
   ngOnInit(): void {

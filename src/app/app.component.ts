@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
-import {dtConstants, DtConstantsService, DTLogin, DTPlanItem, DTProject, DTProjectOut, DTUser, DTStatus } from './dt-constants.service';
+import {dtConstants, DTLogin, DTPlanItem, DTProject, DTProjectOut, DTUser, DTStatus } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService, DtProjects } from './dt-planner.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
@@ -33,7 +33,6 @@ export class AppComponent {
 
   constructor(private readonly dtAuth: DtAuthService,
               private readonly cookies: CookieService,
-              private readonly constants: DtConstantsService,
               private http: HttpClient,
               private dtPlanner: DtPlannerService,
               private route: ActivatedRoute,
