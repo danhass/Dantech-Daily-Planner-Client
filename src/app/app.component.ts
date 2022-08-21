@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
-import { DtConstantsService, DTLogin, DTPlanItem, DTUser } from './dt-constants.service';
+import { DtConstantsService, DTLogin, DTPlanItem, DTProject, DTProjectOut, DTUser, DTStatus } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService } from './dt-planner.service';
 import { ActivatedRoute } from '@angular/router';
@@ -22,6 +22,13 @@ export class AppComponent {
 
   loginInfo: DTLogin;
   planItems: Array<DTPlanItem> = this.dtPlanner.PlanItems();
+  projects: Array<DTProject> = this.dtPlanner.Projects();
+  projectStati: Array<DTStatus> = this.dtPlanner.Stati();
+
+  //Add project form items
+  newProjectTitle: string = '';
+  newProjectShortCode: string = '';
+  newProjectStatusId: number = 1;
 
   constructor(private readonly dtAuth: DtAuthService,
               private readonly cookies: CookieService,
@@ -36,6 +43,7 @@ export class AppComponent {
   isLoggedIn(): boolean {
     if (!this.loginComplete ){
       this.sessionId = this.cookies.get(this.constants.values().dtSessionKey);
+      this.cookies.delete(this.constants.values().dtPlannerServiceStatusKey);
       let code = this.route.snapshot.queryParamMap.get('code');
       let flag = this.cookies.get("sentToGoogle");
       if (flag.length==0 && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
@@ -52,6 +60,7 @@ export class AppComponent {
                 this.cookies.set(this.constants.values().dtSessionKey, data.session, 7);
                 this.dtPlanner.setSession(this.loginInfo.session);
               }
+          this.dtPlanner.initialize();
         });
       }
       this.loginComplete = true;
@@ -92,6 +101,21 @@ export class AppComponent {
 
   cookieTest(): string {
     return this.cookies.get(this.constants.values().dtSessionKey);
-  }  
+  }
+  
+  hasProjects(): boolean {
+    return this.projects && this.projects.length > 0;
+  }
+
+  addProject(): void {
+    console.log("Adding project.");
+    console.log("Title: ", this.newProjectTitle);
+    console.log("Short code:", this.newProjectShortCode);
+    console.log("Status id: ", this.newProjectStatusId);
+    this.dtPlanner.setProject(this.newProjectTitle, this.newProjectShortCode, this.newProjectStatusId);
+    this.newProjectTitle = '';
+    this.newProjectShortCode = '';
+    this.newProjectStatusId = 1; 
+  }
 }
   

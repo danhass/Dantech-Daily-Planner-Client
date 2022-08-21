@@ -56,9 +56,29 @@ export interface DTConstants {
   loginEndpoint: string,
   planItemsEndpoint: string,
   planStatiEndpoint: string,
-  planColorCodeEndpoint:string
+  planColorCodeEndpoint:string,
+  projectsEndpoint:string,
+  sentToGoogleFlag:string,
+  setProjectEndpoint: string
 }
 
+export interface DTProject {
+  id: number,
+  title: string,
+  shortCode: string,
+  priority: number | undefined,
+  sortOrder: number | undefined,
+  user: DTUser,
+  colorCodeId: number | undefined,
+  color: DTColorCode,
+  status: DTStatus
+}
+
+export interface DTProjectOut {
+  title: string,
+  shortCode: string,
+  statusId: number
+}
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +93,10 @@ export class DtConstantsService {
      loginEndpoint : "/login",
      planItemsEndpoint : "/Planner/PlanItems",
      planStatiEndpoint : "/Planner/Stati",
-     planColorCodeEndpoint : "/Planner/ColorCodes"
+     planColorCodeEndpoint : "/Planner/ColorCodes",
+     projectsEndpoint: "/Planner/Projects",
+     sentToGoogleFlag: "sentToGoogle",
+     setProjectEndpoint: "/Planner/SetProject"
   }
 
   constructor() { }
