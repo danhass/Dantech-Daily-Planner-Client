@@ -13,11 +13,7 @@ const GoogleClientId = "849195656550-mi3286esf9mrgk8gkacu2712c1qghi3m.apps.googl
 })
 export class DtAuthService {
 
-  constructor(private cookie: CookieService) { }
-
-  test(): string {
-    return "dtAuth is live!";
-  }
+  constructor(private cookie: CookieService) { } 
 
   authenticate(): void {
 

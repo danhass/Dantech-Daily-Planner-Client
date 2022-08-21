@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { DTColorCode, DtConstantsService, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser } from './dt-constants.service';
+import { dtConstants, DTColorCode, DtConstantsService, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 
@@ -26,28 +26,28 @@ export class DtPlannerService {
   }
 
   initialize(): void {
-    this.cookie.set(this.constants.values().dtPlannerServiceStatusKey, "initializing")
+    this.cookie.set(dtConstants.dtPlannerServiceStatusKey, "initializing")
     let header = new HttpHeaders({'Content-Type':'text/plain'});
-    let url = this.constants.values().apiTarget + this.constants.values().planStatiEndpoint;
+    let url = dtConstants.apiTarget + dtConstants.planStatiEndpoint;
         
     this.http.get<[DTStatus]>(url, {headers: header}).subscribe(data => {
       for (let i=0; i < data.length; i++){
         this.stati.push(data[i]);
       }
-      url = this.constants.values().apiTarget + this.constants.values().planColorCodeEndpoint;
+      url = dtConstants.apiTarget + dtConstants.planColorCodeEndpoint;
       this.http.get<[DTColorCode]>(url, {headers: header}).subscribe(data => {
         for (let i=0; i < data.length; i++){
           this.colorCodes.push(data[i]);
         }
-        url = this.constants.values().apiTarget + this.constants.values().planItemsEndpoint + "?sessionId=" + this.sessionId;
+        url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId;
         this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
           for (let i=0; i < data.length; i++) {
             this.planItems.push(data[i]);        
           }
-          url = this.constants.values().apiTarget + this.constants.values().projectsEndpoint + "?sessionId=" + this.sessionId;
+          url = dtConstants.apiTarget + dtConstants.projectsEndpoint + "?sessionId=" + this.sessionId;
           this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
             if (data) { for (let i=0; i < data.length; i++) {  DtProjects.push(data[i]); }  }
-            this.cookie.delete(this.constants.values().dtPlannerServiceStatusKey);
+            this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
           })
         });
       });  

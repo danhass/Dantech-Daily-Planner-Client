@@ -327,66 +327,92 @@
 
   <!-- Highlight Card -->
   <div class="card highlight-card card-small">    
-      <h2>DanTech Daily Planner (v.1.0.2)</h2>
+      <h2>DanTech Daily Planner (v.1.0.3)</h2>
   </div>
-  <div *ngIf="isLoggedIn()">
-    <div *ngIf="validEmail() else noValidEmail">
-      <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
-        <button (click)="login()">Change login</button>
-      </p>
-      <div>
-        <div style="display: table; border-collapse: collapse;">
+  <div *ngIf="isLoggedIn()" style="display: table; border-collapse: collapse; width: 100%">
+    <div style="display: table-row;">
+      <div style="display: table-cell; width: 100%">
+        <div *ngIf="validEmail() else noValidEmail" style="display: table; border-collapse: collapse; width: 100%;">
+          <!-- 1st row has 1 cell and provides top level reporting and controls regarding the user.-->
           <div style="display: table-row;">
-            <div style="display: table-cell; padding-right: 10px;">
-              <div style="display: table; border-collapse: collapse;">
-                <div style="display: table-row; border: 2px solid black" *ngFor="let item of planItems">        
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px; border-right: 2px solid black;">{{item.title}}</div>
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{dayOfWeek(item.day)}}</div>
-                </div>
+            <div style="display: table-cell; width: 100%">
+              <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
+                <button (click)="login()">Change login</button>
+              </p>
+            </div>          
+          </div>  
+          <!-- 2nd row is the result data-->        
+          <div style="display: table-row;">
+            <div style="display: table-cell; width: 100%; padding-top: 20px;">
+              <div style="display: table; border-collapse: collapse; width: 100%;">
+                    <div style="display: table-row;">
+                      <!-- The left most cell of the result data is the daily plan items.-->
+                      <div style="display: table-cell; padding-right: 10px; width: 50%;">
+                        <div style="display: table; border-collapse: collapse; width: 100%;">
+                          <div style="display: table-row; border: 2px solid black">
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
+                              <h4>Items</h4>
+                            </div>
+                          </div>                
+                          <div style="display: table-row; border: 2px solid black" *ngFor="let item of planItems">        
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px; border-right: 2px solid black;">{{item.title}}</div>
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{dayOfWeek(item.day)}}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- The 2nd cell is the supporting data and controls for the plan items.-->
+                      <div style="display: table-cell; width: 50%;">
+                        <div *ngIf="(projects && projects.length > 0) else noProjects" >                
+                          <div style="display: table; border-collapse: collapse; width: 100%;">
+                            <div style="display: table-row; border: 2px solid black">
+                              <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
+                                <h4>Projects</h4>
+                              </div>
+                            </div>                  
+                            <div style="display: table-row; border: 2px solid black" *ngFor="let project of projects">
+                              <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{project.title}}</div>
+                            </div>
+                            <div style="display: table-row;"><div style="display:table-cell; padding-top: 10px;"></div></div>
+                          </div>
+                        </div>
+                        <div style="display: table; border-collapse: collapse; width: 100%;">
+                          <div style="display: table-row; border: 2px solid black">
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
+                              <h4>Add project</h4>
+                            </div>
+                          </div>                
+                          <div style="display: table-row; border: 2px solid black">                  
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
+                              <span>Title:</span><input type="text" id="newProjectTitle" name="newProjectTitle" [(ngModel)]="newProjectTitle" />                  
+                            </div>
+                          </div>                
+                          <div style="display: table-row; border: 2px solid black">                  
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
+                              <span>Short Code:</span><input type="text" id="newProjectShortCode" name="newProjectShortCode" [(ngModel)]="newProjectShortCode" />                  
+                            </div>
+                          </div>                
+                          <div style="display: table-row; border: 2px solid black">                  
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
+                              <span>Status:</span><select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" > 
+                                <option *ngFor="let c of projectStati" [ngValue]="c.id">{{c.title}}</option>
+                                </select>                 
+                            </div>
+                          </div>
+                          <div style="display: table-row; border: 2px solid black">                  
+                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
+                              <button (click)="addProject()">Add</button>                  
+                            </div>                
+                          </div>              
+                        </div>            
+                      </div>
+                    </div>
               </div>
-            </div>
-            <div style="display: table-cell;">
-              <div *ngIf="(projects && projects.length > 0) else noProjects" >                
-                <div style="display: table; border-collapse: collapse">
-                  <div style="display: table-row; border: 2px solid black" *ngFor="let project of projects">
-                    <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{project.title}}</div>
-                  </div>
-                </div>
-              </div>
-              <div style="display: table; border-collapse: collapse; padding-top: 10px;">
-                <div style="display: table-row; border: 2px solid black">
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
-                    <h4>Add project</h4>
-                  </div>
-                </div>                
-                <div style="display: table-row; border: 2px solid black">                  
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                    <span>Title:</span><input type="text" id="newProjectTitle" name="newProjectTitle" [(ngModel)]="newProjectTitle" />                  
-                  </div>
-                </div>                
-                <div style="display: table-row; border: 2px solid black">                  
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                    <span>Short Code:</span><input type="text" id="newProjectShortCode" name="newProjectShortCode" [(ngModel)]="newProjectShortCode" />                  
-                  </div>
-                </div>                
-                <div style="display: table-row; border: 2px solid black">                  
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                    <span>Status:</span><select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" > 
-                      <option *ngFor="let c of projectStati" [ngValue]="c.id">{{c.title}}</option>
-                      </select>                 
-                  </div>
-                </div>
-                <div style="display: table-row; border: 2px solid black">                  
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                    <button (click)="addProject()">Add</button>                  
-                  </div>                
-                </div>              
-              </div>            
             </div>
           </div>
-        </div>
-      </div> 
-    </div>      
+        </div>      
+      </div>
+    </div>
   </div>
 
  
@@ -395,18 +421,22 @@
   </div>
     
     <ng-template #noProjects>
-        <div style="display: table; border-collapse: collapse">
+        <div style="display: table; border-collapse: collapse; width: 100%;">
           <div style="display: table-row; border: 2px solid black">
-            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">No Projects</div>
+            <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">No Projects</div>
           </div>
         </div>      
     </ng-template>
 
     <ng-template #noValidEmail>
-      <div>
-        <p>No login credentials<br />
-          <button (click)="login()">Log in</button>
-        </p>
+      <div style="display: table; border-collapse: collapse; width: 100%">
+        <div style="display: table-row">
+          <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">
+            <p>No login credentials<br />
+              <button (click)="login()">Log in</button>
+            </p>
+          </div>  
+        </div>
       </div>
     </ng-template>
  </div>

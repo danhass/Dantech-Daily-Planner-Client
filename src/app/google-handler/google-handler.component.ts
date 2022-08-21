@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { DtConstantsService, DTLogin } from '../dt-constants.service';
+import { dtConstants, DtConstantsService, DTLogin } from '../dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -34,7 +34,7 @@ export class GoogleHandlerComponent implements OnInit {
     this.justBackFromGoogle = false;
     let res = "";
     console.log("Setting 10 sec dely.", new Date().toLocaleTimeString());  
-    let serviceFlag = this.cookies.get(this.constants.values().dtPlannerServiceStatusKey);
+    let serviceFlag = this.cookies.get(dtConstants.dtPlannerServiceStatusKey);
     if(serviceFlag == "initializing") {
         setTimeout(() => { 
         console.log ("Waiting for 10 seconds. ", new Date().toLocaleTimeString());
@@ -55,13 +55,13 @@ export class GoogleHandlerComponent implements OnInit {
         let code = this.route.snapshot.queryParamMap.get('code');
         let domain = window.location.protocol + "//" + window.location.hostname;
         if (window.location.port.length > 0) domain += ":" + window.location.port;  
-        let url = this.constants.values().apiTarget +"/google?code=" + code +
+        let url = dtConstants.apiTarget +"/google?code=" + code +
         "&useCaller=true" +        
         "&domain=" + domain;        
         let session = this.http.get<DTLogin>(url).subscribe(data => {
           this.cookies.delete('sentToGoogle');          
           this.sessionId=data.session;            
-          this.cookies.set(this.constants.values().dtSessionKey, data.session, 7);          
+          this.cookies.set(dtConstants.dtSessionKey, data.session, 7);          
           window.location.href = domain;      
         });
       }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
-import { DtConstantsService, DTLogin, DTPlanItem, DTProject, DTProjectOut, DTUser, DTStatus } from './dt-constants.service';
+import {dtConstants, DtConstantsService, DTLogin, DTPlanItem, DTProject, DTProjectOut, DTUser, DTStatus } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService, DtProjects } from './dt-planner.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
@@ -43,12 +43,12 @@ export class AppComponent {
 
   isLoggedIn(): boolean {
     if (!this.loginComplete ){
-      this.sessionId = this.cookies.get(this.constants.values().dtSessionKey);
-      this.cookies.delete(this.constants.values().dtPlannerServiceStatusKey);
+      this.sessionId = this.cookies.get(dtConstants.dtSessionKey);
+      this.cookies.delete(dtConstants.dtPlannerServiceStatusKey);
       let code = this.route.snapshot.queryParamMap.get('code');
       let flag = this.cookies.get("sentToGoogle");
       if (flag.length==0 && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
-        let url = this.constants.values().apiTarget + this.constants.values().loginEndpoint + "?sessionId=" + this.sessionId;
+        let url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.sessionId;
         let res = this.http.get<DTLogin>(url).subscribe(data => {
           this.loginInfo = data;
           if (this.loginInfo == undefined ||
@@ -56,9 +56,9 @@ export class AppComponent {
               this.loginInfo.session == null || 
               this.loginInfo.session == undefined ||
               this.loginInfo.session == "" ) {
-                this.cookies.delete(this.constants.values().dtSessionKey);
+                this.cookies.delete(dtConstants.dtSessionKey);
               } else {
-                this.cookies.set(this.constants.values().dtSessionKey, data.session, 7);
+                this.cookies.set(dtConstants.dtSessionKey, data.session, 7);
                 this.dtPlanner.setSession(this.loginInfo.session);
               }
           this.dtPlanner.initialize();
@@ -87,7 +87,7 @@ export class AppComponent {
   }
 
   dtAuthTest(): string {
-    return this.dtAuth.test();
+    return "";
   }
 
   login(): void {
@@ -114,7 +114,7 @@ export class AppComponent {
   }
 
   addProject(): void {
-    let url = this.constants.values().apiTarget + this.constants.values().setProjectEndpoint;
+    let url = dtConstants.apiTarget + dtConstants.setProjectEndpoint;
     let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
     this.http.post<[DTProject]>(url, '', {headers: hdrs, params: {
         sessionId: this.sessionId, 

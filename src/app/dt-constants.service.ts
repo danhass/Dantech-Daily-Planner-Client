@@ -62,6 +62,20 @@ export interface DTConstants {
   setProjectEndpoint: string
 }
 
+export const dtConstants = {
+  dtSessionKey : "dtSessionId",
+  dtPlannerServiceStatusKey : "dtPlannerService",
+  //apiTarget : "https://localhost:44324",
+  apiTarget : "https://7822-54268.el-alt.com",
+  loginEndpoint : "/login",
+  planItemsEndpoint : "/Planner/PlanItems",
+  planStatiEndpoint : "/Planner/Stati",
+  planColorCodeEndpoint : "/Planner/ColorCodes",
+  projectsEndpoint: "/Planner/Projects",
+  sentToGoogleFlag: "sentToGoogle",
+  setProjectEndpoint: "/Planner/SetProject"
+}
+
 export interface DTProject {
   id: number,
   title: string,
@@ -88,8 +102,8 @@ export class DtConstantsService {
   constants: DTConstants = {
      dtSessionKey : "dtSessionId",
      dtPlannerServiceStatusKey : "dtPlannerService",
-     apiTarget : "https://localhost:44324",
-     //apiTarget : "https://7822-54268.el-alt.com",
+     //apiTarget : "https://localhost:44324",
+     apiTarget : "https://7822-54268.el-alt.com",
      loginEndpoint : "/login",
      planItemsEndpoint : "/Planner/PlanItems",
      planStatiEndpoint : "/Planner/Stati",
@@ -100,8 +114,4 @@ export class DtConstantsService {
   }
 
   constructor() { }
-
-  values(): DTConstants {
-    return this.constants;
-  }  
 }
