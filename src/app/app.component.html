@@ -272,6 +272,14 @@
     width: 1920px;
   }
 
+  ::-webkit-datetime-edit-second-field {
+    background: $color-white;
+    color: transparent;
+    margin-left: -3px;
+    position: absolute;
+    width: 1px;
+  }
+
   /* Responsive Styles */
   @media screen and (max-width: 767px) {
     .card-container > *:not(.circle-link) ,
@@ -321,6 +329,19 @@
       visibility: hidden;
     }
   }
+
+  .dtPadLR {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .dtBorderB {
+    border-bottom: 2px solid black;
+  }
+
+  .dtBorderR {
+    border-right: 2px solid black;
+  }
 </style>
 
 <div class="content" role="main">
@@ -329,115 +350,166 @@
   <div class="card highlight-card card-small">    
       <h2>DanTech Daily Planner (v.1.0.3)</h2>
   </div>
-  <div *ngIf="isLoggedIn()" style="display: table; border-collapse: collapse; width: 100%">
-    <div style="display: table-row;">
-      <div style="display: table-cell; width: 100%">
-        <div *ngIf="validEmail() else noValidEmail" style="display: table; border-collapse: collapse; width: 100%;">
-          <!-- 1st row has 1 cell and provides top level reporting and controls regarding the user.-->
-          <div style="display: table-row;">
-            <div style="display: table-cell; width: 100%">
-              <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
-                <button (click)="login()">Change login</button>
-              </p>
-            </div>          
-          </div>  
-          <!-- 2nd row is the result data-->        
-          <div style="display: table-row;">
-            <div style="display: table-cell; width: 100%; padding-top: 20px;">
-              <div style="display: table; border-collapse: collapse; width: 100%;">
-                    <div style="display: table-row;">
-                      <!-- The left most cell of the result data is the daily plan items.-->
-                      <div style="display: table-cell; padding-right: 10px; width: 50%;">
-                        <div style="display: table; border-collapse: collapse; width: 100%;">
-                          <div style="display: table-row; border: 2px solid black">
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
-                              <h4>Items</h4>
-                            </div>
-                          </div>                
-                          <div style="display: table-row; border: 2px solid black" *ngFor="let item of planItems">        
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px; border-right: 2px solid black;">{{item.title}}</div>
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{dayOfWeek(item.day)}}</div>
-                          </div>
-                        </div>
-                      </div>
+  <div *ngIf="(isLoggedIn() && loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 25% 25% 25% 25%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
+    <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 4;">
+      <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
+        <button (click)="login()">Change login</button>
+      </p>
+    </div>
+    <div style="grid-column: 1 / span 2; border-right: 2px solid black;">
+      <div style="display: grid; grid-template-columns: auto;">
+        <div class="dtPadLR dtBorderB" style="grid-column: 1;">
+          <h4>Items</h4>
+        </div>
+        <div class="dtBorderB" style="grid-column: 1; " *ngFor="let item of planItems">
+          <div style="display: grid; grid-template-columns: 4% 7% 25% 37% 10% 10% 7%;">
+            <div class="dtBorderR" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
+              <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
+            </div>
+            <div class="dtPadLR dtBorderR" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+            <div class="dtPadLR dtBorderR" style="grid-column-start: 3; grid-column-end: 4;">{{item.title}}</div>
+            <div class="dtPadLR dtBorderR" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
+            <div class="dtPadLR dtBorderR" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
+            <div class="dtPadLR dtBorderR" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
+            <div  style="grid-column-start: 7; background-color: gray;">
+                <input type="checkbox" />
+                <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" style="width: 15px; height: 15px; border:2px solid gray">
+            </div>
+        </div>
+      </div> 
+    </div>
+    </div>
+    <div style="grid-column: 3 / span 1; border-right: 2px solid black; border-left: 2px solid black;">
+      <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <h4>Add Item</h4>
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" [(ngModel)]="newPlanItemTitle" />
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="newPlanItemProjectId" > 
+            <option style="background-color: {{proj.colorString}};" *ngFor="let proj of projects" [ngValue]="proj.id">{{proj.title}}</option>
+            </select>          
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Time:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 1">
+          <input type="time" id="newPlanItemStartTime" name="newPlanItemStartTime" [ngModel]="newPlanItemStartTime" (ngModelChange)="newPlanItemStartTime = newPlanItemEndTime = $event"/>
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 3 /span 1;"> -to-</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 4 /span 1">
+          <input type="time" id="newPlanItemEndTime" name="newPlanItemEndTime" [ngModel]="newPlanItemEndTime" (ngModelChange)="newPlanItemEndTime = $event"/>
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Start:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="date" id="newPlanItemStart" name="newPlanItemStart"[value]="newPlanItemStartDate" [ngModel]="newPlanItemStartDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemStartDate = newPlanItemEndDate = $event"/>
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">End:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="date" id="newPlanItemEnd" name="newPlanItemEnd" [ngModel]="newPlanItemEndDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemEndDate = $event"/>
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Priority:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="text" id="newPlanItemPriority" name="newPlanItemPriority" [(ngModel)]="newPlanItemPriority" />
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <button (click)="addPlanItem()">Add Item</button>
+        </div>
+      </div>
+      
+      <br />
 
-                      <!-- The 2nd cell is the supporting data and controls for the plan items.-->
-                      <div style="display: table-cell; width: 50%;">
-                        <div *ngIf="(projects && projects.length > 0) else noProjects" >                
-                          <div style="display: table; border-collapse: collapse; width: 100%;">
-                            <div style="display: table-row; border: 2px solid black">
-                              <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
-                                <h4>Projects</h4>
-                              </div>
-                            </div>                  
-                            <div style="display: table-row; border: 2px solid black" *ngFor="let project of projects">
-                              <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">{{project.title}}</div>
-                            </div>
-                            <div style="display: table-row;"><div style="display:table-cell; padding-top: 10px;"></div></div>
-                          </div>
-                        </div>
-                        <div style="display: table; border-collapse: collapse; width: 100%;">
-                          <div style="display: table-row; border: 2px solid black">
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
-                              <h4>Add project</h4>
-                            </div>
-                          </div>                
-                          <div style="display: table-row; border: 2px solid black">                  
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                              <span>Title:</span><input type="text" id="newProjectTitle" name="newProjectTitle" [(ngModel)]="newProjectTitle" />                  
-                            </div>
-                          </div>                
-                          <div style="display: table-row; border: 2px solid black">                  
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                              <span>Short Code:</span><input type="text" id="newProjectShortCode" name="newProjectShortCode" [(ngModel)]="newProjectShortCode" />                  
-                            </div>
-                          </div>                
-                          <div style="display: table-row; border: 2px solid black">                  
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                              <span>Status:</span><select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" > 
-                                <option *ngFor="let c of projectStati" [ngValue]="c.id">{{c.title}}</option>
-                                </select>                 
-                            </div>
-                          </div>
-                          <div style="display: table-row; border: 2px solid black">                  
-                            <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">                    
-                              <button (click)="addProject()">Add</button>                  
-                            </div>                
-                          </div>              
-                        </div>            
-                      </div>
-                    </div>
-              </div>
+      <div *ngIf="(projects && projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
+        <div style="display: grid; grid-template-columns: 100%;">
+          <div class="dtPadLR dtBorderB" style="grid-column: 1;">
+            <h4>Projects</h4>
+          </div>
+          <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of projects">
+            <div style="display: grid; grid-template-columns: 10% 90%;">
+              <div class="dtPadLR dtBorderR" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
+              <div class="dtPadLR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <br />
+      
+      <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 30% 21% 15% 34%; border-top: 2px solid black; background-color: lightgoldenrodyellow;">
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <h4>Add Project</h4>
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" [(ngModel)]="newProjectTitle" />
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Short Code:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="text" id="newPlanItemShortCode" name="newPlanItemShortCode" [(ngModel)]="newProjectShortCode" />
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Status:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" >                             
+            <option *ngFor="let s of projectStati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
+          </select>                                         
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Color:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <select id="newProjectColorCodeId" name="newProjectColorCodeId" [(ngModel)]="newProjectColorCodeId" >                             
+            <option *ngFor="let c of projectColorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
+          </select>                                         
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Priority:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="text" id="newProjectPriority" name="newProjectPriority" [(ngModel)]="newProjectPriority" />
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Sort Order:</div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <input type="text" id="newProjectSortOrder" name="newProjectSortOrder" [(ngModel)]="newProjectSortOrder" />
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newProjectNotes" name="newProjectNotes" [(ngModel)]="newProjectNotes" placeholder="Notes"></textarea>          
+        </div>
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <button (click)="addProject()">Add Project</button>
         </div>      
       </div>
+        
     </div>
+    <div style="grid-column: 4 / span 1; border: 2px solid black">
+        Responsive area
+    </div> 
   </div>
-
- 
   <div>
     <button (click)="test()">Test</button>
   </div>
     
-    <ng-template #noProjects>
-        <div style="display: table; border-collapse: collapse; width: 100%;">
-          <div style="display: table-row; border: 2px solid black">
-            <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">No Projects</div>
-          </div>
-        </div>      
+    <ng-template #emptyDiv>
+      <div>&nbsp;</div>
     </ng-template>
 
-    <ng-template #noValidEmail>
-      <div style="display: table; border-collapse: collapse; width: 100%">
-        <div style="display: table-row">
-          <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">
-            <p>No login credentials<br />
-              <button (click)="login()">Log in</button>
-            </p>
-          </div>  
+    <ng-template #noProjects>
+      <div style="display: table-row; border: 2px solid black">
+        <div style="display: table-cell; padding-left: 10px; padding-right: 10px;">
+          <h4>Projects</h4>
         </div>
-      </div>
+      </div>                  
+      <div style="display: table; border-collapse: collapse; width: 100%;">        
+        <div style="display: table-row; border: 2px solid black">          
+          <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">No Projects</div>        
+        </div>      
+      </div>      
+    </ng-template>
+
+    <ng-template #noValidEmail>     
+          <p>No login credentials<br />
+            <button (click)="login()">Log in</button>
+          </p>    
     </ng-template>
  </div>
   <router-outlet></router-outlet>

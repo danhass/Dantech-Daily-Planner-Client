@@ -2,6 +2,21 @@ import { Time, WeekDay } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { session } from './google-handler/google-handler.component';
 
+export const dtConstants = {
+  dtSessionKey : "dtSessionId",
+  dtPlannerServiceStatusKey : "dtPlannerService",
+  //apiTarget : "https://localhost:44324",
+  apiTarget : "https://7822-54268.el-alt.com",
+  loginEndpoint : "/login",
+  planItemsEndpoint : "/Planner/PlanItems",
+  planStatiEndpoint : "/Planner/Stati",
+  planColorCodeEndpoint : "/Planner/ColorCodes",
+  projectsEndpoint: "/Planner/Projects",
+  sentToGoogleFlag: "sentToGoogle",
+  setProjectEndpoint: "/Planner/SetProject",
+  setPlanItemEndPoint: "/Planner/SetPlanItem"
+}
+
 export interface DTLogin {
   session: string,
   fName: string,
@@ -28,19 +43,25 @@ export interface DTPlanItem {
   completed: boolean,
   day: Date,
   duration: Time,
+  durationString: string,
   note: string | undefined,
   priority: number,
-  project: string | undefined,
+  projectId: number | undefined,
+  project: DTProject | undefined,
   projectMnemonic: string,
   projectTitle: string,
-  start: Date | undefined,
+  start: Date,
+  startTime: string,
   title: string
 }
 
 export interface DTStatus {
   id: number,
   title: string,
-  note: string | undefined
+  note: string | undefined,
+  colorCode: number | undefined,
+  color: DTColorCode | undefined,
+  colorString: string
 }
 
 export interface DTColorCode {
@@ -62,20 +83,6 @@ export interface DTConstants {
   setProjectEndpoint: string
 }
 
-export const dtConstants = {
-  dtSessionKey : "dtSessionId",
-  dtPlannerServiceStatusKey : "dtPlannerService",
-  //apiTarget : "https://localhost:44324",
-  apiTarget : "https://7822-54268.el-alt.com",
-  loginEndpoint : "/login",
-  planItemsEndpoint : "/Planner/PlanItems",
-  planStatiEndpoint : "/Planner/Stati",
-  planColorCodeEndpoint : "/Planner/ColorCodes",
-  projectsEndpoint: "/Planner/Projects",
-  sentToGoogleFlag: "sentToGoogle",
-  setProjectEndpoint: "/Planner/SetProject"
-}
-
 export interface DTProject {
   id: number,
   title: string,
@@ -84,12 +91,8 @@ export interface DTProject {
   sortOrder: number | undefined,
   user: DTUser,
   colorCodeId: number | undefined,
-  color: DTColorCode,
-  status: DTStatus
-}
-
-export interface DTProjectOut {
-  title: string,
-  shortCode: string,
-  statusId: number
+  color: DTColorCode | undefined,
+  colorString: string,  
+  status: number,
+  statusObj: DTStatus
 }
