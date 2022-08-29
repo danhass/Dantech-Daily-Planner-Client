@@ -493,8 +493,8 @@
   </div>
 
     <ng-template #mobile>
-      <div *ngIf="(isLoggedIn() && loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 50% 50%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
-        <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 4;">
+      <div *ngIf="(isLoggedIn() && loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 100%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
+        <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 1;">
           <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
             <button (click)="login()">Change login</button>
           </p>
@@ -522,11 +522,8 @@
           </div> 
           </div>
         </div>
-        <div *ngIf="planItems.length > 0 else emptyItemResponsive" style="grid-column: 2 /span 1; border: 2px solid black">
-          Responsive area
-        </div> 
-        
-        <div style="grid-column: 1 /span 2; border-right: 2px solid black; border-left: 2px solid black;">&nbsp;</div>
+
+        <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black;">&nbsp;</div>
 
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
           <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
@@ -627,10 +624,12 @@
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
               <button (click)="addProject()">Add Project</button>
             </div>      
-          </div>
-            
+          </div>            
         </div>
-        <div style="grid-column: 2 /span 1; border: 2px solid black">
+
+        <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black;">&nbsp;</div>
+        
+        <div style="grid-column: 1 /span 1; border: 2px solid black">
             Responsive area
         </div> 
       </div>
