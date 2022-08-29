@@ -487,6 +487,7 @@
   </div>
   <div>
     <button (click)="test()">Test</button>
+    <p>{{mobileCheck()}}</p>    
   </div>
     
     <ng-template #emptyDiv>
@@ -509,7 +510,7 @@
     <ng-template #noValidEmail>     
           <p>No login credentials<br />
             <button (click)="login()">Log in</button>
-          </p>    
+          </p>
     </ng-template>
  </div>
   <router-outlet></router-outlet>
