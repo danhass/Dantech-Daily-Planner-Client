@@ -14,7 +14,8 @@ export const dtConstants = {
   projectsEndpoint: "/Planner/Projects",
   sentToGoogleFlag: "sentToGoogle",
   setProjectEndpoint: "/Planner/SetProject",
-  setPlanItemEndPoint: "/Planner/SetPlanItem"
+  setPlanItemEndPoint: "/Planner/SetPlanItem",
+  deletePlanItemEndPoint: "/Planner/DeletePlanItem"
 }
 
 export interface DTLogin {

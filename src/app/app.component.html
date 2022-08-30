@@ -342,6 +342,10 @@
   .dtBorderR {
     border-right: 2px solid black;
   }
+
+  .dtBorderL {
+    border-left: 2px solid black;
+  }
 </style>
 
 <div class="content" role="main">
@@ -351,7 +355,8 @@
       <h2>DanTech Daily Planner (v.1.0.3)</h2>
   </div>
   <div *ngIf="notMobile() else mobile">
-    <div *ngIf="(isLoggedIn() && loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 25% 25% 25% 25%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
+    <div *ngIf="(isLoggedIn() && loginInfo != null && loginInfo.email != null && loginInfo.email.length > 0) else noValidEmail" 
+      style="display: grid; grid-template-columns: 25% 25% 25% 25%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
       <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 4;">
         <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
           <button (click)="login()">Change login</button>
@@ -372,9 +377,9 @@
               <div class="dtPadLR dtBorderR" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
               <div class="dtPadLR dtBorderR" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
               <div class="dtPadLR dtBorderR" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
-              <div  style="grid-column-start: 7; background-color: gray;">
-                  <input type="checkbox" />
-                  <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" style="width: 15px; height: 15px; border:2px solid gray">
+              <div  style="grid-column-start: 7; background-color: gray;">                  
+                <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
               </div>
           </div>
         </div> 
@@ -505,7 +510,7 @@
               <h4>Items</h4>
             </div>
             <div class="dtBorderB" style="grid-column: 1; " *ngFor="let item of planItems">
-              <div style="display: grid; grid-template-columns: 4% 7% 25% 37% 10% 10% 7%;">
+              <div style="display: grid; grid-template-columns: auto auto auto auto auto auto auto">
                 <div class="dtBorderR" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
                   <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                 </div>
@@ -526,7 +531,7 @@
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black;">&nbsp;</div>
 
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
-          <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
+          <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: auto auto auto auto; background-color: lightblue;">
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
               <h4>Add Item</h4>
             </div>
@@ -576,7 +581,7 @@
                 <h4>Projects</h4>
               </div>
               <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of projects">
-                <div style="display: grid; grid-template-columns: 10% 90%;">
+                <div style="display: grid; grid-template-columns: auto auto;">
                   <div class="dtPadLR dtBorderR" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
                   <div class="dtPadLR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
                 </div>
@@ -586,7 +591,7 @@
   
           <br />
           
-          <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 30% 21% 15% 34%; border-top: 2px solid black; background-color: lightgoldenrodyellow;">
+          <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: auto auto auto auto; border-top: 2px solid black; background-color: lightgoldenrodyellow;">
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
               <h4>Add Project</h4>
             </div>
@@ -628,7 +633,7 @@
         </div>
 
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black;">&nbsp;</div>
-        
+
         <div style="grid-column: 1 /span 1; border: 2px solid black">
             Responsive area
         </div> 

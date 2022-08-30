@@ -54,15 +54,8 @@ export class DtPlannerService {
           this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
             DtProjects = [];
             this.setProjects(data);
-            for (let i=0; i < this.planItems.length; i++) {
-              let dateBuffer = new Date(this.planItems[i].start as Date);        
-              this.planItems[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
-                    this.planItems[i].durationString = (this.planItems[i].duration.hours > 0 || this.planItems[i].duration.minutes > 0) ?
-                this.planItems[i].duration.hours.toString().padStart(2, "0") + ":" + 
-                this.planItems[i].duration.minutes.toString().padStart(2,"0") : "";
-              this.planItems[i].project = DtProjects.find( x => x.id == this.planItems[i].projectId);
-            }
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
+            this.linkPlanItemsToProjects();
             this.pingComponents("dtPlanner init complete");
           })
         });
@@ -84,6 +77,23 @@ export class DtPlannerService {
         this.planItems[i].durationString = (this.planItems[i].duration.hours > 0 || this.planItems[i].duration.minutes > 0) ?        
           this.planItems[i].duration.hours.toString().padStart(2, "0") + ":" +           
           this.planItems[i].duration.minutes.toString().padStart(2,"0") : "";   
+        this.planItems[i].project = DtProjects.find( x => x.id == this.planItems[i].projectId);
+      } 
+      for (let i=0; i< this.planItems.length; i++) {      
+        let dateBuffer = new Date(this.planItems[i].start as Date);  
+        this.planItems[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
+            this.planItems[i].durationString = (this.planItems[i].duration.hours > 0 || this.planItems[i].duration.minutes > 0) ?
+        this.planItems[i].duration.hours.toString().padStart(2, "0") + ":" + 
+        this.planItems[i].duration.minutes.toString().padStart(2,"0") : "";
+      }
+      this.linkPlanItemsToProjects();
+    }
+  }
+
+  linkPlanItemsToProjects() {
+    let flag = this.cookie.get(dtConstants.dtPlannerServiceStatusKey);
+    if (flag == null || flag.length == 0) {
+      for (let i=0; i < this.planItems.length; i++) {
         this.planItems[i].project = DtProjects.find( x => x.id == this.planItems[i].projectId);
       }
     }

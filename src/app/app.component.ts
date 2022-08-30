@@ -63,6 +63,7 @@ export class AppComponent {
               ) {
       this.loginInfo = { session: "", email: "", fName: "", lName: "", message: ""}; 
       this.newPlanItemStart = moment().format("MM/DD/YYYY");
+      this.cookies.delete("loginInProgress");
     } 
     
     notMobile(): boolean {
@@ -77,9 +78,12 @@ export class AppComponent {
       this.cookies.delete(dtConstants.dtPlannerServiceStatusKey);
       let code = this.route.snapshot.queryParamMap.get('code');
       let flag = this.cookies.get("sentToGoogle");
-      if (flag.length==0 && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
+      let logginInProgress = this.cookies.get("loginInProgress");      
+      if (flag.length==0 && (logginInProgress == null || logginInProgress.length==0) && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
+        this.cookies.set("loginInProgress", "true");
         let url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.sessionId;
         let res = this.http.get<DTLogin>(url).subscribe(data => {
+          this.cookies.delete("loginInProgress");
           this.loginInfo = data;
           if (this.loginInfo == undefined ||
               this.loginInfo.session === 'null' || 
@@ -150,21 +154,15 @@ export class AppComponent {
   test(): void {    
     console.log(this.isLoggedIn());     
   }
-  
-  trackProjectsItem (index: number, project: DTProject): number {
-    return project.id;
-  }
 
-  togglePlanItemCompleted(itemId: number, event: any): void {
-    let completed = event.srcElement.checked;
+  planItemParams(itemId: number): {[index: string]: any} {
     let item = (this.planItems.find(x => x.id == itemId) as DTPlanItem);
     let start = new Date(item.start);
-    let end = new Date(item.start);
+    start.setDate(start.getDate()); 
+    let end = new Date(start.toLocaleDateString());
     end.setHours(start.getHours() + item.duration.hours);
     end.setMinutes(start.getMinutes() + item.duration.minutes);
     let endTime = end.getHours().toString().padStart(2, "0")  + ":" + end.getMinutes().toString().padStart(2, "0");
-    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
-    let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
     let params: {[index: string]:any} = {
       sessionId: this.sessionId,      
       title: item.title, 
@@ -175,7 +173,7 @@ export class AppComponent {
       endTime: endTime,
       priority: null,
       addToCalendar: null,
-      completed: completed,
+      completed: item.completed,
       preserve: null,
       projectId: item.projectId,
       daysBack: 1,
@@ -184,6 +182,58 @@ export class AppComponent {
       onlyProject: 0,
       id: item.id
     };
+    return params;
+  }
+  
+  trackProjectsItem (index: number, project: DTProject): number {
+    return project.id;
+  }
+
+  movePlanItemToNextDay(itemId: number) {
+    let params = this.planItemParams(itemId);
+    let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
+    let start = new Date(params["start"]);
+    start.setDate(start.getDate() + 1);
+    let end = new Date(params["end"]);
+    end.setDate(end.getDate() + 1);
+    params["start"] = start.toLocaleDateString();
+    params["end"] = end.toLocaleDateString();
+    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
+    this.http.post<[DTPlanItem]>(url, '', {headers: hdrs, params: params}).subscribe( data => {
+      let newPlanItems: Array<DTPlanItem> = [];      
+      if (data) { for (let i=0; i < data.length; i++) { 
+            newPlanItems = [...newPlanItems, data[i]];  }  }      
+      this.dtPlanner.setPlanItems(newPlanItems);       
+      this.planItems = this.dtPlanner.PlanItems();
+    });       
+  }
+
+  deletePlanItem(itemId: number) {
+    let item = (this.planItems.find(x => x.id == itemId) as DTPlanItem);
+    let proceed = confirm('Delete ' + item.title + "?");
+    if (proceed) {
+      let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
+      let params: {[index: string]:any} = {
+        sessionId: this.sessionId,
+        planItemId: item.id
+      }      
+      let url = dtConstants.apiTarget + dtConstants.deletePlanItemEndPoint;
+      this.http.post<[DTPlanItem]>(url, '', {headers: hdrs, params: params}).subscribe( data => {
+        url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
+        this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+          this.dtPlanner.setPlanItems(data);
+          this.planItems = this.dtPlanner.PlanItems();
+        });
+      }); 
+    }   
+  }
+
+  togglePlanItemCompleted(itemId: number, event: any): void {
+    let completed = event.srcElement.checked;
+    let params = this.planItemParams(itemId);
+    params["completed"] = completed;
+    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
+    let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
     this.http.post<[DTPlanItem]>(url, '', {headers: hdrs, params: params}).subscribe( data => {
       let newPlanItems: Array<DTPlanItem> = [];      
       if (data) { for (let i=0; i < data.length; i++) { 
