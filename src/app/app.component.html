@@ -69,8 +69,7 @@
   .content {
     display: flex;
     margin: 82px auto 32px;
-    padding: 0 16px;
-    max-width: 960px;
+    padding: 0 16px;    
     flex-direction: column;
     align-items: center;
   }
@@ -369,7 +368,7 @@
   </div>
   <div *ngIf="notMobile() else mobile">
     <div *ngIf="(isLoggedIn() && loginInfo != null && loginInfo.email != null && loginInfo.email.length > 0) else noValidEmail" 
-      style="display: grid; grid-template-columns: 25% 25% 25% 25%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
+      style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; column-gap: 5px; width: 98vw; border: 2px solid black" >    
       <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 4;">
         <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
           <button (click)="login()">Change login</button>
@@ -382,16 +381,18 @@
           </div>
           <div style="grid-column: 1; " *ngFor="let item of planItems">
             <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
-              <div style="display: grid; grid-template-columns: 4% 7% 25% 37% 10% 10% 7%;">
-                <div class="dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
+              <div *ngIf="planItemDateChanged(item.day)" style="display: grid; grid-template-columns: auto;">
+                <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 2">{{fullDate(item.day)}}</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 4% 7% 62% 10% 10% 7%;">
+                <div class="dtCen dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
                   <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                 </div>
-                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
                 <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">{{item.title}}</div>
-                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
-                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
-                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
-                <div class="dtBorderB" style="grid-column-start: 7; background-color: gray;">                  
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6;">{{item.durationString}}</div>
+                <div class="dtCen dtBorderB" style="grid-column-start: 6; background-color: gray;">                  
                   <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                   <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                 </div>
@@ -446,7 +447,7 @@
               <option *ngFor="let r of recurrances" [ngValue]="r.id">{{r.title}}</option>                          
             </select>                                       
           </div>
-          <div *ngIf="newPlanItemRecurranceId == 1" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrance && (newPlanItemRecurranceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <div style="display: grid; grid-template-columns: 5% 13% 13% 13% 13% 13% 13% 13% 4%;">
               <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
               <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
@@ -484,7 +485,7 @@
             </div>
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-            <button (click)="addPlanItem()">Add Item</button>
+            <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
           </div>
         </div>
         
@@ -547,7 +548,7 @@
         </div>
           
       </div>
-      <div style="grid-column: 4 / span 1; border: 2px solid black">
+      <div style="grid-column: 4 / span 1; border-left: 2px solid black; border-right: 2px solid black;">
           Responsive area
       </div> 
     </div>
@@ -633,6 +634,51 @@
               <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+              <input [checked]="newPlanItemIsRecurrance" tooltip="toggle complete" (change)="toggleIsRecurrance($event)" type="checkbox" /> Recurring?
+            </div>
+            <div *ngIf="newPlanItemIsRecurrance" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+              <select id="newPlanItemRecurranceId" name="newPlanItemRecurranceId" [(ngModel)]="newPlanItemRecurranceId" >                             
+                <option *ngFor="let r of recurrances" [ngValue]="r.id">{{r.title}}</option>                          
+              </select>                                       
+            </div>
+            <div *ngIf="newPlanItemIsRecurrance && (newPlanItemRecurranceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+              <div style="display: grid; grid-template-columns: 5% 13% 13% 13% 13% 13% 13% 13% 4%;">
+                <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
+                <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
+                <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
+                <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">T</div>
+                <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">W</div>
+                <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">Th</div>
+                <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">F</div>
+                <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">Sa</div> 
+                <div class="" style="grid-column: 9 /span 1;"></div>
+                             
+                <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
+                <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSunday" />
+                </div>
+                <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox" id="recurranceFilterMonday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceMonday" />
+                </div>
+                <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox"id="recurranceFilterTuesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceTuesday" />
+                </div>
+                <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox" id="recurranceFilterWednesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceWednesday" />
+                </div>
+                <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox" id="recurranceFilterThursday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceThursday" />
+                </div>
+                <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox" id="recurranceFilterFriday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceFriday" />
+                </div>
+                <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
+                  <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSaturday" />
+                </div>              
+                <div class="" style="grid-column: 9 /span 1;"></div>              
+              </div>
+            </div>
+             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
               <button (click)="addPlanItem()">Add Item</button>
             </div>
           </div>
