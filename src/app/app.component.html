@@ -567,7 +567,7 @@
             </div>
             <div style="grid-column: 1; " *ngFor="let item of planItems">
               <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
-                <div style="display: grid; grid-template-columns: 7% 9% 25% 12% 12% 12% 14%;">
+                <div style="display: grid; grid-template-columns: 7% 9% 33% 12% 12% 12% 14%;">
                   <div class="dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
                     <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                   </div>
