@@ -562,15 +562,15 @@
             </div>
             <div style="grid-column: 1; " *ngFor="let item of planItems">
               <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
-                <div style="display: grid; grid-template-columns: 6% 7% 25% 32% 10% 10% 12%;">
+                <div style="display: grid; grid-template-columns: 8% 7% 25% 30% 10% 10% 12%;">
                   <div class="dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
                     <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                   </div>
-                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
-                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">{{item.title}}</div>
-                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
-                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
-                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
+                  <div class="dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+                  <div class="dtBorderR dtBorderB" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">{{item.title}}</div>
+                  <div class="dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
+                  <div class="dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
+                  <div class="dtBorderR dtBorderB" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
                   <div class="dtBorderB" style="grid-column-start: 7; background-color: gray;">                  
                     <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                     <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
