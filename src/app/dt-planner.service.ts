@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser } from './dt-constants.service';
+import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrance } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, Subject } from 'rxjs';
 import { Time } from '@angular/common';
@@ -16,6 +16,7 @@ export class DtPlannerService {
   planItems: Array<DTPlanItem> = [];
   stati: Array<DTStatus> = [];
   colorCodes: Array<DTColorCode> = [];
+  recurrances: Array<DTRecurrance> = [];
   private componentMethodCallSource = new Subject<any>();
   componentMethodCalled$ = this.componentMethodCallSource.asObservable();
 
@@ -47,17 +48,23 @@ export class DtPlannerService {
           }                 
           this.stati.push(data[i]);        
         }
-        url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
-        this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
-          this.setPlanItems(data);
-          url = dtConstants.apiTarget + dtConstants.projectsEndpoint + "?sessionId=" + this.sessionId;
-          this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
+        url = dtConstants.apiTarget + dtConstants.recurrancesEndPoint;
+        this.http.get<[DTRecurrance]>(url, {headers: header}).subscribe(data => {        
+          for (let i=0; i < data.length; i++){ 
+            this.recurrances.push(data[i]);        
+          }
+          url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
+          this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+            this.setPlanItems(data);
+            url = dtConstants.apiTarget + dtConstants.projectsEndpoint + "?sessionId=" + this.sessionId;
+            this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
             DtProjects = [];
             this.setProjects(data);
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
             this.linkPlanItemsToProjects();
             this.pingComponents("dtPlanner init complete");
-          })
+            })
+          });
         });
       });  
     }); 
@@ -136,5 +143,9 @@ export class DtPlannerService {
 
   ColorCodes(): Array<DTColorCode>{
     return this.colorCodes;
+  }
+
+  Recurrances(): Array<DTRecurrance>{
+    return this.recurrances;
   }
 }

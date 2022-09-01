@@ -15,7 +15,8 @@ export const dtConstants = {
   sentToGoogleFlag: "sentToGoogle",
   setProjectEndpoint: "/Planner/SetProject",
   setPlanItemEndPoint: "/Planner/SetPlanItem",
-  deletePlanItemEndPoint: "/Planner/DeletePlanItem"
+  deletePlanItemEndPoint: "/Planner/DeletePlanItem",
+  recurrancesEndPoint: "/Planner/Recurrances"
 }
 
 export interface DTLogin {
@@ -40,20 +41,22 @@ export interface DTUser {
 
 export interface DTPlanItem {
   id: number,
+  title: string,
+  note: string | undefined,
+  start: Date,
+  startTime: string
   addToCalendar: boolean,
   completed: boolean,
   day: Date,
   duration: Time,
   durationString: string,
-  note: string | undefined,
   priority: number,
   projectId: number | undefined,
   project: DTProject | undefined,
   projectMnemonic: string,
   projectTitle: string,
-  start: Date,
-  startTime: string,
-  title: string
+  recurrance: number | undefined,
+  recurranceData: string | undefined
 }
 
 export interface DTStatus {
@@ -96,4 +99,14 @@ export interface DTProject {
   colorString: string,  
   status: number,
   statusObj: DTStatus
+}
+
+export interface DTRecurrance {
+  id: number,
+  title: string,
+  note: string | undefined,
+  description: string | undefined,
+  effective: Date | undefined,
+  stops: Date | undefined,
+  daysToPopulate: number | undefined
 }

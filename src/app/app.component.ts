@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren, ViewChild, ElementRef, QueryList, IterableDiffers } from '@angular/core';
 import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
-import {dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode } from './dt-constants.service';
+import {dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode, DTRecurrance } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService, DtProjects } from './dt-planner.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
@@ -21,6 +21,8 @@ const sessionId = "";
 })
 
 export class AppComponent {
+
+
   title = 'DanTech';
   sessionId = "";
   loginComplete = false;
@@ -30,6 +32,7 @@ export class AppComponent {
   projects: Array<DTProject> = DtProjects;
   projectStati: Array<DTStatus> = this.dtPlanner.Stati();
   projectColorCodes: Array<DTColorCode> = this.dtPlanner.ColorCodes();
+  recurrances: Array<DTRecurrance> = this.dtPlanner.Recurrances();
   plannerInitializedFlag: boolean = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
 
   //Add project form elements
@@ -53,7 +56,21 @@ export class AppComponent {
   newPlanItemPriority: number | null = null;
   newPlanItemAddToCalendar: boolean | null = null;
   newPlanItemProjectId: number | null = null;
+  newPlanItemIsRecurrance: boolean | null = false;
+  newPlanItemRecurranceId: number | null = 0;
+  newPlanItemRecurranceData: string | null = "";
 
+  updateStatus: string = "";
+
+  //Recurrance parameters
+  recurranceSunday: boolean | null = null;
+  recurranceMonday: boolean | null = null;
+  recurranceTuesday: boolean | null = null;
+  recurranceWednesday: boolean | null = null;
+  recurranceThursday: boolean | null = null;
+  recurranceFriday: boolean | null = null;
+  recurranceSaturday: boolean | null = null;
+  
   constructor(private readonly dtAuth: DtAuthService,
               private readonly cookies: CookieService,
               private http: HttpClient,
@@ -100,6 +117,7 @@ export class AppComponent {
             this.projects = DtProjects;
             this.planItems = this.dtPlanner.PlanItems();
             this.projectColorCodes = this.dtPlanner.ColorCodes();
+            this.recurrances = this.dtPlanner.Recurrances();
             this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
           });
           this.loginComplete = true;
@@ -151,8 +169,9 @@ export class AppComponent {
     return this.loginInfo
   }
 
-  test(): void {    
-    console.log(this.isLoggedIn());     
+  test(): void {        
+    console.log(this.newPlanItemIsRecurrance);
+    console.log(this.newPlanItemRecurranceId);     
   }
 
   planItemParams(itemId: number): {[index: string]: any} {
@@ -228,6 +247,39 @@ export class AppComponent {
     }   
   }
 
+  setRecurranceFilter(event: any): void {
+    let filter = "";
+    if (!(this.recurranceSunday && 
+        this.recurranceMonday &&
+        this.recurranceTuesday &&
+        this.recurranceWednesday &&
+        this.recurranceThursday &&
+        this.recurranceFriday &&
+        this.recurranceSaturday) &&
+        (this.recurranceSunday ||
+         this.recurranceMonday ||
+         this.recurranceTuesday ||
+         this.recurranceWednesday ||
+         this.recurranceThursday ||
+         this.recurranceFriday ||
+         this.recurranceSaturday)
+      ) {
+      filter = filter + (this.recurranceSunday ? "*" : "-");
+      filter = filter + (this.recurranceMonday ? "*" : "-");      
+      filter = filter + (this.recurranceTuesday ? "*" : "-");      
+      filter = filter + (this.recurranceWednesday ? "*" : "-");      
+      filter = filter + (this.recurranceThursday ? "*" : "-");      
+      filter = filter + (this.recurranceFriday ? "*" : "-");      
+      filter = filter + (this.recurranceSaturday ? "*" : "-");
+    }
+    this.newPlanItemRecurranceData = filter;
+  }
+
+  toggleIsRecurrance(event: any): void {
+    this.newPlanItemIsRecurrance = event.srcElement.checked;
+    if (this.newPlanItemIsRecurrance === true) this.newPlanItemRecurranceId = 1;
+  }
+
   togglePlanItemCompleted(itemId: number, event: any): void {
     let completed = event.srcElement.checked;
     let params = this.planItemParams(itemId);
@@ -244,10 +296,14 @@ export class AppComponent {
   }
 
   addPlanItem(): void {
-
+    this.updateStatus = "Update underway.";
     if (!(this.newPlanItemTitle.length >0)) return;
     this.newPlanItemStart = this.newPlanItemStartDate.toString();
-    this.newPlanItemEnd = new Date(this.newPlanItemEndDate).toString();
+    if (this.newPlanItemEndDate >= this.newPlanItemStartDate) {
+      this.newPlanItemEnd = this.newPlanItemEndDate.toString();
+    } else {
+      this.newPlanItemEnd = this.newPlanItemStart;
+    }    
 
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
     let hdrs = {'content-type': 'application/x-www-form-urlencoded'};
@@ -263,23 +319,52 @@ export class AppComponent {
       addToCalendar: null,
       completed: null,
       preserve: null,
-      projectId: this.newPlanItemProjectId
-    };
+      projectId: this.newPlanItemProjectId,
+      includeCompleted: true
+    }
+    if (this.newPlanItemIsRecurrance && (this.newPlanItemRecurranceId as number) > 0) {
+      params['recurrance'] = this.newPlanItemRecurranceId as number;
+      if ((this.newPlanItemRecurranceData as string).length > 0) {
+        params['recurranceData'] = this.newPlanItemRecurranceData;
+      }
+    }
+  
     this.http.post<[DTPlanItem]>(url, '', {headers: hdrs, params: params}).subscribe( data => {
       let newPlanItems: Array<DTPlanItem> = [];      
       if (data) { for (let i=0; i < data.length; i++) { 
             newPlanItems = [...newPlanItems, data[i]];  }  }      
       this.dtPlanner.setPlanItems(newPlanItems);       
-      this.planItems = this.dtPlanner.PlanItems();;
+      this.planItems = this.dtPlanner.PlanItems();
+      this.updateStatus="Update complete";
     });        
+  } 
+  
+  clearUpdateStatus(): void {
+    this.updateStatus = "";
   }
 
   itemStatus(item: DTPlanItem): string {
-    if (item.completed == true) return "LightGreen";
     let now = new Date();
-    let test = new Date(item.start as Date);
-    if (test < now) return "LightPink";
-    return "White";
+    let start = new Date(item.start as Date);
+    let end =  new Date(item.start as Date)
+    end.setHours(start.getHours() + item.duration.hours);
+    end.setMinutes(start.getMinutes() + item.duration.minutes);
+
+    let nowDate = now.toLocaleDateString();
+    let nowTime = now.toLocaleTimeString();
+    let startDate = start.toLocaleDateString();
+    let startTime = start.toLocaleTimeString();
+    let endDate = end.toLocaleDateString();
+    let endTime = end.toLocaleTimeString();
+
+    let statusColor = "LightGray";
+    if (startDate == nowDate) statusColor = "LightGoldenrodYellow"    
+    if (startDate == nowDate && start < now) statusColor = "Khaki";
+    if (endDate == nowDate  && end < now) statusColor = "LightPink";
+    if (startDate < nowDate) statusColor = "Pink";
+    if (item.completed == true) statusColor ="LightGreen";
+    if (statusColor == "LightPink") console.log (item.title, end, now);
+    return statusColor;
   }  
 
   addProject(): void {

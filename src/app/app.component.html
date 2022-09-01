@@ -346,6 +346,10 @@
   .dtBorderL {
     border-left: 2px solid black;
   }
+
+  .dtBorderL {
+    border-left: 2px solid black;
+  }
 </style>
 
 <div class="content" role="main">
@@ -367,20 +371,22 @@
           <div class="dtPadLR dtBorderB" style="grid-column: 1;">
             <h4>Items</h4>
           </div>
-          <div class="dtBorderB" style="grid-column: 1; " *ngFor="let item of planItems">
-            <div style="display: grid; grid-template-columns: 4% 7% 25% 37% 10% 10% 7%;">
-              <div class="dtBorderR" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
-                <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
-              </div>
-              <div class="dtPadLR dtBorderR" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
-              <div class="dtPadLR dtBorderR" style="grid-column-start: 3; grid-column-end: 4;">{{item.title}}</div>
-              <div class="dtPadLR dtBorderR" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
-              <div class="dtPadLR dtBorderR" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
-              <div class="dtPadLR dtBorderR" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
-              <div  style="grid-column-start: 7; background-color: gray;">                  
-                <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
-                <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
-              </div>
+          <div style="grid-column: 1; " *ngFor="let item of planItems">
+            <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
+              <div style="display: grid; grid-template-columns: 4% 7% 25% 37% 10% 10% 7%;">
+                <div class="dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
+                  <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
+                </div>
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">{{item.title}}</div>
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
+                <div class="dtBorderB" style="grid-column-start: 7; background-color: gray;">                  
+                  <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                  <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                </div>
+            </div>
           </div>
         </div> 
       </div>
@@ -388,11 +394,11 @@
       <div style="grid-column: 3 / span 1; border-right: 2px solid black; border-left: 2px solid black;">
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-            <h4>Add Item</h4>
+            <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
           <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
-            <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" [(ngModel)]="newPlanItemTitle" />
+            <input type="text" id="newPlanItemTitle" (change)="clearUpdateStatus()" name="newPlanItemTitle" [(ngModel)]="newPlanItemTitle" />
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
           <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
@@ -422,6 +428,51 @@
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
+          </div>
+          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <input [checked]="newPlanItemIsRecurrance" tooltip="toggle complete" (change)="toggleIsRecurrance($event)" type="checkbox" /> Recurring?
+          </div>
+          <div *ngIf="newPlanItemIsRecurrance" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <select id="newPlanItemRecurranceId" name="newPlanItemRecurranceId" [(ngModel)]="newPlanItemRecurranceId" >                             
+              <option *ngFor="let r of recurrances" [ngValue]="r.id">{{r.title}}</option>                          
+            </select>                                       
+          </div>
+          <div *ngIf="newPlanItemRecurranceId == 1" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div style="display: grid; grid-template-columns: 5% 13% 13% 13% 13% 13% 13% 13% 4%;">
+              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
+              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
+              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">T</div>
+              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">W</div>
+              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">Th</div>
+              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">F</div>
+              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">Sa</div> 
+              <div class="" style="grid-column: 9 /span 1;"></div>
+                           
+              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSunday" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox" id="recurranceFilterMonday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceMonday" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox"id="recurranceFilterTuesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceTuesday" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox" id="recurranceFilterWednesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceWednesday" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox" id="recurranceFilterThursday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceThursday" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox" id="recurranceFilterFriday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceFriday" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
+                <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSaturday" />
+              </div>              
+              <div class="" style="grid-column: 9 /span 1;"></div>              
+            </div>
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <button (click)="addPlanItem()">Add Item</button>
@@ -509,20 +560,22 @@
             <div class="dtPadLR dtBorderB" style="grid-column: 1;">
               <h4>Items</h4>
             </div>
-            <div class="dtBorderB" style="grid-column: 1; " *ngFor="let item of planItems">
-              <div style="display: grid; grid-template-columns: auto auto auto auto auto auto auto">
-                <div class="dtBorderR" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
-                  <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
-                </div>
-                <div class="dtPadLR dtBorderR" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
-                <div class="dtPadLR dtBorderR" style="grid-column-start: 3; grid-column-end: 4;">{{item.title}}</div>
-                <div class="dtPadLR dtBorderR" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
-                <div class="dtPadLR dtBorderR" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
-                <div class="dtPadLR dtBorderR" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
-                <div  style="grid-column-start: 7; background-color: gray;">
-                    <input type="checkbox" />
-                    <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" style="width: 15px; height: 15px; border:2px solid gray">
-                </div>
+            <div style="grid-column: 1; " *ngFor="let item of planItems">
+              <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
+                <div style="display: grid; grid-template-columns: 4% 7% 25% 37% 10% 10% 7%;">
+                  <div class="dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
+                    <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
+                  </div>
+                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">{{item.title}}</div>
+                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{dayOfWeek(item.day)}}</div>
+                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6; background-color: {{itemStatus(item)}};">{{item.startTime}}</div>
+                  <div class="dtPadLR dtBorderR dtBorderB" style="grid-column-start: 6; grid-column-end: 7;">{{item.durationString}}</div>
+                  <div class="dtBorderB" style="grid-column-start: 7; background-color: gray;">                  
+                    <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                    <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                  </div>
+              </div>
             </div>
           </div> 
           </div>
