@@ -5,7 +5,7 @@ import { dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorC
 import { HttpClient } from '@angular/common/http';
 import { DtPlannerService, DtProjects } from './dt-planner.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
-import { Observable } from 'rxjs';
+import { endWith, Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 
@@ -62,6 +62,10 @@ export class AppComponent {
 
   updateStatus: string = "";
   currentPlanItemDate: string = "";
+  itemBeingEdited: number = 0;
+  fieldBeingEdited: string = "";
+  editValueFirst: string = "";
+  editValueSecond: string = "";
 
   //Recurrance parameters
   recurranceSunday: boolean | null = null;
@@ -202,7 +206,47 @@ export class AppComponent {
   dtAuthTest(): string {
     return "";
   }
+
+  editItemEnd(event: any): void {
+    if (event['key'] === 'Enter') {
+      let itm = this.planItems.find(x => x.id == this.itemBeingEdited);
+      if (itm != undefined) {
+        let params = this.planItemParams(itm.id);
+        let numHrs = Number(this.editValueFirst);
+        let numMins = Number(this.editValueSecond);
+        let newStartTime = String(this.editValueFirst).padStart(2, '0') + ":" + String(this.editValueSecond).padStart(2, '0');
+        if (newStartTime != params['startTime']) {
+          numMins = numMins + itm.duration.minutes;
+          numHrs = numHrs + itm.duration.hours;
+          if (numMins >= 60) {
+            numHrs = numHrs + 1;
+            numMins = numMins - 60;
+          }
+          let newEndTime = String(numHrs).padStart(2, '0') + ":" + String(numMins).padStart(2,'0');                
+          params['startTime'] = newStartTime;
+          params['endTime'] = newEndTime;
+          this.updatePlanItem(params);
+        }
+        this.itemBeingEdited = 0;        
+        this.fieldBeingEdited = "";
+      }          
+    } 
+  }
   
+  editItemStart(itemId: number, field: string): void {
+    let itm = this.planItems.find(x => x.id == itemId);
+    if (itm == undefined) {
+      this.itemBeingEdited = 0;
+      this.fieldBeingEdited = '';
+    }
+    this.itemBeingEdited = itemId;
+    this.fieldBeingEdited = field;
+    if (field == 'start') {
+      this.editValueFirst = ((itm as DTPlanItem).startTime as string).split(':')[0];
+      this.editValueSecond = ((itm as DTPlanItem).startTime as string).split(':')[1];
+    }
+  }
+
   emailChanged(): void {
     this.dtPlanner.setSession(this.loginInfo.session);
   }
@@ -285,7 +329,7 @@ export class AppComponent {
     if (startDate == nowDate) statusColor = "LightGoldenrodYellow"
     if (startDate == nowDate && start < now) statusColor = "Khaki";
     if (endDate == nowDate && end < now) statusColor = "LightPink";
-    if (startDate < nowDate) statusColor = "Pink";
+    if (new Date(startDate) < new Date(nowDate)) statusColor = "Pink";
     if (item.completed == true) statusColor = "DarkSeaGreen";
     return statusColor;
   }
@@ -296,24 +340,13 @@ export class AppComponent {
 
   movePlanItemToNextDay(itemId: number) {
     let params = this.planItemParams(itemId);
-    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
     let start = new Date(params["start"]);
     start.setDate(start.getDate() + 1);
     let end = new Date(params["end"]);
     end.setDate(end.getDate() + 1);
     params["start"] = start.toLocaleDateString();
     params["end"] = end.toLocaleDateString();
-    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
-    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newPlanItems: Array<DTPlanItem> = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          newPlanItems = [...newPlanItems, data[i]];
-        }
-      }
-      this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.PlanItems();
-    });
+    this.updatePlanItem(params);
   }
 
   notMobile(): boolean {
@@ -394,7 +427,7 @@ export class AppComponent {
     console.log(this.newPlanItemIsRecurrance);
     console.log(this.newPlanItemRecurranceId);
   }
-
+  
   toggleIsRecurrance(event: any): void {
     this.newPlanItemIsRecurrance = event.srcElement.checked;
     if (this.newPlanItemIsRecurrance === true) this.newPlanItemRecurranceId = 1;
@@ -420,6 +453,22 @@ export class AppComponent {
 
   trackProjectsItem(index: number, project: DTProject): number {
     return project.id;
+  }
+
+  updatePlanItem(params: {[index:  string]: any}): void{
+    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' }; 
+    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
+    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+      let newPlanItems: Array<DTPlanItem> = [];
+      if (data) {
+        for (let i = 0; i < data.length; i++) {
+          newPlanItems = [...newPlanItems, data[i]];
+        }
+      }
+      this.dtPlanner.setPlanItems(newPlanItems);
+      this.planItems = this.dtPlanner.PlanItems();
+    });
+
   }
 
   validEmail(): boolean {
