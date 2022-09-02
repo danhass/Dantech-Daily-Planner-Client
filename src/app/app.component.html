@@ -598,7 +598,7 @@
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
           <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: auto auto auto auto; background-color: lightblue;">
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-              <h4>Add Item</h4>
+              <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
             <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
@@ -679,7 +679,7 @@
               </div>
             </div>
              <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-              <button (click)="addPlanItem()">Add Item</button>
+              <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
             </div>
           </div>
           
