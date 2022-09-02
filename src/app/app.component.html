@@ -602,7 +602,7 @@
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
             <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
-              <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" [(ngModel)]="newPlanItemTitle" />
+              <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" (change)="clearUpdateStatus()" [(ngModel)]="newPlanItemTitle" />
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
             <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
