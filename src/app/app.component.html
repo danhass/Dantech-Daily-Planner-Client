@@ -611,11 +611,11 @@
                 </select>          
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Time:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 1">
+            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3">
               <input type="time" id="newPlanItemStartTime" name="newPlanItemStartTime" [ngModel]="newPlanItemStartTime" (ngModelChange)="newPlanItemStartTime = newPlanItemEndTime = $event"/>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 3 /span 1;"> -to-</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 4 /span 1">
+            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;"> -to-</div>
+            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3">
               <input type="time" id="newPlanItemEndTime" name="newPlanItemEndTime" [ngModel]="newPlanItemEndTime" (ngModelChange)="newPlanItemEndTime = $event"/>
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Start:</div>
@@ -642,7 +642,7 @@
               </select>                                       
             </div>
             <div *ngIf="newPlanItemIsRecurrance && (newPlanItemRecurranceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-              <div style="display: grid; grid-template-columns: 5% 13% 13% 13% 13% 13% 13% 13% 4%;">
+              <div style="display: grid; grid-template-columns: 10% 10% 10% 10% 10% 10% 10%">
                 <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
                 <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
                 <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
