@@ -5,8 +5,8 @@ import { session } from './google-handler/google-handler.component';
 export const dtConstants = {
   dtSessionKey : "dtSessionId",
   dtPlannerServiceStatusKey : "dtPlannerService",
-  apiTarget : "https://localhost:44324",
-  //apiTarget : "https://7822-54268.el-alt.com",
+  //apiTarget : "https://localhost:44324",
+  apiTarget : "https://7822-54268.el-alt.com",
   loginEndpoint : "/login",
   planItemsEndpoint : "/Planner/PlanItems",
   planStatiEndpoint : "/Planner/Stati",
