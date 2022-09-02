@@ -604,8 +604,9 @@
                     {{item.title}}
                     <span *ngIf="item.note != undefined && item.note != null && item.note != 'null'" style="color: red">*</span>
                   </div>
-                  <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{item.durationString}}</div>
-                  <div class="dtCen dtBorderB" style="grid-column-start: 5; background-color: gray;">                  
+                  <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{item.startTime}}</div>
+                  <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6;">{{item.durationString}}</div>
+                  <div class="dtCen dtBorderB" style="grid-column-start: 6; background-color: gray;">                  
                     <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                     <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                   </div>
