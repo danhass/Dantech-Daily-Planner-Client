@@ -16,7 +16,7 @@ export const dtConstants = {
   setProjectEndpoint: "/Planner/SetProject",
   setPlanItemEndPoint: "/Planner/SetPlanItem",
   deletePlanItemEndPoint: "/Planner/DeletePlanItem",
-  recurrancesEndPoint: "/Planner/Recurrances"
+  recurrencesEndPoint: "/Planner/Recurrences"
 }
 
 export interface DTLogin {
@@ -55,8 +55,8 @@ export interface DTPlanItem {
   project: DTProject | undefined,
   projectMnemonic: string,
   projectTitle: string,
-  recurrance: number | undefined,
-  recurranceData: string | undefined
+  recurrence: number | undefined,
+  recurrenceData: string | undefined
 }
 
 export interface DTStatus {
@@ -101,7 +101,7 @@ export interface DTProject {
   statusObj: DTStatus
 }
 
-export interface DTRecurrance {
+export interface DTRecurrence {
   id: number,
   title: string,
   note: string | undefined,

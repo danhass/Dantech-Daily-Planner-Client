@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrance } from './dt-constants.service';
+import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrence } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, Subject } from 'rxjs';
 import { Time } from '@angular/common';
@@ -16,7 +16,7 @@ export class DtPlannerService {
   planItems: Array<DTPlanItem> = [];
   stati: Array<DTStatus> = [];
   colorCodes: Array<DTColorCode> = [];
-  recurrances: Array<DTRecurrance> = [];
+  recurrences: Array<DTRecurrence> = [];
   private componentMethodCallSource = new Subject<any>();
   componentMethodCalled$ = this.componentMethodCallSource.asObservable();
 
@@ -48,10 +48,10 @@ export class DtPlannerService {
           }                 
           this.stati.push(data[i]);        
         }
-        url = dtConstants.apiTarget + dtConstants.recurrancesEndPoint;
-        this.http.get<[DTRecurrance]>(url, {headers: header}).subscribe(data => {        
+        url = dtConstants.apiTarget + dtConstants.recurrencesEndPoint;
+        this.http.get<[DTRecurrence]>(url, {headers: header}).subscribe(data => {        
           for (let i=0; i < data.length; i++){ 
-            this.recurrances.push(data[i]);        
+            this.recurrences.push(data[i]);        
           }
           url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
           this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
@@ -145,7 +145,7 @@ export class DtPlannerService {
     return this.colorCodes;
   }
 
-  Recurrances(): Array<DTRecurrance>{
-    return this.recurrances;
+  Recurrences(): Array<DTRecurrence>{
+    return this.recurrences;
   }
 }

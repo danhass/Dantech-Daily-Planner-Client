@@ -380,13 +380,13 @@
             <h4>Items</h4>
           </div>
           <div style="grid-column: 1; " *ngFor="let item of planItems">
-            <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
+            <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
               <div *ngIf="planItemDateChanged(item.day)" style="display: grid; grid-template-columns: auto;">
                 <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 2">{{fullDate(item.day)}}</div>
               </div>
               <div style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 7%;">
                 <div class="dtCen dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
-                  <input [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
+                  <input *ngIf="updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                 </div>
                 <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
                 <div class="dtPadLR dtBorderR dtBorderB" tooltip="{{item.note == undefined || item.note == null || item.note == 'null'? '' : item.note}}" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">
@@ -413,8 +413,8 @@
                 </div>
                 <div *ngIf="itemBeingEdited == item.id && fieldBeingEdited == 'duration'" class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6;">*{{item.durationString}}*</div>
                 <div class="dtCen dtBorderB" style="grid-column-start: 6; background-color: gray;">                  
-                  <img src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
-                  <img src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                  <img *ngIf="updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                  <img *ngIf="updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                 </div>
             </div>
           </div>
@@ -460,14 +460,14 @@
             <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-            <input [checked]="newPlanItemIsRecurrance" tooltip="toggle complete" (change)="toggleIsRecurrance($event)" type="checkbox" /> Recurring?
+            <input [checked]="newPlanItemIsRecurrence" tooltip="toggle complete" (change)="toggleIsRecurrence($event)" type="checkbox" /> Recurring?
           </div>
-          <div *ngIf="newPlanItemIsRecurrance" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-            <select id="newPlanItemRecurranceId" name="newPlanItemRecurranceId" [(ngModel)]="newPlanItemRecurranceId" >                             
-              <option *ngFor="let r of recurrances" [ngValue]="r.id">{{r.title}}</option>                          
+          <div *ngIf="newPlanItemIsRecurrence" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <select id="newPlanItemRecurrenceId" name="newPlanItemRecurrenceId" [(ngModel)]="newPlanItemRecurrenceId" >                             
+              <option *ngFor="let r of recurrences" [ngValue]="r.id">{{r.title}}</option>                          
             </select>                                       
           </div>
-          <div *ngIf="newPlanItemIsRecurrance && (newPlanItemRecurranceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <div style="display: grid; grid-template-columns: 5% 13% 13% 13% 13% 13% 13% 13% 4%;">
               <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
               <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
@@ -481,27 +481,37 @@
                            
               <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
               <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSunday" />
+                <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSunday" />
               </div>
               <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox" id="recurranceFilterMonday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceMonday" />
+                <input type="checkbox" id="recurrenceFilterMonday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceMonday" />
               </div>
               <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox"id="recurranceFilterTuesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceTuesday" />
+                <input type="checkbox"id="recurrenceFilterTuesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceTuesday" />
               </div>
               <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox" id="recurranceFilterWednesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceWednesday" />
+                <input type="checkbox" id="recurrenceFilterWednesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceWednesday" />
               </div>
               <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox" id="recurranceFilterThursday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceThursday" />
+                <input type="checkbox" id="recurrenceFilterThursday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceThursday" />
               </div>
               <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox" id="recurranceFilterFriday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceFriday" />
+                <input type="checkbox" id="recurrenceFilterFriday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceFriday" />
               </div>
               <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
-                <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSaturday" />
+                <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSaturday" />
               </div>              
               <div class="" style="grid-column: 9 /span 1;"></div>              
+            </div>
+          </div>
+          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 2)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div style="display: grid; grid-template-columns: 5% 40% 50% 5%;">
+              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">',' separated Day(s):</div>
+              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+                <input type="text" id="newPlanItemTitle" name="newPlanItemRecurrenceDayOfMonth" [(ngModel)]="newPlanItemRecurrenceData" />
+              </div>
+              <div class="dtBorderR" style="grid-column: 4 /span 1;"></div>
             </div>
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
@@ -591,7 +601,7 @@
               <h4>Items</h4>
             </div>
             <div style="grid-column: 1; " *ngFor="let item of planItems">
-              <div *ngIf="item.recurrance == undefined || item.recurrance < 1" style="border-bottom: none;">
+              <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
                 <div *ngIf="planItemDateChanged(item.day)" style="display: grid; grid-template-columns: auto;">
                   <div class="dtPadLR-M dtBorderB" style="grid-column: 1">{{fullDate(item.day)}}</div>
                 </div>
@@ -657,14 +667,14 @@
               <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-              <input [checked]="newPlanItemIsRecurrance" tooltip="toggle complete" (change)="toggleIsRecurrance($event)" type="checkbox" /> Recurring?
+              <input [checked]="newPlanItemIsRecurrence" tooltip="toggle complete" (change)="toggleIsRecurrence($event)" type="checkbox" /> Recurring?
             </div>
-            <div *ngIf="newPlanItemIsRecurrance" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
-              <select id="newPlanItemRecurranceId" name="newPlanItemRecurranceId" [(ngModel)]="newPlanItemRecurranceId" >                             
-                <option *ngFor="let r of recurrances" [ngValue]="r.id">{{r.title}}</option>                          
+            <div *ngIf="newPlanItemIsRecurrence" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+              <select id="newPlanItemRecurrenceId" name="newPlanItemRecurrenceId" [(ngModel)]="newPlanItemRecurrenceId" >                             
+                <option *ngFor="let r of recurrences" [ngValue]="r.id">{{r.title}}</option>                          
               </select>                                       
             </div>
-            <div *ngIf="newPlanItemIsRecurrance && (newPlanItemRecurranceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
               <div style="display: grid; grid-template-columns: 10% 10% 10% 10% 10% 10% 10%">
                 <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
                 <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
@@ -678,25 +688,25 @@
                              
                 <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
                 <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSunday" />
+                  <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSunday" />
                 </div>
                 <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox" id="recurranceFilterMonday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceMonday" />
+                  <input type="checkbox" id="recurrenceFilterMonday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceMonday" />
                 </div>
                 <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox"id="recurranceFilterTuesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceTuesday" />
+                  <input type="checkbox"id="recurrenceFilterTuesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceTuesday" />
                 </div>
                 <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox" id="recurranceFilterWednesday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceWednesday" />
+                  <input type="checkbox" id="recurrenceFilterWednesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceWednesday" />
                 </div>
                 <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox" id="recurranceFilterThursday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceThursday" />
+                  <input type="checkbox" id="recurrenceFilterThursday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceThursday" />
                 </div>
                 <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox" id="recurranceFilterFriday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceFriday" />
+                  <input type="checkbox" id="recurrenceFilterFriday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceFriday" />
                 </div>
                 <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
-                  <input type="checkbox" id="recurranceFilterSunday" (change)="setRecurranceFilter($event)" [(ngModel)]="recurranceSaturday" />
+                  <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSaturday" />
                 </div>              
                 <div class="" style="grid-column: 9 /span 1;"></div>              
               </div>
