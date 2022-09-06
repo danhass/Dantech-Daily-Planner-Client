@@ -75,7 +75,14 @@
               "browserTarget": "DanTech:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": 
+          {
+            "browserTarget": "ideationapp:build",
+            "ssl": true,
+            "sslKey": "../../../data/ssl/server.key",
+            "sslCert": "../../../data/ssl/server.crt"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

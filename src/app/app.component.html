@@ -375,9 +375,24 @@
         </p>
       </div>
       <div style="grid-column: 1 / span 3; border-right: 2px solid black;">
-        <div style="display: grid; grid-template-columns: auto;">
-          <div class="dtPadLR dtBorderB" style="grid-column: 1;">            
-            <h4>Items</h4>
+        <div style="display: grid; grid-template-columns: 100%;">
+          <div class="dtBorderB" style="grid-column: 1;">
+            <div style="display: grid; grid-template-columns: 25% 75%;">
+              <div class="dtPadLR" style="grid-column: 1;">
+                <h4>Items</h4>
+              </div>
+              <div class="dtPadLR" style="display: flex; grid-column: 2; display: justify-content: center; padding-top: 10px; padding-bottom: 10px;">
+                <button (click)="toggleShowRecurrences()"><span *ngIf="showRecurrences">Hide</span><span *ngIf="!showRecurrences">Show</span> Recurrences</button>
+              </div>          
+            </div>
+          </div>
+          <div *ngIf="showRecurrences">
+            <div style="grid-column: 1;" *ngFor="let item of recurrenceItems">
+              <div style="display: grid; grid-template-columns: 50% 50%">
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 1; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+                <div class="dtPadLR dtBorderB" style="grid-column: 2">{{item.title}}</div>                
+              </div>
+            </div>
           </div>
           <div style="grid-column: 1; " *ngFor="let item of planItems">
             <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">

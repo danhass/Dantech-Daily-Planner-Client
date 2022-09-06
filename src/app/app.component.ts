@@ -28,12 +28,14 @@ export class AppComponent {
   loginComplete = false;
 
   loginInfo: DTLogin;
-  planItems: Array<DTPlanItem> = this.dtPlanner.PlanItems();
+  planItems: Array<DTPlanItem> = this.dtPlanner.getPlanItems();
+  recurrenceItems: Array<DTPlanItem> = this.dtPlanner.getRecurrenceItems();
   projects: Array<DTProject> = DtProjects;
-  projectStati: Array<DTStatus> = this.dtPlanner.Stati();
-  projectColorCodes: Array<DTColorCode> = this.dtPlanner.ColorCodes();
-  recurrences: Array<DTRecurrence> = this.dtPlanner.Recurrences();
+  projectStati: Array<DTStatus> = this.dtPlanner.getStati();
+  projectColorCodes: Array<DTColorCode> = this.dtPlanner.getColorCodes();
+  recurrences: Array<DTRecurrence> = this.dtPlanner.getRecurrences();
   plannerInitializedFlag: boolean = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
+  showRecurrences: boolean = false;
 
   //Add project form elements
   newProjectTitle: string = '';
@@ -131,7 +133,7 @@ export class AppComponent {
         }
       }
       this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.PlanItems();
+      this.planItems = this.dtPlanner.getPlanItems();
       this.newPlanItemRecurrenceId = 0;
       this.newPlanItemRecurrenceData = "";
       this.updateStatus = "";
@@ -200,7 +202,7 @@ export class AppComponent {
         url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
         this.http.get<[DTPlanItem]>(url, { headers: { 'Content-Type': 'text/plain' } }).subscribe(data => {
           this.dtPlanner.setPlanItems(data);
-          this.planItems = this.dtPlanner.PlanItems();
+          this.planItems = this.dtPlanner.getPlanItems();
         });
       });
     }
@@ -297,9 +299,9 @@ export class AppComponent {
           this.dtPlanner.initialize();
           this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
             this.projects = DtProjects;
-            this.planItems = this.dtPlanner.PlanItems();
-            this.projectColorCodes = this.dtPlanner.ColorCodes();
-            this.recurrences = this.dtPlanner.Recurrences();
+            this.planItems = this.dtPlanner.getPlanItems();
+            this.projectColorCodes = this.dtPlanner.getColorCodes();
+            this.recurrences = this.dtPlanner.getRecurrences();
             this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
           });
           this.loginComplete = true;
@@ -452,9 +454,15 @@ export class AppComponent {
         }
       }
       this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.PlanItems();
+      this.planItems = this.dtPlanner.getPlanItems();
       this.updateStatus = "";
     });
+  }
+
+  toggleShowRecurrences() : void {
+    this.recurrenceItems = this.dtPlanner.getRecurrenceItems();
+    this.showRecurrences = !this.showRecurrences;
+    console.log(this.recurrenceItems);
   }
 
   trackProjectsItem(index: number, project: DTProject): number {
@@ -472,7 +480,7 @@ export class AppComponent {
         }
       }
       this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.PlanItems();
+      this.planItems = this.dtPlanner.getPlanItems();
       this.updateStatus = "";
     });
 

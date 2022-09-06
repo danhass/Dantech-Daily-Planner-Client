@@ -14,6 +14,7 @@ export let DtProjects: Array<DTProject> = [];
 export class DtPlannerService {
   sessionId: string = "";
   planItems: Array<DTPlanItem> = [];
+  recurrenceItems: Array<DTPlanItem>=[];
   stati: Array<DTStatus> = [];
   colorCodes: Array<DTColorCode> = [];
   recurrences: Array<DTRecurrence> = [];
@@ -26,6 +27,30 @@ export class DtPlannerService {
   ) {   
 
 
+  }
+
+  getColorCodes(): Array<DTColorCode>{
+    return this.colorCodes;
+  }
+
+  getPlanItems(): Array<DTPlanItem>{
+    return this.planItems;
+  }
+
+  getProjects(): Array<DTProject>{
+    return DtProjects;
+  }
+
+  getRecurrenceItems(): Array<DTPlanItem>{
+    return this.recurrenceItems;
+  }
+
+  getRecurrences(): Array<DTRecurrence>{
+    return this.recurrences;
+  }
+
+  getStati(): Array<DTStatus>{
+    return this.stati;
   }
 
   initialize(): void {
@@ -58,51 +83,72 @@ export class DtPlannerService {
             this.setPlanItems(data);
             url = dtConstants.apiTarget + dtConstants.projectsEndpoint + "?sessionId=" + this.sessionId;
             this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
-            DtProjects = [];
-            this.setProjects(data);
-            this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
-            this.linkPlanItemsToProjects();
-            this.pingComponents("dtPlanner init complete");
-            })
+              DtProjects = [];
+              this.setProjects(data);
+              this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
+              this.linkPlanItemsToProjects(this.planItems);
+              this.pingComponents("dtPlanner init complete");
+              url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
+              console.log (url);
+              this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+                console.log (data);
+                this.setRecurrenceItems(data);
+              })
+            });
           });
         });
       });  
     }); 
   }
 
+  linkPlanItemsToProjects(items: Array<DTPlanItem>) {
+    let flag = this.cookie.get(dtConstants.dtPlannerServiceStatusKey);
+    if (flag == null || flag.length == 0) {
+      for (let i=0; i < items.length; i++) {
+        items[i].project = DtProjects.find( x => x.id == items[i].projectId);
+      }
+    }
+  }
+
   pingComponents(msg: string){
     this.componentMethodCallSource.next(msg);
   }
 
+  setItems (data: Array<DTPlanItem>): Array<DTPlanItem> {
+    let items: Array<DTPlanItem> = [];
+    if (data) {
+      for (let i=0; i< data.length; i++) {
+        items.push(data[i]);
+        let dateBuffer = new Date(items[i].start as Date);        
+        items[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
+        items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?        
+          items[i].duration.hours.toString().padStart(2, "0") + ":" +           
+          items[i].duration.minutes.toString().padStart(2,"0") : "";   
+        items[i].project = DtProjects.find( x => x.id == items[i].projectId);
+      }
+      for (let i=0; i< items.length; i++) {      
+        let dateBuffer = new Date(items[i].start as Date);  
+        items[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
+            items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?
+        items[i].duration.hours.toString().padStart(2, "0") + ":" + 
+        items[i].duration.minutes.toString().padStart(2,"0") : "";
+      }
+    }
+    return items;
+  }
+
   setPlanItems(data: Array<DTPlanItem>): void {
     if (data) {
-      this.planItems = [];
-      for (let i=0; i< data.length; i++) {
-        this.planItems.push(data[i]);
-        let dateBuffer = new Date(this.planItems[i].start as Date);        
-        this.planItems[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
-        this.planItems[i].durationString = (this.planItems[i].duration.hours > 0 || this.planItems[i].duration.minutes > 0) ?        
-          this.planItems[i].duration.hours.toString().padStart(2, "0") + ":" +           
-          this.planItems[i].duration.minutes.toString().padStart(2,"0") : "";   
-        this.planItems[i].project = DtProjects.find( x => x.id == this.planItems[i].projectId);
-      } 
-      for (let i=0; i< this.planItems.length; i++) {      
-        let dateBuffer = new Date(this.planItems[i].start as Date);  
-        this.planItems[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
-            this.planItems[i].durationString = (this.planItems[i].duration.hours > 0 || this.planItems[i].duration.minutes > 0) ?
-        this.planItems[i].duration.hours.toString().padStart(2, "0") + ":" + 
-        this.planItems[i].duration.minutes.toString().padStart(2,"0") : "";
-      }
-      this.linkPlanItemsToProjects();
+      this.planItems = this.setItems(data); 
+      this.linkPlanItemsToProjects(this.planItems);
     }
   }
 
-  linkPlanItemsToProjects() {
-    let flag = this.cookie.get(dtConstants.dtPlannerServiceStatusKey);
-    if (flag == null || flag.length == 0) {
-      for (let i=0; i < this.planItems.length; i++) {
-        this.planItems[i].project = DtProjects.find( x => x.id == this.planItems[i].projectId);
-      }
+  setRecurrenceItems(data: Array<DTPlanItem>): void {
+    if (data) {
+      this.recurrenceItems = this.setItems(data);
+      this.linkPlanItemsToProjects(this.recurrenceItems);
+      console.log(this.recurrenceItems);
     }
   }
 
@@ -127,25 +173,5 @@ export class DtPlannerService {
 
   setSession(newSession: string): void {
     this.sessionId = newSession;
-  }
-
-  PlanItems(): Array<DTPlanItem>{
-    return this.planItems;
-  }
-
- getProjects(): Array<DTProject>{
-    return DtProjects;
-  }
-
-  Stati(): Array<DTStatus>{
-    return this.stati;
-  }
-
-  ColorCodes(): Array<DTColorCode>{
-    return this.colorCodes;
-  }
-
-  Recurrences(): Array<DTRecurrence>{
-    return this.recurrences;
   }
 }
