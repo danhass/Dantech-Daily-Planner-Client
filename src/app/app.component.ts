@@ -458,6 +458,7 @@ export class AppComponent {
       }
       this.dtPlanner.setPlanItems(newPlanItems);
       this.planItems = this.dtPlanner.getPlanItems();
+      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
       this.updateStatus = "";
     });
   }
@@ -483,6 +484,7 @@ export class AppComponent {
       }
       this.dtPlanner.setPlanItems(newPlanItems);
       this.planItems = this.dtPlanner.getPlanItems();
+      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
       this.updateStatus = "";
     });
 
