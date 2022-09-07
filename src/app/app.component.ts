@@ -447,6 +447,8 @@ export class AppComponent {
     let completed = event.srcElement.checked;
     let params = this.planItemParams(itemId);
     params["completed"] = completed;
+    this.updatePlanItem(params);
+    /*
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
     this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
@@ -461,6 +463,7 @@ export class AppComponent {
       this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
       this.updateStatus = "";
     });
+    */
   }
 
   toggleShowRecurrences() : void {
