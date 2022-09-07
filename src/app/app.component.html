@@ -387,15 +387,51 @@
             </div>
           </div>
           <div *ngIf="showRecurrences">
-            <div style="grid-column: 1;" *ngFor="let item of recurrenceItems">
-              <div style="display: grid; grid-template-columns: 50% 50%">
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 1; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
-                <div class="dtPadLR dtBorderB" style="grid-column: 2">{{item.title}}</div>                
+            <div style="grid-column: 1;" >
+              <div style="display: grid; grid-template-columns: 7% 33% 15% 15% 15% 15%">                
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 1; ">Proj</div>                
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column: 2">Title</div>                 
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">                  
+                  Start
+                </div>                
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">                  
+                  Duration
+                </div>                
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">                  
+                  Type
+                </div>                
+                <div class="dtCen dtPadLR dtBorderB" style="grid-column: 6;">                  
+                  Data
+                </div>
+              </div>
+              <div *ngFor="let item of recurrenceItems" style="display: grid; grid-template-columns: 7% 33% 15% 15% 15% 15%">                
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 1; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>                
+                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column: 2">{{item.title}}</div>                 
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">                  
+                  {{item.startTime}}                
+                </div>                
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">                  
+                  {{item.durationString}}                
+                </div>                
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">                  
+                  {{item.recurrenceName}}                
+                </div>                
+                <div class="dtCen dtPadLR dtBorderB" style="grid-column: 6;">                  
+                  {{item.recurrenceData}}                
+                </div>
               </div>
             </div>
           </div>
           <div style="grid-column: 1; " *ngFor="let item of planItems">
             <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
+              <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
+                <div class="dtCen dtBorderR dtBorderB" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 2;">Proj</div>
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">Title</div>
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">Start</div>
+                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">Dur</div>
+                <div class="dtCen dtBorderB" style="grid-column: 6; background-color: gray;"> &nbsp; </div>
+              </div>
               <div *ngIf="planItemDateChanged(item.day)" style="display: grid; grid-template-columns: auto;">
                 <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 2">{{fullDate(item.day)}}</div>
               </div>

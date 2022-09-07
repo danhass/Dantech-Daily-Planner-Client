@@ -56,7 +56,8 @@ export interface DTPlanItem {
   projectMnemonic: string,
   projectTitle: string,
   recurrence: number | undefined,
-  recurrenceData: string | undefined
+  recurrenceData: string | undefined,
+  recurrenceName: string | undefined
 }
 
 export interface DTStatus {

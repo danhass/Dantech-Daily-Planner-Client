@@ -68,6 +68,8 @@ export class AppComponent {
   fieldBeingEdited: string = "";
   editValueFirst: string = "";
   editValueSecond: string = "";
+  itemsRowCount: number = 0;
+  firstPlanItemId: number = 0;
 
   //Recurrence parameters
   recurrenceSunday: boolean | null = null;
@@ -303,6 +305,7 @@ export class AppComponent {
             this.projectColorCodes = this.dtPlanner.getColorCodes();
             this.recurrences = this.dtPlanner.getRecurrences();
             this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
+            this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
           });
           this.loginComplete = true;
           return true;
@@ -462,7 +465,6 @@ export class AppComponent {
   toggleShowRecurrences() : void {
     this.recurrenceItems = this.dtPlanner.getRecurrenceItems();
     this.showRecurrences = !this.showRecurrences;
-    console.log(this.recurrenceItems);
   }
 
   trackProjectsItem(index: number, project: DTProject): number {
