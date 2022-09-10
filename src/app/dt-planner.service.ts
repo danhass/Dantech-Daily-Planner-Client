@@ -91,6 +91,7 @@ export class DtPlannerService {
               url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
               this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
                 this.setRecurrenceItems(data);
+                this.pingComponents("dtPlanner init complete");
               })
             });
           });
@@ -175,5 +176,18 @@ export class DtPlannerService {
 
   setSession(newSession: string): void {
     this.sessionId = newSession;
+  }
+
+  update(): void {
+    let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
+    this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+      this.setPlanItems(data);
+      this.linkPlanItemsToProjects(this.planItems);
+      url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
+      this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+        this.setRecurrenceItems(data);
+        this.pingComponents("dtPlanner update complete");
+      });
+    });
   }
 }

@@ -79,7 +79,7 @@ export class AppComponent {
   recurrenceThursday: boolean | null = null;
   recurrenceFriday: boolean | null = null;
   recurrenceSaturday: boolean | null = null;
-
+  recurrenceNumberWeeks: number | null = null;
 
   constructor(private readonly dtAuth: DtAuthService,
     private readonly cookies: CookieService,
@@ -126,6 +126,8 @@ export class AppComponent {
         params['recurrenceData'] = this.newPlanItemRecurrenceData;
       }
     }
+
+    console.log (params);
 
     this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
       let newPlanItems: Array<DTPlanItem> = [];
@@ -174,6 +176,27 @@ export class AppComponent {
     this.newProjectColorCodeId = 0;
     this.newProjectSortOrder = null;
     this.newProjectNotes = "";
+  }
+
+  changePlanItemProject(itemId: number, event: any): void {
+    let itm = this.getPlanItemOrRecurrenceItem(itemId);
+    if (itm != undefined && Number(this.editValueFirst) != itm.projectId) {
+      let params = this.planItemParams(itm.id);
+      params["projectId"] = Number(this.editValueFirst);
+      this.updatePlanItem(params);
+    }
+  }
+
+  changePlanItemTitle(itemId: number, event: any): void {
+    this.updateStatus = "Updating item";
+    console.log(itemId, event, this.editValueFirst, this.editValueSecond);
+    let itm = this.getPlanItemOrRecurrenceItem(itemId);
+    if (itm != undefined && (itm.title != this.editValueFirst || itm.note != this.editValueSecond)) {
+      let params = this.planItemParams(itm.id);
+      params["title"] = this.editValueFirst;
+      params["note"] = (this.editValueSecond == null || this.editValueSecond == 'null') ? null : this.editValueSecond;
+      this.updatePlanItem(params);
+    }
   }
 
   clearUpdateStatus(): void {
@@ -242,6 +265,7 @@ export class AppComponent {
   
   editItemStart(itemId: number, field: string): void {
     let itm = this.planItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.recurrenceItems.find(x => x.id == itemId);
     if (itm == undefined) {
       this.itemBeingEdited = 0;
       this.fieldBeingEdited = '';
@@ -251,6 +275,15 @@ export class AppComponent {
     if (field == 'start') {
       this.editValueFirst = ((itm as DTPlanItem).startTime as string).split(':')[0];
       this.editValueSecond = ((itm as DTPlanItem).startTime as string).split(':')[1];
+    }
+    if (field == 'project') {
+      this.editValueFirst = ((itm as DTPlanItem).projectId as number).toString();
+    }
+    if (field == 'title') {
+      if (itm != undefined) {
+        this.editValueFirst = itm.title;
+        this.editValueSecond = itm.note == null || itm.note == 'null' ? "" : itm.note;
+      }
     }
   }
 
@@ -268,6 +301,12 @@ export class AppComponent {
 
   getLogin(): DTLogin | undefined {
     return this.loginInfo
+  }
+
+  getPlanItemOrRecurrenceItem(itemId: number): DTPlanItem | undefined {
+    let itm = this.planItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.recurrenceItems.find(x => x.id == itemId);
+    return itm;
   }
 
   hasProjects(): boolean {
@@ -305,7 +344,9 @@ export class AppComponent {
             this.projectColorCodes = this.dtPlanner.getColorCodes();
             this.recurrences = this.dtPlanner.getRecurrences();
             this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
-            this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
+            this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
+            this.updateStatus = "";
+            this.itemBeingEdited = 0;          
           });
           this.loginComplete = true;
           return true;
@@ -318,7 +359,7 @@ export class AppComponent {
     }
     return this.loginComplete;
   }
- 
+
   itemStatus(item: DTPlanItem): string {
     let now = new Date();
     let start = new Date(item.start as Date);
@@ -375,7 +416,8 @@ export class AppComponent {
   }
 
   planItemParams(itemId: number): { [index: string]: any } {
-    let item = (this.planItems.find(x => x.id == itemId) as DTPlanItem);
+    let item = this.planItems.find(x => x.id == itemId) as DTPlanItem;
+    if (item == undefined) item = this.recurrenceItems.find(x => x.id == itemId) as DTPlanItem;
     let start = new Date(item.start);
     start.setDate(start.getDate());
     let end = new Date(start.toLocaleDateString());
@@ -399,9 +441,23 @@ export class AppComponent {
       includeCompleted: true,
       getAll: false,
       onlyProject: 0,
-      id: item.id
+      id: item.id,
+      recurrence: item.recurrence,
+      recurrenceData: item.recurrenceData
     };
+      
     return params;
+  }
+
+  propagateRecurrence(itemId: number): void {
+    console.log("Propagating: ", itemId);
+    this.updateStatus = "Updateing...";
+    let url = dtConstants.apiTarget + dtConstants.propagateEndPoint + "?sessionId=" + this.sessionId + "&seedId=" + itemId;
+    this.http.get<[boolean]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {    
+      if (data) {
+        this.dtPlanner.update();
+      }        
+    });
   }
 
   setRecurrenceFilter(event: any): void {
@@ -428,8 +484,9 @@ export class AppComponent {
       filter = filter + (this.recurrenceThursday ? "*" : "-");
       filter = filter + (this.recurrenceFriday ? "*" : "-");
       filter = filter + (this.recurrenceSaturday ? "*" : "-");
-    }
+    }    
     this.newPlanItemRecurrenceData = filter;
+    if (this.recurrenceNumberWeeks && this.newPlanItemIsRecurrence && this.newPlanItemRecurrenceId == 3) this.newPlanItemRecurrenceData = this.recurrenceNumberWeeks.toString() + ":" + filter;    
   }
 
   test(): void {
@@ -448,27 +505,16 @@ export class AppComponent {
     let params = this.planItemParams(itemId);
     params["completed"] = completed;
     this.updatePlanItem(params);
-    /*
-    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
-    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
-    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newPlanItems: Array<DTPlanItem> = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          newPlanItems = [...newPlanItems, data[i]];
-        }
-      }
-      this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.getPlanItems();
-      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
-      this.updateStatus = "";
-    });
-    */
   }
 
   toggleShowRecurrences() : void {
     this.recurrenceItems = this.dtPlanner.getRecurrenceItems();
     this.showRecurrences = !this.showRecurrences;
+  }
+
+  tooltipFormatted(s:string): string {
+    let result = s.replaceAll("\n", "<br />\n");
+    return result;
   }
 
   trackProjectsItem(index: number, project: DTProject): number {
@@ -487,8 +533,14 @@ export class AppComponent {
       }
       this.dtPlanner.setPlanItems(newPlanItems);
       this.planItems = this.dtPlanner.getPlanItems();
-      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;            
-      this.updateStatus = "";
+      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id; 
+      url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
+      this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+        this.dtPlanner.setRecurrenceItems(data);
+        this.recurrenceItems= this.dtPlanner.getRecurrenceItems();
+        this.itemBeingEdited = 0;
+        this.updateStatus = "";
+      })   
     });
 
   }

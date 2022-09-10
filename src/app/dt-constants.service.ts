@@ -16,7 +16,8 @@ export const dtConstants = {
   setProjectEndpoint: "/Planner/SetProject",
   setPlanItemEndPoint: "/Planner/SetPlanItem",
   deletePlanItemEndPoint: "/Planner/DeletePlanItem",
-  recurrencesEndPoint: "/Planner/Recurrences"
+  recurrencesEndPoint: "/Planner/Recurrences",
+  propagateEndPoint: "/Planner/Propagate"
 }
 
 export interface DTLogin {
