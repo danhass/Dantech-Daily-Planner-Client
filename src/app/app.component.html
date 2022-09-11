@@ -407,7 +407,7 @@
                   Ctrl
                 </div>
               </div>
-              <div *ngFor="let item of recurrenceItems" style="display: grid; grid-template-columns: 7% 33% 13% 13% 13% 13% 8%;">                
+              <div *ngFor="let item of dtPlanner.recurrenceItems" style="display: grid; grid-template-columns: 7% 33% 13% 13% 13% 13% 8%;">                
                 <div *ngIf="!(itemBeingEdited == item.id && fieldBeingEdited == 'project' && item.completed != true)" 
                   class="dtCen dtPadLR dtBorderR dtBorderB" 
                   (click)="editItemStart(item.id, 'project')"
@@ -419,7 +419,7 @@
                   style="grid-column-start: 1; grid-column-end: 2; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                     <input (change)="changePlanItemProject(item.id, $event)" type="checkbox" />
                     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [(ngModel)]="editValueFirst" > 
-                      <option style="background-color: {{proj.colorString}};" *ngFor="let proj of projects" [ngValue]="proj.id">{{proj.title}}</option>
+                      <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
                     </select>          
                 </div>
                 <div *ngIf="!(itemBeingEdited == item.id && fieldBeingEdited == 'title' && item.completed != true)" 
@@ -457,7 +457,7 @@
               <div style="grid-column: 1 /span 7; border-bottom: 2px solid black; background-color: lightgray;">&nbsp;</div>
             </div>
           </div>
-          <div style="grid-column: 1; " *ngFor="let item of planItems">
+          <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
             <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
               <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
                 <div class="dtCen dtBorderR dtBorderB" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
@@ -485,7 +485,7 @@
                   style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                     <input (change)="changePlanItemProject(item.id, $event)" type="checkbox" />
                     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [(ngModel)]="editValueFirst" > 
-                      <option style="background-color: {{proj.colorString}};" *ngFor="let proj of projects" [ngValue]="proj.id">{{proj.title}}</option>
+                      <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
                     </select>          
                 </div>
                 <div *ngIf="!(itemBeingEdited == item.id && fieldBeingEdited == 'title' && item.completed != true)" 
@@ -499,7 +499,7 @@
                   class="dtPadLR dtBorderR dtBorderB" 
                   style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
                     <input (change)="changePlanItemTitle(item.id, $event)" type="checkbox" />
-                    <input type="text" [value]="editValueFirst" id="updPlanItemNote" /><br/>
+                    <input type="text" [value]="editValueFirst" [(ngModel)]="editValueFirst" /><br/>
                     <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="editValueSecond" placeholder="Notes"></textarea>         
                 </div>                 
                 <div *ngIf="!(itemBeingEdited == item.id && fieldBeingEdited == 'start' && item.completed != true)" 
@@ -542,7 +542,7 @@
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
           <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
             <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="newPlanItemProjectId" > 
-              <option style="background-color: {{proj.colorString}};" *ngFor="let proj of projects" [ngValue]="proj.id">{{proj.title}}</option>
+              <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
               </select>          
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Time:</div>
@@ -573,7 +573,7 @@
           </div>
           <div *ngIf="newPlanItemIsRecurrence" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <select id="newPlanItemRecurrenceId" name="newPlanItemRecurrenceId" [(ngModel)]="newPlanItemRecurrenceId" >                             
-              <option *ngFor="let r of recurrences" [ngValue]="r.id">{{r.title}}</option>                          
+              <option *ngFor="let r of dtPlanner.recurrences" [ngValue]="r.id">{{r.title}}</option>                          
             </select>                                       
           </div>
           <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
@@ -671,12 +671,12 @@
         
         <br />
 
-        <div *ngIf="(projects && projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
+        <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
           <div style="display: grid; grid-template-columns: 100%;">
             <div class="dtPadLR dtBorderB" style="grid-column: 1;">
               <h4>Projects</h4>
             </div>
-            <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of projects">
+            <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
               <div style="display: grid; grid-template-columns: 10% 90%;">
                 <div class="dtPadLR dtBorderR" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
                 <div class="dtPadLR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
@@ -702,13 +702,13 @@
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Status:</div>
           <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
             <select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" >                             
-              <option *ngFor="let s of projectStati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
+              <option *ngFor="let s of dtPlanner.stati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
             </select>                                         
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Color:</div>
           <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
             <select id="newProjectColorCodeId" name="newProjectColorCodeId" [(ngModel)]="newProjectColorCodeId" >                             
-              <option *ngFor="let c of projectColorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
+              <option *ngFor="let c of dtPlanner.colorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
             </select>                                         
           </div>
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Priority:</div>
@@ -745,12 +745,12 @@
             <button (click)="login()">Change login</button>
           </p>
         </div>
-        <div *ngIf="planItems.length > 0 else emptyItems" style="grid-column: 1 / span 1; border-right: 2px solid black;">
+        <div *ngIf="dtPlanner.planItems.length > 0 else emptyItems" style="grid-column: 1 / span 1; border-right: 2px solid black;">
           <div style="display: grid; grid-template-columns: auto;">
             <div class="dtPadLR dtBorderB" style="grid-column: 1;">
               <h4>Items</h4>
             </div>
-            <div style="grid-column: 1; " *ngFor="let item of planItems">
+            <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
               <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
                 <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
                   <div class="dtCen dtBorderR dtBorderB" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
@@ -779,14 +779,9 @@
                     class="dtPadLR dtBorderR dtBorderB" 
                     style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
                       <input (change)="changePlanItemTitle(item.id, $event)" type="checkbox" />
-                      <input type="text" [value]="editValueFirst" id="updPlanItemNote" /><br/>
+                      <input type="text" [value]="editValueFirst" id="editValueFirst" /><br/>
                       <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="editValueSecond" placeholder="Notes"></textarea>         
                   </div>                 
-                  <!--<div class="dtPadLR dtBorderR dtBorderB" tooltip="{{item.note == undefined || item.note == null || item.note == 'null'? '' : item.note}}" style="grid-column-start: 3; grid-column-end: 4; background-color: {{itemStatus(item)}};">
-                    {{item.title}}
-                    <span *ngIf="item.note != undefined && item.note != null && item.note != 'null'" style="color: red">*</span>
-                  </div>
-                -->
                   <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{item.startTime}}</div>
                   <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6;">{{item.durationString}}</div>
                   <div class="dtCen dtBorderB" style="grid-column-start: 6; background-color: gray;">                  
@@ -813,7 +808,7 @@
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
             <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
               <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="newPlanItemProjectId" > 
-                <option style="background-color: {{proj.colorString}};" *ngFor="let proj of projects" [ngValue]="proj.id">{{proj.title}}</option>
+                <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
                 </select>          
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Time:</div>
@@ -844,7 +839,7 @@
             </div>
             <div *ngIf="newPlanItemIsRecurrence" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
               <select id="newPlanItemRecurrenceId" name="newPlanItemRecurrenceId" [(ngModel)]="newPlanItemRecurrenceId" >                             
-                <option *ngFor="let r of recurrences" [ngValue]="r.id">{{r.title}}</option>                          
+                <option *ngFor="let r of dtPlanner.recurrences" [ngValue]="r.id">{{r.title}}</option>                          
               </select>                                       
             </div>
             <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
@@ -891,12 +886,12 @@
           
           <br />
   
-          <div *ngIf="(projects && projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
+          <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
             <div style="display: grid; grid-template-columns: 100%;">
               <div class="dtPadLR dtBorderB" style="grid-column: 1;">
                 <h4>Projects</h4>
               </div>
-              <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of projects">
+              <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
                 <div style="display: grid; grid-template-columns: 10% 90%;">
                   <div class="dtPadLR dtBorderR" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
                   <div class="dtPadLR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
@@ -922,13 +917,13 @@
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Status:</div>
             <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
               <select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" >                             
-                <option *ngFor="let s of projectStati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
+                <option *ngFor="let s of dtPlanner.stati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
               </select>                                         
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Color:</div>
             <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
               <select id="newProjectColorCodeId" name="newProjectColorCodeId" [(ngModel)]="newProjectColorCodeId" >                             
-                <option *ngFor="let c of projectColorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
+                <option *ngFor="let c of dtPlanner.colorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
               </select>                                         
             </div>
             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Priority:</div>

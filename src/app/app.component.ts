@@ -3,13 +3,11 @@ import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
 import { dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode, DTRecurrence } from './dt-constants.service';
 import { HttpClient } from '@angular/common/http';
-import { DtPlannerService, DtProjects } from './dt-planner.service';
+import { DtPlannerService} from './dt-planner.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
 import { endWith, Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
-
-
 
 const sessionId = "";
 
@@ -28,12 +26,6 @@ export class AppComponent {
   loginComplete = false;
 
   loginInfo: DTLogin;
-  planItems: Array<DTPlanItem> = this.dtPlanner.getPlanItems();
-  recurrenceItems: Array<DTPlanItem> = this.dtPlanner.getRecurrenceItems();
-  projects: Array<DTProject> = DtProjects;
-  projectStati: Array<DTStatus> = this.dtPlanner.getStati();
-  projectColorCodes: Array<DTColorCode> = this.dtPlanner.getColorCodes();
-  recurrences: Array<DTRecurrence> = this.dtPlanner.getRecurrences();
   plannerInitializedFlag: boolean = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
   showRecurrences: boolean = false;
 
@@ -84,7 +76,7 @@ export class AppComponent {
   constructor(private readonly dtAuth: DtAuthService,
     private readonly cookies: CookieService,
     private http: HttpClient,
-    private dtPlanner: DtPlannerService,
+    public dtPlanner: DtPlannerService,
     private route: ActivatedRoute,
     private datePipe: DatePipe
   ) {
@@ -102,9 +94,6 @@ export class AppComponent {
     } else {
       this.newPlanItemEnd = this.newPlanItemStart;
     }
-
-    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
-    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
     let params: { [index: string]: any } = {
       sessionId: this.sessionId,
       title: this.newPlanItemTitle,
@@ -127,28 +116,12 @@ export class AppComponent {
       }
     }
 
-    console.log (params);
-
-    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newPlanItems: Array<DTPlanItem> = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          newPlanItems = [...newPlanItems, data[i]];
-        }
-      }
-      this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.getPlanItems();
-      this.newPlanItemRecurrenceId = 0;
-      this.newPlanItemRecurrenceData = "";
-      this.updateStatus = "";
-    });
+    this.dtPlanner.addPlanItem(params);
   }
 
   addProject(): void {
     if (!(this.newProjectTitle.length > 0 && this.newProjectShortCode.length > 0 && this.newProjectStatusId > 0)) return;
 
-    let url = dtConstants.apiTarget + dtConstants.setProjectEndpoint;
-    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
     let params: { [index: string]: any } = {
       sessionId: this.sessionId,
       title: this.newProjectTitle,
@@ -160,22 +133,10 @@ export class AppComponent {
       notes: this.newProjectNotes
     };
 
-    if (this.newProjectSortOrder != null) params["sortOrder"]
+    if (this.newProjectSortOrder != null) params["sortOrder"] = this.newProjectSortOrder;
     if (this.newProjectColorCodeId > 0) { params["colorCode"] = this.newProjectColorCodeId; }
     if (!(Number.isNaN(this.newProjectSortOrder))) { params["sortOrder"] = this.newProjectSortOrder; }
-
-    this.http.post<[DTProject]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newProjects: Array<DTProject> = [];
-      if (data) { for (let i = 0; i < data.length; i++) { newProjects = [...newProjects, data[i]]; } }
-      this.dtPlanner.setProjects(newProjects);
-      this.projects = DtProjects;
-    });
-    this.newProjectTitle = '';
-    this.newProjectShortCode = '';
-    this.newProjectStatusId = 1;
-    this.newProjectColorCodeId = 0;
-    this.newProjectSortOrder = null;
-    this.newProjectNotes = "";
+    this.dtPlanner.addProject(params);
   }
 
   changePlanItemProject(itemId: number, event: any): void {
@@ -183,19 +144,18 @@ export class AppComponent {
     if (itm != undefined && Number(this.editValueFirst) != itm.projectId) {
       let params = this.planItemParams(itm.id);
       params["projectId"] = Number(this.editValueFirst);
-      this.updatePlanItem(params);
+      this.dtPlanner.updatePlanItem(params);
     }
   }
 
   changePlanItemTitle(itemId: number, event: any): void {
     this.updateStatus = "Updating item";
-    console.log(itemId, event, this.editValueFirst, this.editValueSecond);
     let itm = this.getPlanItemOrRecurrenceItem(itemId);
     if (itm != undefined && (itm.title != this.editValueFirst || itm.note != this.editValueSecond)) {
       let params = this.planItemParams(itm.id);
       params["title"] = this.editValueFirst;
       params["note"] = (this.editValueSecond == null || this.editValueSecond == 'null') ? null : this.editValueSecond;
-      this.updatePlanItem(params);
+      this.dtPlanner.updatePlanItem(params);
     }
   }
 
@@ -214,22 +174,10 @@ export class AppComponent {
 
   deletePlanItem(itemId: number) {
     this.updateStatus = "Deleting...";
-    let item = (this.planItems.find(x => x.id == itemId) as DTPlanItem);
+    let item = (this.dtPlanner.planItems.find(x => x.id == itemId) as DTPlanItem);
     let proceed = confirm('Delete ' + item.title + "?");
     if (proceed) {
-      let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
-      let params: { [index: string]: any } = {
-        sessionId: this.sessionId,
-        planItemId: item.id
-      }
-      let url = dtConstants.apiTarget + dtConstants.deletePlanItemEndPoint;
-      this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-        url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
-        this.http.get<[DTPlanItem]>(url, { headers: { 'Content-Type': 'text/plain' } }).subscribe(data => {
-          this.dtPlanner.setPlanItems(data);
-          this.planItems = this.dtPlanner.getPlanItems();
-        });
-      });
+      this.dtPlanner.deletePlanItem(itemId);
     }
   }
 
@@ -239,7 +187,7 @@ export class AppComponent {
 
   editItemEnd(event: any): void {
     if (event['key'] === 'Enter') {
-      let itm = this.planItems.find(x => x.id == this.itemBeingEdited);
+      let itm = this.dtPlanner.planItems.find(x => x.id == this.itemBeingEdited);
       if (itm != undefined) {
         let params = this.planItemParams(itm.id);
         let numHrs = Number(this.editValueFirst);
@@ -255,7 +203,7 @@ export class AppComponent {
           let newEndTime = String(numHrs).padStart(2, '0') + ":" + String(numMins).padStart(2,'0');                
           params['startTime'] = newStartTime;
           params['endTime'] = newEndTime;
-          this.updatePlanItem(params);
+          this.dtPlanner.updatePlanItem(params);
         }
         this.itemBeingEdited = 0;        
         this.fieldBeingEdited = "";
@@ -264,8 +212,8 @@ export class AppComponent {
   }
   
   editItemStart(itemId: number, field: string): void {
-    let itm = this.planItems.find(x => x.id == itemId);
-    if (itm == undefined) itm = this.recurrenceItems.find(x => x.id == itemId);
+    let itm = this.dtPlanner.planItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.dtPlanner.recurrenceItems.find(x => x.id == itemId);
     if (itm == undefined) {
       this.itemBeingEdited = 0;
       this.fieldBeingEdited = '';
@@ -304,13 +252,13 @@ export class AppComponent {
   }
 
   getPlanItemOrRecurrenceItem(itemId: number): DTPlanItem | undefined {
-    let itm = this.planItems.find(x => x.id == itemId);
-    if (itm == undefined) itm = this.recurrenceItems.find(x => x.id == itemId);
+    let itm = this.dtPlanner.planItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.dtPlanner.recurrenceItems.find(x => x.id == itemId);
     return itm;
   }
 
   hasProjects(): boolean {
-    if (DtProjects && DtProjects.length > 0) return true;
+    if (this.dtPlanner.projects && this.dtPlanner.projects.length > 0) return true;
     return false;
   }
 
@@ -339,14 +287,17 @@ export class AppComponent {
           }
           this.dtPlanner.initialize();
           this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
-            this.projects = DtProjects;
-            this.planItems = this.dtPlanner.getPlanItems();
-            this.projectColorCodes = this.dtPlanner.getColorCodes();
-            this.recurrences = this.dtPlanner.getRecurrences();
             this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
-            this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
+            this.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
             this.updateStatus = "";
-            this.itemBeingEdited = 0;          
+            this.itemBeingEdited = 0; 
+            this.newPlanItemRecurrenceData = ""; 
+            this.newProjectTitle = '';
+            this.newProjectShortCode = '';
+            this.newProjectStatusId = 1;
+            this.newProjectColorCodeId = 0;
+            this.newProjectSortOrder = null;
+            this.newProjectNotes = "";                    
           });
           this.loginComplete = true;
           return true;
@@ -396,7 +347,7 @@ export class AppComponent {
     end.setDate(end.getDate() + 1);
     params["start"] = start.toLocaleDateString();
     params["end"] = end.toLocaleDateString();
-    this.updatePlanItem(params);
+    this.dtPlanner.updatePlanItem(params);
   }
 
   notMobile(): boolean {
@@ -416,8 +367,8 @@ export class AppComponent {
   }
 
   planItemParams(itemId: number): { [index: string]: any } {
-    let item = this.planItems.find(x => x.id == itemId) as DTPlanItem;
-    if (item == undefined) item = this.recurrenceItems.find(x => x.id == itemId) as DTPlanItem;
+    let item = this.dtPlanner.planItems.find(x => x.id == itemId) as DTPlanItem;
+    if (item == undefined) item = this.dtPlanner.recurrenceItems.find(x => x.id == itemId) as DTPlanItem;
     let start = new Date(item.start);
     start.setDate(start.getDate());
     let end = new Date(start.toLocaleDateString());
@@ -450,14 +401,8 @@ export class AppComponent {
   }
 
   propagateRecurrence(itemId: number): void {
-    console.log("Propagating: ", itemId);
     this.updateStatus = "Updateing...";
-    let url = dtConstants.apiTarget + dtConstants.propagateEndPoint + "?sessionId=" + this.sessionId + "&seedId=" + itemId;
-    this.http.get<[boolean]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {    
-      if (data) {
-        this.dtPlanner.update();
-      }        
-    });
+    this.dtPlanner.propagateRecurrence(itemId);
   }
 
   setRecurrenceFilter(event: any): void {
@@ -504,11 +449,10 @@ export class AppComponent {
     let completed = event.srcElement.checked;
     let params = this.planItemParams(itemId);
     params["completed"] = completed;
-    this.updatePlanItem(params);
+    this.dtPlanner.updatePlanItem(params);
   }
 
   toggleShowRecurrences() : void {
-    this.recurrenceItems = this.dtPlanner.getRecurrenceItems();
     this.showRecurrences = !this.showRecurrences;
   }
 
@@ -519,30 +463,6 @@ export class AppComponent {
 
   trackProjectsItem(index: number, project: DTProject): number {
     return project.id;
-  }
-
-  updatePlanItem(params: {[index:  string]: any}): void{
-    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' }; 
-    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
-    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newPlanItems: Array<DTPlanItem> = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          newPlanItems = [...newPlanItems, data[i]];
-        }
-      }
-      this.dtPlanner.setPlanItems(newPlanItems);
-      this.planItems = this.dtPlanner.getPlanItems();
-      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id; 
-      url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
-      this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
-        this.dtPlanner.setRecurrenceItems(data);
-        this.recurrenceItems= this.dtPlanner.getRecurrenceItems();
-        this.itemBeingEdited = 0;
-        this.updateStatus = "";
-      })   
-    });
-
   }
 
   validEmail(): boolean {

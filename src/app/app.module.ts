@@ -7,7 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GoogleHandlerComponent } from './google-handler/google-handler.component';
 import { FormsModule } from '@angular/forms';
-import { DtProjects } from './dt-planner.service';
 import { DatePipe } from '@angular/common';
 import { TooltipModule } from 'ng2-tooltip-directive';
 

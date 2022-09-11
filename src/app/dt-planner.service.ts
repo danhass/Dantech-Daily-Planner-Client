@@ -5,19 +5,19 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable, Subject } from 'rxjs';
 import { Time } from '@angular/common';
 
-export let DtProjects: Array<DTProject> = [];
-
 @Injectable({
   providedIn: 'root'
 })
 
 export class DtPlannerService {
-  sessionId: string = "";
-  planItems: Array<DTPlanItem> = [];
-  recurrenceItems: Array<DTPlanItem>=[];
-  stati: Array<DTStatus> = [];
-  colorCodes: Array<DTColorCode> = [];
-  recurrences: Array<DTRecurrence> = [];
+  public sessionId: string = "";
+  public planItems: Array<DTPlanItem> = [];
+  public recurrenceItems: Array<DTPlanItem>=[];
+  public stati: Array<DTStatus> = [];
+  public colorCodes: Array<DTColorCode> = [];
+  public recurrences: Array<DTRecurrence> = [];
+  public projects: Array<DTProject> = [];
+  public firstPlanItemId: number = 0;
   private componentMethodCallSource = new Subject<any>();
   componentMethodCalled$ = this.componentMethodCallSource.asObservable();
 
@@ -25,8 +25,49 @@ export class DtPlannerService {
     private http: HttpClient,
     private cookie: CookieService
   ) {   
+  }
 
+  addPlanItem(params: { [index: string]: any }): void {
+    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
+    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
+    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+      let newPlanItems: Array<DTPlanItem> = [];
+      if (data) {
+        for (let i = 0; i < data.length; i++) {
+          newPlanItems = [...newPlanItems, data[i]];
+        }
+      }
+      this.setPlanItems(newPlanItems);
+      this.pingComponents("Item added.");
+    });
+  }
+  
+  addProject(params: { [index: string]: any }): void {
+    let url = dtConstants.apiTarget + dtConstants.setProjectEndpoint;
+    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
+    this.http.post<[DTProject]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+      let newProjects: Array<DTProject> = [];
+      if (data) { for (let i = 0; i < data.length; i++) { newProjects = [...newProjects, data[i]]; } }
+      this.setProjects(newProjects);
+      this.pingComponents("Project Added.");
+    });
+  }
 
+  deletePlanItem(itemId: number) {
+    let item = (this.planItems.find(x => x.id == itemId) as DTPlanItem);    
+    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };    
+    let params: { [index: string]: any } = {      
+      sessionId: this.sessionId,      
+      planItemId: item.id    
+    }      
+    let url = dtConstants.apiTarget + dtConstants.deletePlanItemEndPoint;    
+    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {    
+      url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";    
+      this.http.get<[DTPlanItem]>(url, { headers: { 'Content-Type': 'text/plain' } }).subscribe(data => {    
+        this.setPlanItems(data);    
+        this.pingComponents("Delete complete.")    
+      });    
+    });    
   }
 
   getColorCodes(): Array<DTColorCode>{
@@ -38,7 +79,7 @@ export class DtPlannerService {
   }
 
   getProjects(): Array<DTProject>{
-    return DtProjects;
+    return this.projects;
   }
 
   getRecurrenceItems(): Array<DTPlanItem>{
@@ -47,11 +88,7 @@ export class DtPlannerService {
 
   getRecurrences(): Array<DTRecurrence>{
     return this.recurrences;
-  }
-
-  getStati(): Array<DTStatus>{
-    return this.stati;
-  }
+  }  
 
   initialize(): void {
     this.cookie.set(dtConstants.dtPlannerServiceStatusKey, "initializing")
@@ -83,7 +120,7 @@ export class DtPlannerService {
             this.setPlanItems(data);
             url = dtConstants.apiTarget + dtConstants.projectsEndpoint + "?sessionId=" + this.sessionId;
             this.http.get<[DTProject]>(url, {headers: header}).subscribe(data => {
-              DtProjects = [];
+              this.projects = [];
               this.setProjects(data);
               this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
               this.linkPlanItemsToProjects(this.planItems);
@@ -104,13 +141,22 @@ export class DtPlannerService {
     let flag = this.cookie.get(dtConstants.dtPlannerServiceStatusKey);
     if (flag == null || flag.length == 0) {
       for (let i=0; i < items.length; i++) {
-        items[i].project = DtProjects.find( x => x.id == items[i].projectId);
+        items[i].project = this.projects.find( x => x.id == items[i].projectId);
       }
     }
   }
 
   pingComponents(msg: string){
     this.componentMethodCallSource.next(msg);
+  }
+
+  propagateRecurrence(itemId: number): void {
+    let url = dtConstants.apiTarget + dtConstants.propagateEndPoint + "?sessionId=" + this.sessionId + "&seedId=" + itemId;
+    this.http.get<[boolean]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {    
+      if (data) {
+        this.update();
+      }        
+    });
   }
 
   setItems (data: Array<DTPlanItem>): Array<DTPlanItem> {
@@ -123,7 +169,7 @@ export class DtPlannerService {
         items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?        
           items[i].duration.hours.toString().padStart(2, "0") + ":" +           
           items[i].duration.minutes.toString().padStart(2,"0") : "";   
-        items[i].project = DtProjects.find( x => x.id == items[i].projectId);
+        items[i].project = this.projects.find( x => x.id == items[i].projectId);
       }
       for (let i=0; i< items.length; i++) {      
         let dateBuffer = new Date(items[i].start as Date);  
@@ -157,7 +203,7 @@ export class DtPlannerService {
 
   setProjects(data: Array<DTProject>): void {
     if (data) { 
-      DtProjects = [];
+      this.projects = [];
       for (let i=0; i < data.length; i++) {
         data[i].colorString = "White";
         if (data[i].colorCodeId != undefined && (data[i].colorCodeId as number) > 0 && this.colorCodes.length > 0) {
@@ -169,7 +215,7 @@ export class DtPlannerService {
         }
         let obj = this.stati.find(x => x.id == data[i].status);
         data[i].statusObj = (obj as DTStatus);
-        DtProjects.push(data[i]); 
+        this.projects.push(data[i]); 
       }  
     }
   }
@@ -190,4 +236,25 @@ export class DtPlannerService {
       });
     });
   }
+
+  updatePlanItem(params: {[index:  string]: any}): void{
+    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' }; 
+    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndPoint;
+    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+      let newPlanItems: Array<DTPlanItem> = [];
+      if (data) {
+        for (let i = 0; i < data.length; i++) {
+          newPlanItems = [...newPlanItems, data[i]];
+        }
+      }
+      this.setPlanItems(newPlanItems);
+      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id; 
+      url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
+      this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+        this.setRecurrenceItems(data);
+        this.pingComponents("Plan item updated.")
+      })   
+    });
+  }
+
 }
