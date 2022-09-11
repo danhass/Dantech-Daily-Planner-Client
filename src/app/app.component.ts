@@ -439,6 +439,9 @@ export class AppComponent {
     console.log("Update status: ", this.updateStatus);
   }
   
+  timeStamp(): string {
+    return new Date().toLocaleString();
+  }
   toggleIsRecurrence(event: any): void {
     this.newPlanItemIsRecurrence = event.srcElement.checked;
     if (this.newPlanItemIsRecurrence === true) this.newPlanItemRecurrenceId = 1;

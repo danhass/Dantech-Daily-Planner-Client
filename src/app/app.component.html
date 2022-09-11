@@ -741,7 +741,7 @@
     <ng-template #mobile>
       <div *ngIf="(isLoggedIn() && loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 100%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
         <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 1;">
-          <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span><br />
+          <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}} at {{timeStamp()}}</span><br />
             <button (click)="login()">Change login</button>
           </p>
         </div>
@@ -977,7 +977,7 @@
     </ng-template>
 
     <ng-template #noValidEmail>     
-          <p>No login credentials<br />
+          <p>No login credentials at {{timeStamp()}}<br />
             <button (click)="login()">Log in</button>
           </p>
     </ng-template>
