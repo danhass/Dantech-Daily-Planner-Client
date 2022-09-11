@@ -370,7 +370,7 @@
     <div *ngIf="(isLoggedIn() && loginInfo != null && loginInfo.email != null && loginInfo.email.length > 0) else noValidEmail" 
       style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; column-gap: 5px; width: 98vw; border: 2px solid black" >    
       <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 4;">
-        <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span> at {{timeStamp}}<br />
+        <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span> at {{timeStamp()}}<br />
           <button (click)="login()">Change login</button>
         </p>
       </div>
