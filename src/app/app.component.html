@@ -334,6 +334,11 @@
     padding-right: 10px;
   }
 
+  .dtBtn {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
   .dtPadLR-M {
     padding-left: 2px;
     padding-right: 2px;
@@ -368,24 +373,40 @@
   </div>
   <div *ngIf="notMobile() else mobile">
     <div *ngIf="(isLoggedIn() && loginInfo != null && loginInfo.email != null && loginInfo.email.length > 0) else noValidEmail" 
-      style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; column-gap: 5px; width: 98vw; border: 2px solid black" >    
-      <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 4;">
-        <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span> at {{timeStamp()}}<br />
-          <button (click)="login()">Change login</button>
-        </p>
+      style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; width: 98vw; border: 2px solid black" >    
+      <!-- Header and app controls BEG -->
+      <div class="dtPadLR dtBorderR dtBorderB" style="grid-column: 1">        
+        <button (click)="login()">Change login</button> 
       </div>
+      <div class="dtPadLR dtBorderB" style="grid-column: 2 / span 3;">
+        Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span> at {{timeStamp()}}
+      </div>
+      <!-- Header and app controls END -->
+
+      
+      <!-- Planner Items BEG -->
       <div style="grid-column: 1 / span 3; border-right: 2px solid black;">
         <div style="display: grid; grid-template-columns: 100%;">
+          
+          <!-- Project items BEG -->          
+          <div *ngIf="projectVisible" class="dtBorderB" style="grid-column: 1;">            
+            <div class="dtBorderB dtBorderR" *ngFor="let item of dtPlanner.projectItems" style="display: grid; grid-template-columns: 98%;">              
+              {{item.title}}            
+            </div>          
+          </div>             
+          <!-- Project items END -->    
+      
           <div class="dtBorderB" style="grid-column: 1;">
             <div style="display: grid; grid-template-columns: 25% 75%;">
-              <div class="dtPadLR" style="grid-column: 1;">
-                <h4>Items</h4>
+              <div class="dtPadLR">
+                <b>Items</b>
               </div>
-              <div class="dtPadLR" style="display: flex; grid-column: 2; display: justify-content: center; padding-top: 10px; padding-bottom: 10px;">
+              <div class="dtPadLR">
                 <button (click)="toggleShowRecurrences()"><span *ngIf="showRecurrences">Hide</span><span *ngIf="!showRecurrences">Show</span> Recurrences</button>
               </div>          
             </div>
           </div>
+          
           <div *ngIf="showRecurrences">
             <div style="grid-column: 1;" >
               <div style="display: grid; grid-template-columns: 7% 33% 13% 13% 13% 13% 8%;">                
@@ -530,8 +551,11 @@
         </div> 
       </div>
       </div>
+      <!-- Planner Items END -->
+
       <div style="grid-column: 4 / span 1; border-right: 2px solid black; border-left: 2px solid black;">
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
+          <!-- Add new plan item BEG -->
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
           </div>
@@ -568,6 +592,7 @@
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
           </div>
+          <!-- Recurrence definition BEG -->
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <input [checked]="newPlanItemIsRecurrence" tooltip="toggle complete" (change)="toggleIsRecurrence($event)" type="checkbox" /> Recurring?
           </div>
@@ -664,11 +689,12 @@
               <div class="" style="grid-column: 10 /span 1;"></div>              
             </div>
           </div>
+          <!-- Recurrence definition END -->
+
           <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
             <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
           </div>
         </div>
-        
         <br />
 
         <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
@@ -678,8 +704,8 @@
             </div>
             <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
               <div style="display: grid; grid-template-columns: 10% 90%;">
-                <div class="dtPadLR dtBorderR" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
-                <div class="dtPadLR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+                <div class="dtPadLR dtBorderR" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
+                <div class="dtPadLR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
               </div>
             </div>
           </div>
@@ -748,7 +774,7 @@
         <div *ngIf="dtPlanner.planItems.length > 0 else emptyItems" style="grid-column: 1 / span 1; border-right: 2px solid black;">
           <div style="display: grid; grid-template-columns: auto;">
             <div class="dtPadLR dtBorderB" style="grid-column: 1;">
-              <h4>Items</h4>
+              <b>Items</b>
             </div>
             <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
               <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">

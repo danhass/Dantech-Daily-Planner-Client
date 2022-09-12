@@ -17,6 +17,7 @@ export class DtPlannerService {
   public colorCodes: Array<DTColorCode> = [];
   public recurrences: Array<DTRecurrence> = [];
   public projects: Array<DTProject> = [];
+  public projectItems: Array<DTPlanItem> = [];
   public firstPlanItemId: number = 0;
   private componentMethodCallSource = new Subject<any>();
   componentMethodCalled$ = this.componentMethodCallSource.asObservable();
@@ -137,13 +138,21 @@ export class DtPlannerService {
     }); 
   }
 
-  linkPlanItemsToProjects(items: Array<DTPlanItem>) {
+  linkPlanItemsToProjects(items: Array<DTPlanItem>): void {
     let flag = this.cookie.get(dtConstants.dtPlannerServiceStatusKey);
     if (flag == null || flag.length == 0) {
       for (let i=0; i < items.length; i++) {
         items[i].project = this.projects.find( x => x.id == items[i].projectId);
       }
     }
+  }
+
+  loadProjectItems(projId: number): void {
+    let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyProject=" + projId;
+    this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
+      this.projectItems = this.setItems(data);
+    });
+
   }
 
   pingComponents(msg: string){

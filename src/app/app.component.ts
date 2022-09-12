@@ -28,7 +28,8 @@ export class AppComponent {
   loginInfo: DTLogin;
   plannerInitializedFlag: boolean = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
   showRecurrences: boolean = false;
-
+  projectVisible: boolean = false;
+  
   //Add project form elements
   newProjectTitle: string = '';
   newProjectShortCode: string = '';
@@ -434,9 +435,18 @@ export class AppComponent {
     if (this.recurrenceNumberWeeks && this.newPlanItemIsRecurrence && this.newPlanItemRecurrenceId == 3) this.newPlanItemRecurrenceData = this.recurrenceNumberWeeks.toString() + ":" + filter;    
   }
 
+  showOrHideProject(projId: number): void {
+    if (this.projectVisible) {
+      this.projectVisible = false;
+    } else {
+      this.projectVisible = true;
+      this.dtPlanner.loadProjectItems(projId);    
+    }
+  }
+
   test(): void {
     console.log("Testing...");
-    console.log("Update status: ", this.updateStatus);
+    console.log("Project items: ", this.dtPlanner.projectItems);
   }
   
   timeStamp(): string {
