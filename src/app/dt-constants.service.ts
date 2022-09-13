@@ -100,7 +100,8 @@ export interface DTProject {
   color: DTColorCode | undefined,
   colorString: string,  
   status: number,
-  statusObj: DTStatus
+  statusObj: DTStatus,
+  notes: string
 }
 
 export interface DTRecurrence {

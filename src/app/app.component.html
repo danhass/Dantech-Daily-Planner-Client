@@ -382,14 +382,30 @@
         Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span> at {{timeStamp()}}
       </div>
       <!-- Header and app controls END -->
-
       
       <!-- Planner Items BEG -->
       <div style="grid-column: 1 / span 3; border-right: 2px solid black;">
         <div style="display: grid; grid-template-columns: 100%;">
           
           <!-- Project items BEG -->          
-          <div *ngIf="projectVisible" class="dtBorderB" style="grid-column: 1;">            
+          <div *ngIf="projectVisible" class="dtBorderB" style="grid-column: 1;"> 
+            <div *ngIf="targetProject != undefined" class="dtBorderB dtBorderR" style="display: grid; grid-template-columns: 15% 83%; background-color: {{targetProject.colorString}}">
+              <div class="dtCen dtBorderR dtPadLR" style="grid-item">{{targetProject.shortCode}}</div>
+              <div *ngIf="!(itemBeingEdited == targetProject.id && fieldBeingEdited == 'project-description')"
+                (click)="editItemStart(targetProject.id, 'project-description')" 
+                class="dtPadLR" style="grid-item">
+                  {{targetProject.title}}
+              </div>
+              <div *ngIf="(itemBeingEdited == targetProject.id && fieldBeingEdited == 'project-description')"
+                class="dtPadLR" style="grid-item; vertical-align: top;">
+                <input type="checkbox" (change)="setProjectDescription($event)" />
+                <select id="updProjectColorCodeId" name="updProjectColorCodeId" [value]="editValueThird" [(ngModel)]="editValueThird" >                             
+                  <option *ngFor="let c of dtPlanner.colorCodes" [value]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
+                </select>                                         
+                <input type="text" [value]="editValueFirst" id="updProjectTitle" name="updProjecTitle" [(ngModel)]="editValueFirst"><br />
+                <span style="padding-left: 10%;">&nbsp;</span><textarea style="width: 40%;" rows="4" id="updProjectNote" name="updProjectNote" [(ngModel)]="editValueSecond" placeholder="Notes"></textarea>
+              </div>
+            </div>           
             <div class="dtBorderB dtBorderR" *ngFor="let item of dtPlanner.projectItems" style="display: grid; grid-template-columns: 98%;">              
               {{item.title}}            
             </div>          
@@ -454,7 +470,7 @@
                   class="dtPadLR dtBorderR dtBorderB" 
                   style="grid-column: 2">
                     <input (change)="changePlanItemTitle(item.id, $event)" type="checkbox" />
-                    <input type="text" [value]="editValueFirst" id="updPlanItemNote" /><br/>
+                    <input type="text" [value]="editValueFirst" [(ngModel)]="editValueFirst" id="updPlanItemNote" /><br/>
                     <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="editValueSecond" placeholder="Notes"></textarea>         
                 </div>                 
                 <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">                  

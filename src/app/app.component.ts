@@ -61,6 +61,7 @@ export class AppComponent {
   fieldBeingEdited: string = "";
   editValueFirst: string = "";
   editValueSecond: string = "";
+  editValueThird: string = "";
   itemsRowCount: number = 0;
   firstPlanItemId: number = 0;
 
@@ -73,6 +74,8 @@ export class AppComponent {
   recurrenceFriday: boolean | null = null;
   recurrenceSaturday: boolean | null = null;
   recurrenceNumberWeeks: number | null = null;
+
+  targetProject: DTProject | undefined = undefined;
 
   constructor(private readonly dtAuth: DtAuthService,
     private readonly cookies: CookieService,
@@ -214,7 +217,9 @@ export class AppComponent {
   
   editItemStart(itemId: number, field: string): void {
     let itm = this.dtPlanner.planItems.find(x => x.id == itemId);
+    let proj = undefined;
     if (itm == undefined) itm = this.dtPlanner.recurrenceItems.find(x => x.id == itemId);
+    if (field == 'project-description') proj = this.dtPlanner.projects.find(x => x.id == itemId);
     if (itm == undefined) {
       this.itemBeingEdited = 0;
       this.fieldBeingEdited = '';
@@ -232,6 +237,15 @@ export class AppComponent {
       if (itm != undefined) {
         this.editValueFirst = itm.title;
         this.editValueSecond = itm.note == null || itm.note == 'null' ? "" : itm.note;
+      }
+    }
+    if (field == 'project-description') {
+      if (proj != undefined) {
+        this.itemBeingEdited = itemId;
+        this.fieldBeingEdited = 'project-description';
+        this.editValueFirst = proj.title;
+        this.editValueSecond = proj.notes;
+        this.editValueThird = (proj.colorCodeId as number).toString();
       }
     }
   }
@@ -288,17 +302,7 @@ export class AppComponent {
           }
           this.dtPlanner.initialize();
           this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
-            this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
-            this.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
-            this.updateStatus = "";
-            this.itemBeingEdited = 0; 
-            this.newPlanItemRecurrenceData = ""; 
-            this.newProjectTitle = '';
-            this.newProjectShortCode = '';
-            this.newProjectStatusId = 1;
-            this.newProjectColorCodeId = 0;
-            this.newProjectSortOrder = null;
-            this.newProjectNotes = "";                    
+            this.processPlannerServiceResult(msg);
           });
           this.loginComplete = true;
           return true;
@@ -401,9 +405,48 @@ export class AppComponent {
     return params;
   }
 
+  processPlannerServiceResult(msg: string): void {
+    this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
+    this.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
+    this.updateStatus = "";
+    this.itemBeingEdited = 0; 
+    this.newPlanItemRecurrenceData = ""; 
+    this.newProjectTitle = '';
+    this.newProjectShortCode = '';
+    this.newProjectStatusId = 1;
+    this.newProjectColorCodeId = 0;
+    this.newProjectSortOrder = null;
+    this.newProjectNotes = "";
+    this.fieldBeingEdited = "";
+    this.editValueFirst = "";
+    this.editValueSecond = "";
+    this.editValueThird = "";
+    if (this.targetProject != undefined) this.targetProject = this.dtPlanner.projects.find(x => x.id == (this.targetProject as DTProject).id);
+  }
+
   propagateRecurrence(itemId: number): void {
     this.updateStatus = "Updateing...";
     this.dtPlanner.propagateRecurrence(itemId);
+  }
+
+  setProjectDescription(event: any): void {
+    let params: { [index: string]: any } = { sessionId: this.sessionId, 
+                                             title: this.editValueFirst, 
+                                             shortCode: this.targetProject?.shortCode, 
+                                             colorCode: this.editValueThird, 
+                                             status: 1,
+                                             notes: "",
+                                             id: this.targetProject?.id                                              
+                                            }
+    if (this.editValueSecond != null && this.editValueSecond != undefined && this.editValueSecond.length) {
+      params["notes"] = this.editValueSecond;      
+    }    
+    this.dtPlanner.addProject(params);
+    this.itemBeingEdited = 0;
+    this.fieldBeingEdited = '';
+    this.editValueFirst = '';
+    this.editValueSecond = "";
+    this.editValueThird = "";
   }
 
   setRecurrenceFilter(event: any): void {
@@ -438,20 +481,22 @@ export class AppComponent {
   showOrHideProject(projId: number): void {
     if (this.projectVisible) {
       this.projectVisible = false;
+      this.targetProject = undefined;
     } else {
       this.projectVisible = true;
+      this.targetProject = this.dtPlanner.projects.find(x => x.id == projId);
       this.dtPlanner.loadProjectItems(projId);    
     }
   }
 
   test(): void {
-    console.log("Testing...");
-    console.log("Project items: ", this.dtPlanner.projectItems);
-  }
+    console.log("Test fired.");
+  } 
   
   timeStamp(): string {
     return new Date().toLocaleString();
   }
+
   toggleIsRecurrence(event: any): void {
     this.newPlanItemIsRecurrence = event.srcElement.checked;
     if (this.newPlanItemIsRecurrence === true) this.newPlanItemRecurrenceId = 1;
