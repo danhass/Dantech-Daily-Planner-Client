@@ -475,7 +475,10 @@ export class AppComponent {
       filter = filter + (this.recurrenceSaturday ? "*" : "-");
     }    
     this.newPlanItemRecurrenceData = filter;
-    if (this.recurrenceNumberWeeks && this.newPlanItemIsRecurrence && this.newPlanItemRecurrenceId == 3) this.newPlanItemRecurrenceData = this.recurrenceNumberWeeks.toString() + ":" + filter;    
+    if (this.recurrenceNumberWeeks && 
+        this.newPlanItemIsRecurrence && 
+        (this.newPlanItemRecurrenceId == 3 ||
+         this.newPlanItemRecurrenceId == 4)) this.newPlanItemRecurrenceData = this.recurrenceNumberWeeks.toString() + ":" + filter;    
   }
 
   showOrHideProject(projId: number): void {
