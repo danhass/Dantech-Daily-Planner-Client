@@ -9,11 +9,19 @@ import { GoogleHandlerComponent } from './google-handler/google-handler.componen
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { DtNotMobilePlannerComponent } from './dt-not-mobile-planner/dt-not-mobile-planner.component';
+import { DtPrivacyPolicyComponent } from './dt-privacy-policy/dt-privacy-policy.component';
+import { DtLoginComponent } from './dt-login/dt-login.component';
+import { DtTosComponent } from './dt-tos/dt-tos.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GoogleHandlerComponent,
+    DtNotMobilePlannerComponent,
+    DtPrivacyPolicyComponent,
+    DtLoginComponent,
+    DtTosComponent,
   ],
   imports: [
     BrowserModule,

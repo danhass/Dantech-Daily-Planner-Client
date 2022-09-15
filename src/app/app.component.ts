@@ -1,4 +1,4 @@
-import { Component, ViewChildren, ViewChild, ElementRef, QueryList, IterableDiffers } from '@angular/core';
+import { Component, OnInit, ViewChildren, ViewChild, ElementRef, QueryList, IterableDiffers } from '@angular/core';
 import { DtAuthService } from './dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
 import { dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode, DTRecurrence } from './dt-constants.service';
@@ -8,6 +8,8 @@ import { ActivatedRoute, TitleStrategy } from '@angular/router';
 import { endWith, Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
+import { DtNotMobilePlannerComponent } from './dt-not-mobile-planner/dt-not-mobile-planner.component';
+import { DtData } from './dt-data-store.service';
 
 const sessionId = "";
 
@@ -18,8 +20,7 @@ const sessionId = "";
   styleUrls: ['./app.component.less']
 })
 
-export class AppComponent {
-
+export class AppComponent implements OnInit {
 
   title = 'DanTech';
   sessionId = "";
@@ -77,16 +78,27 @@ export class AppComponent {
 
   targetProject: DTProject | undefined = undefined;
 
+  showPrivacyPolicy: boolean = false;
+  showToS: boolean = false;
+
   constructor(private readonly dtAuth: DtAuthService,
     private readonly cookies: CookieService,
     private http: HttpClient,
     public dtPlanner: DtPlannerService,
     private route: ActivatedRoute,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    public data: DtData
   ) {
     this.loginInfo = { session: "", email: "", fName: "", lName: "", message: "" };
     this.newPlanItemStart = moment().format("MM/DD/YYYY");
     this.cookies.delete("loginInProgress");
+    this.data.test = "Test set";
+  }
+
+  ngOnInit(): void {
+    this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
+      this.processPlannerServiceResult(msg);
+    });
   }
 
   addPlanItem(): void {
@@ -99,9 +111,8 @@ export class AppComponent {
       this.newPlanItemEnd = this.newPlanItemStart;
     }
     let params: { [index: string]: any } = {
-      sessionId: this.sessionId,
+      sessionId: this.data.sessionId,
       title: this.newPlanItemTitle,
-      note: this.newPlanItemNote,
       start: this.newPlanItemStart,
       startTime: this.newPlanItemStartTime,
       end: this.newPlanItemEnd,
@@ -113,6 +124,7 @@ export class AppComponent {
       projectId: this.newPlanItemProjectId,
       includeCompleted: true
     }
+    if (this.newPlanItemNote) params['note'] = this.newPlanItemNote;
     if (this.newPlanItemIsRecurrence && (this.newPlanItemRecurrenceId as number) > 0) {
       params['recurrence'] = this.newPlanItemRecurrenceId as number;
       if ((this.newPlanItemRecurrenceData as string).length > 0) {
@@ -127,7 +139,7 @@ export class AppComponent {
     if (!(this.newProjectTitle.length > 0 && this.newProjectShortCode.length > 0 && this.newProjectStatusId > 0)) return;
 
     let params: { [index: string]: any } = {
-      sessionId: this.sessionId,
+      sessionId: this.data.sessionId,
       title: this.newProjectTitle,
       shortCode: this.newProjectShortCode,
       status: this.newProjectStatusId,
@@ -277,45 +289,6 @@ export class AppComponent {
     return false;
   }
 
-  isLoggedIn(): boolean {
-    if (!this.loginComplete) {
-      this.sessionId = this.cookies.get(dtConstants.dtSessionKey);
-      this.cookies.delete(dtConstants.dtPlannerServiceStatusKey);
-      let code = this.route.snapshot.queryParamMap.get('code');
-      let flag = this.cookies.get("sentToGoogle");
-      let logginInProgress = this.cookies.get("loginInProgress");
-      if (flag.length == 0 && (logginInProgress == null || logginInProgress.length == 0) && this.sessionId != null && this.sessionId.length > 0 && (code == null || code?.length == 0)) {
-        this.cookies.set("loginInProgress", "true");
-        let url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.sessionId;
-        let res = this.http.get<DTLogin>(url).subscribe(data => {
-          this.cookies.delete("loginInProgress");
-          this.loginInfo = data;
-          if (this.loginInfo == undefined ||
-            this.loginInfo.session === 'null' ||
-            this.loginInfo.session == null ||
-            this.loginInfo.session == undefined ||
-            this.loginInfo.session == "") {
-            this.cookies.delete(dtConstants.dtSessionKey);
-          } else {
-            this.cookies.set(dtConstants.dtSessionKey, data.session, 7);
-            this.dtPlanner.setSession(this.loginInfo.session);
-          }
-          this.dtPlanner.initialize();
-          this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
-            this.processPlannerServiceResult(msg);
-          });
-          this.loginComplete = true;
-          return true;
-        });
-      } else {
-        this.loginComplete = true;
-        return true;
-      }
-      return this.loginComplete;
-    }
-    return this.loginComplete;
-  }
-
   itemStatus(item: DTPlanItem): string {
     let now = new Date();
     let start = new Date(item.start as Date);
@@ -381,7 +354,7 @@ export class AppComponent {
     end.setMinutes(start.getMinutes() + item.duration.minutes);
     let endTime = end.getHours().toString().padStart(2, "0") + ":" + end.getMinutes().toString().padStart(2, "0");
     let params: { [index: string]: any } = {
-      sessionId: this.sessionId,
+      sessionId: this.data.sessionId,
       title: item.title,
       note: item.note,
       start: start.toLocaleDateString(),
@@ -421,7 +394,17 @@ export class AppComponent {
     this.editValueFirst = "";
     this.editValueSecond = "";
     this.editValueThird = "";
-    if (this.targetProject != undefined) this.targetProject = this.dtPlanner.projects.find(x => x.id == (this.targetProject as DTProject).id);
+    this.loginInfo = this.data.login as DTLogin;
+    if (this.targetProject != undefined) {
+      let updatedProject  = this.dtPlanner.projects.find(x => x.id == (this.targetProject as DTProject).id);
+      if (updatedProject?.colorCodeId != this.targetProject.colorCodeId ||
+          updatedProject?.title != this.targetProject.title ||
+          updatedProject?.notes != this.targetProject.notes
+        ) {
+          this.targetProject = updatedProject;
+          this.dtPlanner.update();
+        }      
+    }
   }
 
   propagateRecurrence(itemId: number): void {
@@ -430,7 +413,7 @@ export class AppComponent {
   }
 
   setProjectDescription(event: any): void {
-    let params: { [index: string]: any } = { sessionId: this.sessionId, 
+    let params: { [index: string]: any } = { sessionId: this.data.sessionId, 
                                              title: this.editValueFirst, 
                                              shortCode: this.targetProject?.shortCode, 
                                              colorCode: this.editValueThird, 
@@ -493,7 +476,9 @@ export class AppComponent {
   }
 
   test(): void {
-    console.log("Test fired.");
+    let itm = this.dtPlanner.planItems.find(x => x.title = 'Docs for Kathy');
+    this.data.test = "Test value changed";
+    console.log("Test fired.", itm);
   } 
   
   timeStamp(): string {

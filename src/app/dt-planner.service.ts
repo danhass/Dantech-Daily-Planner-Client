@@ -125,7 +125,6 @@ export class DtPlannerService {
               this.setProjects(data);
               this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
               this.linkPlanItemsToProjects(this.planItems);
-              this.pingComponents("dtPlanner init complete");
               url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
               this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
                 this.setRecurrenceItems(data);
@@ -190,7 +189,7 @@ export class DtPlannerService {
       for (let i=0; i< items.length; i++) {
         if (items[i].recurrence != undefined && items[i].recurrence != null) {
           items[i].recurrenceName = this.recurrences.find(x => x.id == items[i].recurrence)?.title;
-        }
+        }        
       }
     }
     return items;

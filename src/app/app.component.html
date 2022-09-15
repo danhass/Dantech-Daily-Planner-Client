@@ -368,20 +368,27 @@
 <div class="content" role="main">
 
   <!-- Highlight Card -->
-  <div class="card highlight-card card-small">    
-      <h2>DanTech Daily Planner (v.1.0.3)</h2>
+  <div style="display: grid; grid-template-columns: 30% 40% 30%; width: 98vw; border: 2px solid black;">              
+    <div style="grid-item; border-right: 2px solid black;">
+      <div class="dtCen" *ngIf="!showPrivacyPolicy"><a (click)="this.showPrivacyPolicy = true;">Privacy Policy</a></div>
+      <div class="dtCen" *ngIf="showPrivacyPolicy"><a (click)="this.showPrivacyPolicy = false;">Hide</a><app-dt-privacy-policy></app-dt-privacy-policy></div>
+      <div class="dtCen" *ngIf="!showPrivacyPolicy"><a (click)="this.showToS = true;">Terms of Service</a></div>
+      <div class="dtCen" *ngIf="showPrivacyPolicy"><a (click)="this.showToS = false;">Hide</a><app-dt-tos></app-dt-tos></div>
+    </div>
+    <div style="grid-item">
+      <div class="card highlight-card card-small">    
+          <h2>DanTech Daily Planner (v.1.0.3)</h2>
+      </div>
+    </div>
+    <div style="grid-item; border-left: 2px solid black; padding-left: 10px;">
+      <div *ngIf="notMobile()">
+        <app-dt-not-mobile-planner [data]="data"></app-dt-not-mobile-planner>
+      </div>
+    </div>
   </div>
   <div *ngIf="notMobile() else mobile">
-    <div *ngIf="(isLoggedIn() && loginInfo != null && loginInfo.email != null && loginInfo.email.length > 0) else noValidEmail" 
-      style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; width: 98vw; border: 2px solid black" >    
-      <!-- Header and app controls BEG -->
-      <div class="dtPadLR dtBorderR dtBorderB" style="grid-column: 1">        
-        <button (click)="login()">Change login</button> 
-      </div>
-      <div class="dtPadLR dtBorderB" style="grid-column: 2 / span 3;">
-        Logged in as <span (change)="emailChanged()">{{loginInfo.email}}</span> at {{timeStamp()}}
-      </div>
-      <!-- Header and app controls END -->
+    <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
+      style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; width: 98vw; border-left: 2px solid black; border-right: 2px solid black; border-bottom: 2px solid black;" >    
       
       <!-- Planner Items BEG -->
       <div style="grid-column: 1 / span 3; border-right: 2px solid black;">
@@ -455,8 +462,8 @@
                   class="dtCen dtBorderR dtBorderB" 
                   style="grid-column-start: 1; grid-column-end: 2; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                     <input (change)="changePlanItemProject(item.id, $event)" type="checkbox" />
-                    <select id="updPlanItemProjectId" name="updPlanItemProjectId" [(ngModel)]="editValueFirst" > 
-                      <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
+                    <select id="updPlanItemProjectId" name="updPlanItemProjectId" [value]="editValueFirst" [(ngModel)]="editValueFirst" > 
+                      <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [value]="proj.id">{{proj.title}}</option>
                     </select>          
                 </div>
                 <div *ngIf="!(itemBeingEdited == item.id && fieldBeingEdited == 'title' && item.completed != true)" 
@@ -530,7 +537,7 @@
                   (click)="editItemStart(item.id, 'title')"
                   tooltip="{{item.note == undefined || item.note == null || item.note == 'null'? '' : tooltipFormatted(item.note)}}" 
                   style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
-                    {{item.title}} <span *ngIf="item.note != undefined && item.note != null && item.note != 'null'" style="color: red">*</span>
+                    {{item.title}} <span *ngIf="item.note != undefined && item.note != null && item.note != 'null' && item.note.length > 0" style="color: red">*</span>
                 </div>                 
                 <div *ngIf="itemBeingEdited == item.id && fieldBeingEdited == 'title' && item.completed != true" 
                   class="dtPadLR dtBorderR dtBorderB" 
@@ -822,7 +829,7 @@
   </div>
 
     <ng-template #mobile>
-      <div *ngIf="(isLoggedIn() && loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 100%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
+      <div *ngIf="(loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 100%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
         <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 1;">
           <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}} at {{timeStamp()}}</span><br />
             <button (click)="login()">Change login</button>
@@ -1059,10 +1066,7 @@
       </div>      
     </ng-template>
 
-    <ng-template #noValidEmail>     
-          <p>No login credentials at {{timeStamp()}}<br />
-            <button (click)="login()">Log in</button>
-          </p>
+    <ng-template #noValidEmail>         
     </ng-template>
  </div>
   <router-outlet></router-outlet>
