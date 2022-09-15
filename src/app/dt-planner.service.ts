@@ -150,6 +150,7 @@ export class DtPlannerService {
     let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyProject=" + projId;
     this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
       this.projectItems = this.setItems(data);
+      this.pingComponents("Project items loaded.");
     });
 
   }

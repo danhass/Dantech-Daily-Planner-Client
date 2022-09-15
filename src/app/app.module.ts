@@ -13,6 +13,7 @@ import { DtNotMobilePlannerComponent } from './dt-not-mobile-planner/dt-not-mobi
 import { DtPrivacyPolicyComponent } from './dt-privacy-policy/dt-privacy-policy.component';
 import { DtLoginComponent } from './dt-login/dt-login.component';
 import { DtTosComponent } from './dt-tos/dt-tos.component';
+import { DtProjectComponent } from './dt-project/dt-project.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { DtTosComponent } from './dt-tos/dt-tos.component';
     DtPrivacyPolicyComponent,
     DtLoginComponent,
     DtTosComponent,
+    DtProjectComponent
   ],
   imports: [
     BrowserModule,
