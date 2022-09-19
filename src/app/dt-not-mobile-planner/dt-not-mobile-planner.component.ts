@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DtData } from '../dt-data-store.service';
+import { DtData } from '../services/dt-data-store.service';
 
 @Component({
   selector: 'app-dt-not-mobile-planner',

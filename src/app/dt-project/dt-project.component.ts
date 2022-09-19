@@ -1,11 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-import { DtData } from '../dt-data-store.service';
-import { ActivatedRoute, TitleStrategy } from '@angular/router';
-import { dtConstants, DTLogin, DTPlanItem } from '../dt-constants.service';
-import { HttpClient } from '@angular/common/http';
-import { DtPlannerService} from '../dt-planner.service';
-import { DtAuthService } from '../dt-auth.service';
+import { DtData } from '../services/dt-data-store.service';
+import { DTPlanItem, DTProject } from '../services/dt-constants.service';
+import { DtPlannerService} from '../services/dt-planner.service';
 
 @Component({
   selector: 'app-dt-project',
@@ -13,25 +9,24 @@ import { DtAuthService } from '../dt-auth.service';
   styleUrls: ['./dt-project.component.less']
 })
 export class DtProjectComponent implements OnInit {
-  @Input() data: DtData | any;
-
+ 
   constructor(
-    private readonly dtAuth: DtAuthService,
-    private route: ActivatedRoute,
-    private http: HttpClient,
     public dtPlanner: DtPlannerService,
-    private readonly cookies: CookieService
+    public data: DtData
   ) { }
   
   ngOnInit(): void {
+    this.dtPlanner.componentMethodCalled$.subscribe((msg: string) => {
+      this.processPlannerServiceResult(msg);
+    });
   }
 
   editItemStart(itemId: number | undefined, field: string): void {
     if (itemId == undefined) return;
-    let itm = this.dtPlanner.planItems.find(x => x.id == itemId);
+    let itm = (this.dtPlanner.planItems as Array<DTPlanItem>).find(x => x.id == itemId);
     let proj = undefined;
-    if (itm == undefined) itm = this.dtPlanner.recurrenceItems.find(x => x.id == itemId);
-    if (field == 'project-description') proj = this.dtPlanner.projects.find(x => x.id == itemId);
+    if (itm == undefined) itm = (this.dtPlanner.recurrenceItems as Array<DTPlanItem>).find(x => x.id == itemId);
+    if (field == 'project-description') proj = (this.dtPlanner.projects as Array<DTProject>).find(x => x.id == itemId);
     if (itm == undefined) {
       this.data.itemBeingEdited = 0;
       this.data.fieldBeingEdited = '';
@@ -60,6 +55,9 @@ export class DtProjectComponent implements OnInit {
         this.data.editValueThird = (proj.colorCodeId as number).toString();
       }
     }
+  }
+
+  processPlannerServiceResult(msg: string) {
   }
 
   setProjectDescription(event: any): void {

@@ -1,0 +1,18 @@
+<div style="display: grid; grid-template-columns: 14% 14% 14% 14% 14% 14% 14% 14% 14%;">
+    <div *ngFor="let item of items; let i = index">
+        <div style="grid-item: {{i}}">
+            <div *ngIf="currentTab == item['title']" class="tab-selected" > {{item['title']}}</div>
+            <div (click)="currentTab = item['title']" *ngIf="currentTab != item['title'] && item['title'].length" class="tab-not-selected"> 
+                {{item['title']}}
+            </div>
+            <div *ngIf="item['title'] == ''" class="tab-empty">&nbsp;</div>
+        </div>
+    </div>
+</div>
+<div sytle="display: grid; width: 100vw; grid-template-columns: 100%; border-left: 2px solid black; border-bottom: 2px solid black; border-right: 2px solid black;">
+    <div *ngFor="let item of items">
+        <div *ngIf="item['title'].length > 0 && currentTab == item['title']" style="display: grid-item: 1">
+            <app-dt-plan-item-collection  [category]="item['selector']"></app-dt-plan-item-collection>
+        </div>
+    </div>
+</div>

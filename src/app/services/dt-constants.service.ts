@@ -1,6 +1,6 @@
 import { Time, WeekDay } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { session } from './google-handler/google-handler.component';
+import { session } from '../google-handler/google-handler.component';
 
 export const dtConstants = {
   dtSessionKey : "dtSessionId",
@@ -49,6 +49,7 @@ export interface DTPlanItem {
   addToCalendar: boolean,
   completed: boolean,
   day: Date,
+  dayString: string,
   duration: Time,
   durationString: string,
   priority: number,

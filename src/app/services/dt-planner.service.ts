@@ -149,7 +149,8 @@ export class DtPlannerService {
   loadProjectItems(projId: number): void {
     let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyProject=" + projId;
     this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
-      this.projectItems = this.setItems(data);
+      let items = this.setItems(data);
+      this.projectItems = items;
       this.pingComponents("Project items loaded.");
     });
 
@@ -172,13 +173,18 @@ export class DtPlannerService {
     let items: Array<DTPlanItem> = [];
     if (data) {
       for (let i=0; i< data.length; i++) {
-        items.push(data[i]);
+        items.push(data[i]); 
+        items[i].dayString = new Date(items[i].day as Date).toDateString();
         let dateBuffer = new Date(items[i].start as Date);        
         items[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
         items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?        
           items[i].duration.hours.toString().padStart(2, "0") + ":" +           
           items[i].duration.minutes.toString().padStart(2,"0") : "";   
         items[i].project = this.projects.find( x => x.id == items[i].projectId);
+        if (items[i].project) {
+          items[i].projectTitle = (items[i].project?.title as string);
+          items[i].projectMnemonic = (items[i].project?.shortCode as string);
+        }
       }
       for (let i=0; i< items.length; i++) {      
         let dateBuffer = new Date(items[i].start as Date);  

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { DtData } from '../dt-data-store.service';
+import { DtData } from '../services/dt-data-store.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
-import { dtConstants, DTLogin } from '../dt-constants.service';
+import { dtConstants, DTLogin } from '../services/dt-constants.service';
 import { HttpClient } from '@angular/common/http';
-import { DtPlannerService} from '../dt-planner.service';
-import { DtAuthService } from '../dt-auth.service';
+import { DtPlannerService} from '../services/dt-planner.service';
+import { DtAuthService } from '../services/dt-auth.service';
 
 @Component({
   selector: 'app-dt-login',

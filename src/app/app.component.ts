@@ -1,15 +1,13 @@
 import { Component, OnInit, ViewChildren, ViewChild, ElementRef, QueryList, IterableDiffers } from '@angular/core';
-import { DtAuthService } from './dt-auth.service';
+import { DtAuthService } from './services/dt-auth.service';
 import { CookieService } from 'ngx-cookie-service';
-import { dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode, DTRecurrence } from './dt-constants.service';
+import { dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode, DTRecurrence } from './services/dt-constants.service';
 import { HttpClient } from '@angular/common/http';
-import { DtPlannerService} from './dt-planner.service';
+import { DtPlannerService} from './services/dt-planner.service';
 import { ActivatedRoute, TitleStrategy } from '@angular/router';
-import { endWith, Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
-import { DtNotMobilePlannerComponent } from './dt-not-mobile-planner/dt-not-mobile-planner.component';
-import { DtData } from './dt-data-store.service';
+import { DtData } from './services/dt-data-store.service';
 
 const sessionId = "";
 
@@ -75,10 +73,7 @@ export class AppComponent implements OnInit {
 
   constructor(private readonly dtAuth: DtAuthService,
     private readonly cookies: CookieService,
-    private http: HttpClient,
     public dtPlanner: DtPlannerService,
-    private route: ActivatedRoute,
-    private datePipe: DatePipe,
     public data: DtData
   ) {
     this.loginInfo = { session: "", email: "", fName: "", lName: "", message: "" };
@@ -396,7 +391,8 @@ export class AppComponent implements OnInit {
         ) {
           this.data.targetProject = updatedProject;
           this.dtPlanner.update();
-        }      
+        } 
+      this.data.projectItems = this.dtPlanner.projectItems;     
     }    
   }
 
@@ -461,6 +457,7 @@ export class AppComponent implements OnInit {
     if (this.data.projectVisible) {
       this.data.projectVisible = false;
       this.data.targetProject = undefined;
+      this.data.projectItems = [];
     } else {
       this.data.projectVisible = true;
       this.data.targetProject = this.dtPlanner.projects.find(x => x.id == projId);

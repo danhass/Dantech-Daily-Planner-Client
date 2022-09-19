@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { OAuthModule } from 'angular-oauth2-oidc';
-import { CookieService } from 'ngx-cookie-service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GoogleHandlerComponent } from './google-handler/google-handler.component';
@@ -14,6 +13,9 @@ import { DtPrivacyPolicyComponent } from './dt-privacy-policy/dt-privacy-policy.
 import { DtLoginComponent } from './dt-login/dt-login.component';
 import { DtTosComponent } from './dt-tos/dt-tos.component';
 import { DtProjectComponent } from './dt-project/dt-project.component';
+import { DtTabsComponent } from './dt-tabs/dt-tabs.component';
+import { DtPlanItemCollectionComponent } from './dt-plan-item-collection/dt-plan-item-collection.component';
+import { DtPlanItemComponent } from './dt-plan-item/dt-plan-item.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,10 @@ import { DtProjectComponent } from './dt-project/dt-project.component';
     DtPrivacyPolicyComponent,
     DtLoginComponent,
     DtTosComponent,
-    DtProjectComponent
+    DtProjectComponent,
+    DtTabsComponent,
+    DtPlanItemCollectionComponent,
+    DtPlanItemComponent
   ],
   imports: [
     BrowserModule,

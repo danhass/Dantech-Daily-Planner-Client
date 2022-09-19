@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { dtConstants, DTLogin } from '../dt-constants.service';
+import { dtConstants, DTLogin } from '../services/dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
 

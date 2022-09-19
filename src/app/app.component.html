@@ -304,22 +304,6 @@
       width: 80%;
       color: blue !important;
     }
-    
-    .dtTable {
-      display: table;      
-      border-collapse: collapse;
-    }
-
-    .dtTableRow {
-      display: table-row;
-      border: 2px solid black;
-    }
-
-    dt.TableCell {
-      display: table-cell;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
   }
 
   @media screen and (max-width: 575px) {
@@ -334,19 +318,19 @@
 <div class="content" role="main">
 
   <!-- Header beg -->
-  <div style="display: grid; grid-template-columns: 30% 40% 30%; width: 98vw; border: 2px solid black;">              
-    <div style="grid-item; border-right: 2px solid black;">
+  <div class="dtGrid-30P40P30P dtW-98V dtBorder">              
+    <div class="dtBorder-R">
       <div class="dtCen" *ngIf="!showPrivacyPolicy"><a (click)="this.showPrivacyPolicy = true;">Privacy Policy</a></div>
       <div class="dtCen" *ngIf="showPrivacyPolicy"><a (click)="this.showPrivacyPolicy = false;">Hide</a><app-dt-privacy-policy></app-dt-privacy-policy></div>
       <div class="dtCen" *ngIf="!showPrivacyPolicy"><a (click)="this.showToS = true;">Terms of Service</a></div>
       <div class="dtCen" *ngIf="showPrivacyPolicy"><a (click)="this.showToS = false;">Hide</a><app-dt-tos></app-dt-tos></div>
     </div>
-    <div style="grid-item">
+    <div>
       <div class="card highlight-card card-small">    
           <h2>DanTech Daily Planner (v.1.0.3)</h2>
       </div>
     </div>
-    <div style="grid-item; border-left: 2px solid black; padding-left: 10px;">
+    <div class="dtBorder-L dtPad-LR" style="border-left: 2px solid black; padding-left: 10px;">
       <app-dt-login [data]="data"></app-dt-login>
     </div>
   </div>
@@ -354,59 +338,59 @@
 
   <div *ngIf="notMobile() else mobile">
     <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
-      style="display: grid; grid-template-columns: 25vw 24vw 24vw 24vw; width: 98vw; border-left: 2px solid black; border-right: 2px solid black; border-bottom: 2px solid black;" >    
-      
+      class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
+      >       
       <!-- Planner Items BEG -->
-      <div style="grid-column: 1 / span 3; border-right: 2px solid black;">
-        <div style="display: grid; grid-template-columns: 100%;">
+      <div class="dtGridColumn-1s3 dtBorder-R">
+        <div class="dtGrid-100P">
           
           <!-- Project items BEG -->          
-          <div *ngIf="data.projectVisible" style="grid-column: 1;">
-            <app-dt-project [data]="data"></app-dt-project> 
+          <div *ngIf="data.projectVisible">
+            <app-dt-project></app-dt-project> 
           </div>             
           <!-- Project items END -->    
       
-          <div class="dtBorderB" style="grid-column: 1;">
-            <div style="display: grid; grid-template-columns: 25% 75%;">
-              <div class="dtPadLR">
+          <div class="dtBorder-B" style="grid-column: 1;">
+            <div class="dtGrid-25P75P">
+              <div class="dtPad-LR">
                 <b>Items</b>
               </div>
-              <div class="dtPadLR">
+              <div class="dtPad-LR">
                 <button (click)="toggleShowRecurrences()"><span *ngIf="showRecurrences">Hide</span><span *ngIf="!showRecurrences">Show</span> Recurrences</button>
               </div>          
             </div>
           </div>
           
           <div *ngIf="showRecurrences">
-            <div style="grid-column: 1;" >
-              <div style="display: grid; grid-template-columns: 7% 33% 13% 13% 13% 13% 8%;">                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 1; ">Proj</div>                
-                <div class="dtPadLR dtBorderR dtBorderB" style="grid-column: 2">Title</div>                 
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">                  
+            <div class="dtGridColumn-1">
+              <div class="dtGrid-7P33P13P13P13P13P8P">                
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B">Proj</div>                
+                <div class="dtPad-LR dtBorder-R dtBorder-B">Title</div>                 
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B">                  
                   Start
                 </div>                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B">                  
                   Duration
                 </div>                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B">                  
                   Type
                 </div>                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 6;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B">                  
                   Data
                 </div>
-                <div class="dtCen dtPadLR dtBorderB" style="grid-column: 7;">
-                  Ctrl
+                <div class="dtBg-gray dtCen dtPad-LR dtBorder-B">
+                  &nbsp;
                 </div>
               </div>
-              <div *ngFor="let item of dtPlanner.recurrenceItems" style="display: grid; grid-template-columns: 7% 33% 13% 13% 13% 13% 8%;">                
+              <div *ngFor="let item of dtPlanner.recurrenceItems" class="dtGrid-7P33P13P13P13P13P8P">                
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'project' && item.completed != true)" 
-                  class="dtCen dtPadLR dtBorderR dtBorderB" 
+                  class="dtCen dtPad-LR dtBorder-R dtBorder-B" 
                   (click)="editItemStart(item.id, 'project')"
                   style="grid-column-start: 1; grid-column-end: 2; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                   {{item.project?.shortCode ?? ""}}
                 </div>
                 <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'project' && item.completed != true" 
-                  class="dtCen dtBorderR dtBorderB" 
+                  class="dtCen dtBorder-R dtBorder-B" 
                   style="grid-column-start: 1; grid-column-end: 2; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                     <input (change)="changePlanItemProject(item.id, $event)" type="checkbox" />
                     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" > 
@@ -414,32 +398,32 @@
                     </select>          
                 </div>
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true)" 
-                  class="dtPadLR dtBorderR dtBorderB" 
+                  class="dtPad-LR dtBorder-R dtBorder-B" 
                   (click)="editItemStart(item.id, 'title')"
                   tooltip="{{item.note == undefined || item.note == null || item.note == 'null'? '' : tooltipFormatted(item.note)}}" 
                   style="grid-column: 2">
                     {{item.title}} <span *ngIf="item.note != undefined && item.note != null && item.note != 'null'" style="color: red">*</span>
                 </div>                 
                 <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true" 
-                  class="dtPadLR dtBorderR dtBorderB" 
+                  class="dtPad-LR dtBorder-R dtBorder-B" 
                   style="grid-column: 2">
                     <input (change)="changePlanItemTitle(item.id, $event)" type="checkbox" />
                     <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" id="updPlanItemNote" /><br/>
                     <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
                 </div>                 
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 3;">                  
                   {{item.startTime}}                
                 </div>                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 4;">                  
                   {{item.durationString}}                
                 </div>                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 5;">                  
                   {{item.recurrenceName}}                
                 </div>                
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 6;">                  
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 6;">                  
                   {{item.recurrenceData}}                
                 </div>
-                <div class="dtCen dtPadLR dtBorderB" style="grid-column: 7; padding-top: 2px;">                  
+                <div class="dtCen dtPad-LR dtBorder-B" style="grid-column: 7; padding-top: 2px;">                  
                   <img *ngIf="updateStatus == ''" src="./assets/icons/propagate.png" 
                     tooltip="propagate" alt="propagate" (click)="propagateRecurrence(item.id)" 
                     style="width: 15px; height: 15px; border:2px solid gray;">
@@ -448,31 +432,31 @@
               <div style="grid-column: 1 /span 7; border-bottom: 2px solid black; background-color: lightgray;">&nbsp;</div>
             </div>
           </div>
-          <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
-            <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
+          <div class="dtGridColumn-1" *ngFor="let item of dtPlanner.planItems">
+            <div *ngIf="item.recurrence == undefined || item.recurrence < 1">
               <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
-                <div class="dtCen dtBorderR dtBorderB" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 2;">Proj</div>
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">Title</div>
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">Start</div>
-                <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">Dur</div>
-                <div class="dtCen dtBorderB" style="grid-column: 6; background-color: gray;"> &nbsp; </div>
+                <div class="dtCen dtBorder-R dtBorder-B" style="background-color: gray;"> &nbsp; </div>
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" >Proj</div>
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" >Title</div>
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" >Start</div>
+                <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" >Dur</div>
+                <div class="dtCen dtBorder-B" style="background-color: gray;"> &nbsp; </div>
               </div>
               <div *ngIf="planItemDateChanged(item.day)" style="display: grid; grid-template-columns: auto;">
-                <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 2">{{fullDate(item.day)}}</div>
+                <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 2">{{fullDate(item.day)}}</div>
               </div>
               <div style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
-                <div class="dtCen dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray; padding-top: 2px;">
+                <div class="dtCen dtBorder-R dtBorder-B" style="grid-column-start: 1; grid-column-end: 2; background-color: gray; padding-top: 2px;">
                   <input *ngIf="updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                 </div>
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'project' && item.completed != true)" 
-                  class="dtCen dtPadLR dtBorderR dtBorderB" 
+                  class="dtCen dtPad-LR dtBorder-R dtBorder-B" 
                   (click)="editItemStart(item.id, 'project')"
                   style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                   {{item.project?.shortCode ?? ""}}
                 </div>
                 <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'project' && item.completed != true" 
-                  class="dtCen dtBorderR dtBorderB" 
+                  class="dtCen dtBorder-R dtBorder-B" 
                   style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">
                     <input (change)="changePlanItemProject(item.id, $event)" type="checkbox" />
                     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [(ngModel)]="data.editValueFirst" > 
@@ -480,39 +464,39 @@
                     </select>          
                 </div>
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true)" 
-                  class="dtPadLR dtBorderR dtBorderB" 
+                  class="dtPad-LR dtBorder-R dtBorder-B" 
                   (click)="editItemStart(item.id, 'title')"
                   tooltip="{{item.note == undefined || item.note == null || item.note == 'null'? '' : tooltipFormatted(item.note)}}" 
                   style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
                     {{item.title}} <span *ngIf="item.note != undefined && item.note != null && item.note != 'null' && item.note.length > 0" style="color: red">*</span>
                 </div>                 
                 <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true" 
-                  class="dtPadLR dtBorderR dtBorderB" 
+                  class="dtPad-LR dtBorder-R dtBorder-B" 
                   style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
                     <input (change)="changePlanItemTitle(item.id, $event)" type="checkbox" />
                     <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" /><br/>
                     <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
                 </div>                 
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'start' && item.completed != true)" 
-                  class="dtCen dtPadLR dtBorderR dtBorderB" 
+                  class="dtCen dtPad-LR dtBorder-R dtBorder-B" 
                   (click)="editItemStart(item.id, 'start')"
                   style="grid-column-start: 4; grid-column-end: 5; background-color: {{itemStatus(item)}};">
                     {{item.startTime}}
                 </div>
                 <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'start' && item.completed != true" 
-                  class="dtCen dtBorderR dtBorderB" 
+                  class="dtCen dtBorder-R dtBorder-B" 
                   (click)="editItemStart(item.id, 'start')" 
                   style="grid-column-start: 4; grid-column-end: 5; background-color: {{itemStatus(item)}};">
                     <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2" (keypress)="editItemEnd($event)" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"/>: 
                     <input style="width: 30%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2" (keypress)="editItemEnd($event)" [value]="data.editValueSecond" [(ngModel)]="data.editValueSecond"/>
                 </div>
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'duration')" 
-                  class="dtCen dtPadLR dtBorderR dtBorderB"                   
+                  class="dtCen dtPad-LR dtBorder-R dtBorder-B"                   
                   style="grid-column-start: 5; grid-column-end: 6;">                  
                     {{item.durationString}}
                 </div>
-                <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'duration'" class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6;">*{{item.durationString}}*</div>
-                <div class="dtCen dtBorderB" style="grid-column-start: 6; background-color: gray; padding-top: 2px;">                  
+                <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'duration'" class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column-start: 5; grid-column-end: 6;">*{{item.durationString}}*</div>
+                <div class="dtCen dtBorder-B" style="grid-column-start: 6; background-color: gray; padding-top: 2px;">                  
                   <img *ngIf="updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                   <img *ngIf="updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                 </div>
@@ -526,175 +510,175 @@
       <div style="grid-column: 4 / span 1; border-right: 2px solid black; border-left: 2px solid black;">
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
           <!-- Add new plan item BEG -->
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newPlanItemTitle" (change)="clearUpdateStatus()" name="newPlanItemTitle" [(ngModel)]="newPlanItemTitle" />
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Project:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="newPlanItemProjectId" > 
               <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
               </select>          
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Time:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 1">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Time:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 1">
             <input type="time" id="newPlanItemStartTime" name="newPlanItemStartTime" [ngModel]="newPlanItemStartTime" (ngModelChange)="newPlanItemStartTime = newPlanItemEndTime = $event"/>
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 3 /span 1;"> -to-</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 4 /span 1">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 3 /span 1;"> -to-</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 4 /span 1">
             <input type="time" id="newPlanItemEndTime" name="newPlanItemEndTime" [ngModel]="newPlanItemEndTime" (ngModelChange)="newPlanItemEndTime = $event"/>
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Start:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Start:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="date" id="newPlanItemStart" name="newPlanItemStart"[value]="newPlanItemStartDate" [ngModel]="newPlanItemStartDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemStartDate = newPlanItemEndDate = $event"/>
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">End:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">End:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="date" id="newPlanItemEnd" name="newPlanItemEnd" [ngModel]="newPlanItemEndDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemEndDate = $event"/>
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Priority:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Priority:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newPlanItemPriority" name="newPlanItemPriority" [(ngModel)]="newPlanItemPriority" />
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
           </div>
           <!-- Recurrence definition BEG -->
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <input [checked]="newPlanItemIsRecurrence" tooltip="toggle complete" (change)="toggleIsRecurrence($event)" type="checkbox" /> Recurring?
           </div>
-          <div *ngIf="newPlanItemIsRecurrence" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrence" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <select id="newPlanItemRecurrenceId" name="newPlanItemRecurrenceId" [(ngModel)]="newPlanItemRecurrenceId" >                             
               <option *ngFor="let r of dtPlanner.recurrences" [ngValue]="r.id">{{r.title}}</option>                          
             </select>                                       
           </div>
-          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <div style="display: grid; grid-template-columns: 5% 13% 13% 13% 13% 13% 13% 13% 4%;">
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">T</div>
-              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">W</div>
-              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">Th</div>
-              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">F</div>
-              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">Sa</div> 
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
+              <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">T</div>
+              <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">W</div>
+              <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">Th</div>
+              <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">F</div>
+              <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">Sa</div> 
               <div class="" style="grid-column: 9 /span 1;"></div>
                            
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSunday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterMonday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceMonday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox"id="recurrenceFilterTuesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceTuesday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterWednesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceWednesday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterThursday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceThursday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterFriday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceFriday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSaturday" />
               </div>              
               <div class="" style="grid-column: 9 /span 1;"></div>              
             </div>
           </div>
-          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 2)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 2)" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <div style="display: grid; grid-template-columns: 5% 40% 50% 5%;">
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">',' separated Day(s):</div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">',' separated Day(s):</div>
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
                 <input type="text" id="newPlanItemTitle" name="newPlanItemRecurrenceDayOfMonth" [(ngModel)]="newPlanItemRecurrenceData" />
               </div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 4 /span 1;"></div>
             </div>
           </div>
-          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 3)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 3)" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <div style="display: grid; grid-template-columns: 5% 14% 11% 11% 11% 11% 11% 11% 11% 4%;">
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">Wks</div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">S</div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">M</div>
-              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">T</div>
-              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">W</div>
-              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">Th</div>
-              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">F</div>
-              <div class="dtBorderR" style="grid-column: 9 /span 1; align-items: center; text-align: center;">Sa</div> 
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">Wks</div>
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">S</div>
+              <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">M</div>
+              <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">T</div>
+              <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">W</div>
+              <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">Th</div>
+              <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">F</div>
+              <div class="dtBorder-R" style="grid-column: 9 /span 1; align-items: center; text-align: center;">Sa</div> 
               <div class="" style="grid-column: 9 /span 1;"></div>
                            
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
                 <input style="width:80%" size="2" min="0" maxlength="2" type="number" id="recurrenceNumWeeks" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceNumberWeeks" />
               </div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSunday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterMonday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceMonday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox"id="recurrenceFilterTuesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceTuesday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterWednesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceWednesday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterThursday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceThursday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterFriday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceFriday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 9 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 9 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSaturday" />
               </div>              
               <div class="" style="grid-column: 10 /span 1;"></div>              
             </div>
           </div>
-          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 4)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 4)" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <div style="display: grid; grid-template-columns: 5% 14% 11% 11% 11% 11% 11% 11% 11% 4%;">
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">Wks</div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">S</div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">M</div>
-              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">T</div>
-              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">W</div>
-              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">Th</div>
-              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">F</div>
-              <div class="dtBorderR" style="grid-column: 9 /span 1; align-items: center; text-align: center;">Sa</div> 
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">Wks</div>
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">S</div>
+              <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">M</div>
+              <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">T</div>
+              <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">W</div>
+              <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">Th</div>
+              <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">F</div>
+              <div class="dtBorder-R" style="grid-column: 9 /span 1; align-items: center; text-align: center;">Sa</div> 
               <div class="" style="grid-column: 9 /span 1;"></div>
                            
-              <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-              <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+              <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
                 <input style="width:80%" size="2" min="0" maxlength="2" type="number" id="recurrenceNumWeeks" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceNumberWeeks" />
               </div>
-              <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSunday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterMonday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceMonday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox"id="recurrenceFilterTuesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceTuesday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterWednesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceWednesday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterThursday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceThursday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterFriday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceFriday" />
               </div>
-              <div class="dtBorderR" style="grid-column: 9 /span 1; align-items: center; text-align: center;">
+              <div class="dtBorder-R" style="grid-column: 9 /span 1; align-items: center; text-align: center;">
                 <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSaturday" />
               </div>              
               <div class="" style="grid-column: 10 /span 1;"></div>              
@@ -702,7 +686,7 @@
           </div>
           <!-- Recurrence definition END -->
 
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
           </div>
         </div>
@@ -710,13 +694,13 @@
 
         <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
           <div style="display: grid; grid-template-columns: 100%;">
-            <div class="dtPadLR dtBorderB" style="grid-column: 1;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
               <h4>Projects</h4>
             </div>
-            <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
+            <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
               <div style="display: grid; grid-template-columns: 10% 90%;">
-                <div class="dtPadLR dtBorderR" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
-                <div class="dtPadLR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+                <div class="dtPad-LR dtBorder-R" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
+                <div class="dtPad-LR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
               </div>
             </div>
           </div>
@@ -725,41 +709,41 @@
         <br />
         
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 30% 21% 15% 34%; border-top: 2px solid black; background-color: lightgoldenrodyellow;">
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <h4>Add Project</h4>
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" [(ngModel)]="newProjectTitle" />
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Short Code:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Short Code:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newPlanItemShortCode" name="newPlanItemShortCode" [(ngModel)]="newProjectShortCode" />
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Status:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Status:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" >                             
               <option *ngFor="let s of dtPlanner.stati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
             </select>                                         
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Color:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Color:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <select id="newProjectColorCodeId" name="newProjectColorCodeId" [(ngModel)]="newProjectColorCodeId" >                             
               <option *ngFor="let c of dtPlanner.colorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
             </select>                                         
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Priority:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Priority:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newProjectPriority" name="newProjectPriority" [(ngModel)]="newProjectPriority" />
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Sort Order:</div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Sort Order:</div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newProjectSortOrder" name="newProjectSortOrder" [(ngModel)]="newProjectSortOrder" />
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newProjectNotes" name="newProjectNotes" [(ngModel)]="newProjectNotes" placeholder="Notes"></textarea>          
           </div>
-          <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <button (click)="addProject()">Add Project</button>
           </div>      
         </div>
@@ -777,51 +761,51 @@
 
     <ng-template #mobile>
       <div *ngIf="(loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 100%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
-        <div class="dtPadLR dtBorderB" style="grid-column: 1 / span 1;">
+        <div class="dtPad-LR dtBorder-B" style="grid-column: 1 / span 1;">
           <p>Logged in as <span (change)="emailChanged()">{{loginInfo.email}} at {{timeStamp()}}</span><br />
             <button (click)="login()">Change login</button>
           </p>
         </div>
         <div *ngIf="dtPlanner.planItems.length > 0 else emptyItems" style="grid-column: 1 / span 1; border-right: 2px solid black;">
           <div style="display: grid; grid-template-columns: auto;">
-            <div class="dtPadLR dtBorderB" style="grid-column: 1;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
               <b>Items</b>
             </div>
             <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
               <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
                 <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
-                  <div class="dtCen dtBorderR dtBorderB" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
-                  <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 2;">Proj</div>
-                  <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 3;">Title</div>
-                  <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 4;">Start</div>
-                  <div class="dtCen dtPadLR dtBorderR dtBorderB" style="grid-column: 5;">Dur</div>
-                  <div class="dtCen dtBorderB" style="grid-column: 6; background-color: gray;"> &nbsp; </div>
+                  <div class="dtCen dtBorder-R dtBorder-B" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
+                  <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 2;">Proj</div>
+                  <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 3;">Title</div>
+                  <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 4;">Start</div>
+                  <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 5;">Dur</div>
+                  <div class="dtCen dtBorder-B" style="grid-column: 6; background-color: gray;"> &nbsp; </div>
                 </div>  
                 <div *ngIf="planItemDateChanged(item.day)" style="display: grid; grid-template-columns: auto;">
-                  <div class="dtPadLR-M dtBorderB" style="grid-column: 1">{{fullDate(item.day)}}</div>
+                  <div class="dtPad-LR-M dtBorder-B" style="grid-column: 1">{{fullDate(item.day)}}</div>
                 </div>
                 <div style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
-                  <div class="dtCen dtBorderR dtBorderB" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
+                  <div class="dtCen dtBorder-R dtBorder-B" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
                     <input *ngIf="updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                   </div>
-                  <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
+                  <div class="dtCen dtPad-LR-M dtBorder-R dtBorder-B" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
                   <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true)" 
-                    class="dtPadLR dtBorderR dtBorderB" 
+                    class="dtPad-LR dtBorder-R dtBorder-B" 
                     (click)="editItemStart(item.id, 'title')"
                     tooltip="{{item.note == undefined || item.note == null || item.note == 'null'? '' : item.note}}" 
                     style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
                       {{item.title}} <span *ngIf="item.note != undefined && item.note != null && item.note != 'null'" style="color: red">*</span>
                   </div>                 
                   <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true" 
-                    class="dtPadLR dtBorderR dtBorderB" 
+                    class="dtPad-LR dtBorder-R dtBorder-B" 
                     style="grid-column: 3 /span 1; background-color: {{itemStatus(item)}}">
                       <input (change)="changePlanItemTitle(item.id, $event)" type="checkbox" />
                       <input type="text" [value]="data.editValueFirst" id="data.editValueFirst" /><br/>
                       <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
                   </div>                 
-                  <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 4; grid-column-end: 5;">{{item.startTime}}</div>
-                  <div class="dtCen dtPadLR-M dtBorderR dtBorderB" style="grid-column-start: 5; grid-column-end: 6;">{{item.durationString}}</div>
-                  <div class="dtCen dtBorderB" style="grid-column-start: 6; background-color: gray;">                  
+                  <div class="dtCen dtPad-LR-M dtBorder-R dtBorder-B" style="grid-column-start: 4; grid-column-end: 5;">{{item.startTime}}</div>
+                  <div class="dtCen dtPad-LR-M dtBorder-R dtBorder-B" style="grid-column-start: 5; grid-column-end: 6;">{{item.durationString}}</div>
+                  <div class="dtCen dtBorder-B" style="grid-column-start: 6; background-color: gray;">                  
                     <img *ngIf="updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                     <img *ngIf="updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                   </div>
@@ -835,88 +819,88 @@
 
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
           <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: auto auto auto auto; background-color: lightblue;">
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" (change)="clearUpdateStatus()" [(ngModel)]="newPlanItemTitle" />
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Project:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Project:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="newPlanItemProjectId" > 
                 <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
                 </select>          
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Time:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Time:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3">
               <input type="time" id="newPlanItemStartTime" name="newPlanItemStartTime" [ngModel]="newPlanItemStartTime" (ngModelChange)="newPlanItemStartTime = newPlanItemEndTime = $event"/>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;"> -to-</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;"> -to-</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3">
               <input type="time" id="newPlanItemEndTime" name="newPlanItemEndTime" [ngModel]="newPlanItemEndTime" (ngModelChange)="newPlanItemEndTime = $event"/>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Start:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Start:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="date" id="newPlanItemStart" name="newPlanItemStart"[value]="newPlanItemStartDate" [ngModel]="newPlanItemStartDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemStartDate = newPlanItemEndDate = $event"/>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">End:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">End:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="date" id="newPlanItemEnd" name="newPlanItemEnd" [ngModel]="newPlanItemEndDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemEndDate = $event"/>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1">Priority:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Priority:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="text" id="newPlanItemPriority" name="newPlanItemPriority" [(ngModel)]="newPlanItemPriority" />
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newPlanItemNote" name="newPlanItemNote" [(ngModel)]="newPlanItemNote" placeholder="Notes"></textarea>          
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <input [checked]="newPlanItemIsRecurrence" tooltip="toggle complete" (change)="toggleIsRecurrence($event)" type="checkbox" /> Recurring?
             </div>
-            <div *ngIf="newPlanItemIsRecurrence" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div *ngIf="newPlanItemIsRecurrence" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <select id="newPlanItemRecurrenceId" name="newPlanItemRecurrenceId" [(ngModel)]="newPlanItemRecurrenceId" >                             
                 <option *ngFor="let r of dtPlanner.recurrences" [ngValue]="r.id">{{r.title}}</option>                          
               </select>                                       
             </div>
-            <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div *ngIf="newPlanItemIsRecurrence && (newPlanItemRecurrenceId == 1)" class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <div style="display: grid; grid-template-columns: 10% 10% 10% 10% 10% 10% 10%">
-                <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-                <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
-                <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
-                <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">T</div>
-                <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">W</div>
-                <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">Th</div>
-                <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">F</div>
-                <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">Sa</div> 
+                <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+                <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">S</div>
+                <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">M</div>
+                <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">T</div>
+                <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">W</div>
+                <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">Th</div>
+                <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">F</div>
+                <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">Sa</div> 
                 <div class="" style="grid-column: 9 /span 1;"></div>
                              
-                <div class="dtBorderR" style="grid-column: 1 /span 1;"></div>
-                <div class="dtBorderR" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 1 /span 1;"></div>
+                <div class="dtBorder-R" style="grid-column: 2 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSunday" />
                 </div>
-                <div class="dtBorderR" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 3 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox" id="recurrenceFilterMonday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceMonday" />
                 </div>
-                <div class="dtBorderR" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 4 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox"id="recurrenceFilterTuesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceTuesday" />
                 </div>
-                <div class="dtBorderR" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 5 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox" id="recurrenceFilterWednesday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceWednesday" />
                 </div>
-                <div class="dtBorderR" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 6 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox" id="recurrenceFilterThursday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceThursday" />
                 </div>
-                <div class="dtBorderR" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 7 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox" id="recurrenceFilterFriday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceFriday" />
                 </div>
-                <div class="dtBorderR" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
+                <div class="dtBorder-R" style="grid-column: 8 /span 1; align-items: center; text-align: center;">
                   <input type="checkbox" id="recurrenceFilterSunday" (change)="setRecurrenceFilter($event)" [(ngModel)]="recurrenceSaturday" />
                 </div>              
                 <div class="" style="grid-column: 9 /span 1;"></div>              
               </div>
             </div>
-             <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+             <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
             </div>
           </div>
@@ -925,13 +909,13 @@
   
           <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
             <div style="display: grid; grid-template-columns: 100%;">
-              <div class="dtPadLR dtBorderB" style="grid-column: 1;">
+              <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
                 <h4>Projects</h4>
               </div>
-              <div class="dtBorderB" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
+              <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
                 <div style="display: grid; grid-template-columns: 10% 90%;">
-                  <div class="dtPadLR dtBorderR" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
-                  <div class="dtPadLR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+                  <div class="dtPad-LR dtBorder-R" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
+                  <div class="dtPad-LR" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
                 </div>
               </div>
             </div>
@@ -940,41 +924,41 @@
           <br />
           
           <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: auto auto auto auto; border-top: 2px solid black; background-color: lightgoldenrodyellow;">
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <h4>Add Project</h4>
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Title:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="text" id="newPlanItemTitle" name="newPlanItemTitle" [(ngModel)]="newProjectTitle" />
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Short Code:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Short Code:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="text" id="newPlanItemShortCode" name="newPlanItemShortCode" [(ngModel)]="newProjectShortCode" />
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Status:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Status:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <select id="newProjectStatus" name="newProjectStatus" [(ngModel)]="newProjectStatusId" >                             
                 <option *ngFor="let s of dtPlanner.stati" [ngValue]="s.id" style="background-color: {{s.colorString}} ;">{{s.title}}</option>                          
               </select>                                         
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Color:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Color:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <select id="newProjectColorCodeId" name="newProjectColorCodeId" [(ngModel)]="newProjectColorCodeId" >                             
                 <option *ngFor="let c of dtPlanner.colorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
               </select>                                         
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Priority:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Priority:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="text" id="newProjectPriority" name="newProjectPriority" [(ngModel)]="newProjectPriority" />
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 1;">Sort Order:</div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 2 /span 3;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Sort Order:</div>
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
               <input type="text" id="newProjectSortOrder" name="newProjectSortOrder" [(ngModel)]="newProjectSortOrder" />
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="newProjectNotes" name="newProjectNotes" [(ngModel)]="newProjectNotes" placeholder="Notes"></textarea>          
             </div>
-            <div class="dtPadLR dtBorderB" style="grid-column: 1 /span 4;">
+            <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
               <button (click)="addProject()">Add Project</button>
             </div>      
           </div>            

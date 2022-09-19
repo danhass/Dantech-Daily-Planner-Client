@@ -1,10 +1,10 @@
 <div style="display: grid; grid-template-columns: 100%" *ngIf="data.login?.email?.length">
     <div style="grid-item">Logged in as {{data.login?.email}}</div>
     <div style="grid-item">at {{data.timeStamp}}</div>
-    <div style="grid-item;"><a class="dtPadLR" (click)="login()" style="border: 2px solid black; background-color: lightgray;">Change login</a></div>
+    <div style="grid-item;"><button (click)="login()">Change login</button></div>
 </div>
 <div style="display: grid; grid-template-columns: 100%" *ngIf="!(data.login?.email?.length)">
     <div style="grid-item">Not logged in.</div>
     <div style="grid-item">&nbsp;</div>
-    <div style="grid-item"><a class="dtPadLR" (click)="login()" style="border: 2px solid black; background-color: lightgray;">Login</a></div>
+    <div style="grid-item"><button (click)="login()">Login</button></div>
 </div>
