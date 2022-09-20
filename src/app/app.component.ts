@@ -390,6 +390,7 @@ export class AppComponent implements OnInit {
           updatedProject?.notes != this.data.targetProject.notes
         ) {
           this.data.targetProject = updatedProject;
+          console.log ("calling update.");
           this.dtPlanner.update();
         } 
       this.data.projectItems = this.dtPlanner.projectItems;     
@@ -461,6 +462,7 @@ export class AppComponent implements OnInit {
     } else {
       this.data.projectVisible = true;
       this.data.targetProject = this.dtPlanner.projects.find(x => x.id == projId);
+      console.log("Loading " + this.data.targetProject?.title + " (" + projId + ")");
       this.dtPlanner.loadProjectItems(projId);    
     }
   }

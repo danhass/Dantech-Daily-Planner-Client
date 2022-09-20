@@ -148,9 +148,11 @@ export class DtPlannerService {
 
   loadProjectItems(projId: number): void {
     let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyProject=" + projId;
+    console.log("Calling: ", url);
     this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
       let items = this.setItems(data);
       this.projectItems = items;
+      console.log(data);
       this.pingComponents("Project items loaded.");
     });
 
