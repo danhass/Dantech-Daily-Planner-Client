@@ -17,8 +17,11 @@
     <div class="dtGridColumn-6 dtBorder-R dtBorder-B dtPad-LR">
         {{item?.recurrenceData}}
     </div>
-    <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">
-        &nbsp;
+    <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">        
+        <img src="./assets/icons/propagate.png" 
+            tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
+            style="width: 15px; height: 15px; border:2px solid gray;"
+        >    
     </div>
 </div>
 <div *ngIf="category=='Project Plan Items'" class="dtGrid-4P7P35P15P15P15P9P">
@@ -41,7 +44,9 @@
         {{item?.durationString}}
     </div>
     <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">
-        &nbsp;
+        <img *ngIf="item?.parent" src="./assets/icons/propagate.png" 
+        tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
+        style="width: 15px; height: 15px; border:2px solid gray;">
     </div>
 </div>
 

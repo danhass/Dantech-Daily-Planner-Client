@@ -30,7 +30,7 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
   }
 
   processPlannerServiceResult(msg: string): void {
-    this.item = this.dtPlanner.projectItems.find(x => x.id == this.id);    
+    this.item = this.dtPlanner.projectItems.find(x => x.id == this.id);
   }
 
 }

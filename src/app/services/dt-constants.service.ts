@@ -52,6 +52,7 @@ export interface DTPlanItem {
   dayString: string,
   duration: Time,
   durationString: string,
+  parent: number | undefined,
   priority: number,
   projectId: number | undefined,
   project: DTProject | undefined,
@@ -113,4 +114,12 @@ export interface DTRecurrence {
   effective: Date | undefined,
   stops: Date | undefined,
   daysToPopulate: number | undefined
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class DtConstantsService {
+  constructor() {}
 }
