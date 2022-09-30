@@ -53,11 +53,6 @@ export class AppComponent implements OnInit {
   newPlanItemRecurrenceId: number | null = 0;
   newPlanItemRecurrenceData: string | null = "";
 
-  updateStatus: string = "";
-  currentPlanItemDate: string = "";
-  itemsRowCount: number = 0;
-  firstPlanItemId: number = 0;
-
   //Recurrence parameters
   recurrenceSunday: boolean | null = null;
   recurrenceMonday: boolean | null = null;
@@ -89,7 +84,7 @@ export class AppComponent implements OnInit {
   }
 
   addPlanItem(): void {
-    this.updateStatus = "Update underway.";
+    this.data.updateStatus = "Update underway.";
     if (!(this.newPlanItemTitle.length > 0)) return;
     this.newPlanItemStart = this.newPlanItemStartDate.toString();
     if (this.newPlanItemEndDate >= this.newPlanItemStartDate) {
@@ -152,7 +147,7 @@ export class AppComponent implements OnInit {
   }
 
   changePlanItemTitle(itemId: number, event: any): void {
-    this.updateStatus = "Updating item";
+    this.data.updateStatus = "Updating item";
     let itm = this.getPlanItemOrRecurrenceItem(itemId);
     if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
       let params = this.planItemParams(itm.id);
@@ -163,7 +158,7 @@ export class AppComponent implements OnInit {
   }
 
   clearUpdateStatus(): void {
-    this.updateStatus = "";
+    this.data.updateStatus = "";
   }
  
   dayOfWeek(date: any): string {
@@ -176,7 +171,7 @@ export class AppComponent implements OnInit {
   }
 
   deletePlanItem(itemId: number) {
-    this.updateStatus = "Deleting...";
+    this.data.updateStatus = "Deleting...";
     let item = (this.dtPlanner.planItems.find(x => x.id == itemId) as DTPlanItem);
     let proceed = confirm('Delete ' + item.title + "?");
     if (proceed) {
@@ -305,7 +300,7 @@ export class AppComponent implements OnInit {
   }
 
   movePlanItemToNextDay(itemId: number) {
-    this.updateStatus = "Updating item";
+    this.data.updateStatus = "Updating item";
     let params = this.planItemParams(itemId);
     let start = new Date(params["start"]);
     start.setDate(start.getDate() + 1);
@@ -325,9 +320,9 @@ export class AppComponent implements OnInit {
   planItemDateChanged(date: any): boolean {
     let thisDate = this.dayOfWeek(date);
     let changed = false;
-    if (thisDate != this.currentPlanItemDate) {
+    if (thisDate != this.data.currentPlanItemDate) {
       changed = true;
-      this.currentPlanItemDate = thisDate;
+      this.data.currentPlanItemDate = thisDate;
     }
     return changed;
   }
@@ -368,8 +363,8 @@ export class AppComponent implements OnInit {
 
   processPlannerServiceResult(msg: string): void {
     this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
-    this.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
-    this.updateStatus = "";
+    this.data.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
+    this.data.updateStatus = "";
     this.data.itemBeingEdited = 0; 
     this.newPlanItemRecurrenceData = ""; 
     this.newProjectTitle = '';
@@ -398,7 +393,7 @@ export class AppComponent implements OnInit {
   }
 
   propagateRecurrence(itemId: number): void {
-    this.updateStatus = "Updateing...";
+    this.data.updateStatus = "Updateing...";
     this.dtPlanner.propagateRecurrence(itemId);
   }
 
@@ -462,7 +457,6 @@ export class AppComponent implements OnInit {
     } else {
       this.data.projectVisible = true;
       this.data.targetProject = this.dtPlanner.projects.find(x => x.id == projId);
-      console.log("Loading " + this.data.targetProject?.title + " (" + projId + ")");
       this.dtPlanner.loadProjectItems(projId);    
     }
   }
@@ -483,7 +477,7 @@ export class AppComponent implements OnInit {
   }
 
   togglePlanItemCompleted(itemId: number, event: any): void {
-    this.updateStatus = "Updating item";
+    this.data.updateStatus = "Updating item";
     let completed = event.srcElement.checked;
     let params = this.planItemParams(itemId);
     params["completed"] = completed;

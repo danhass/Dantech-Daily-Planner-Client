@@ -148,14 +148,11 @@ export class DtPlannerService {
 
   loadProjectItems(projId: number): void {
     let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyProject=" + projId;
-    console.log("Calling: ", url);
     this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
       let items = this.setItems(data);
       this.projectItems = items;
-      console.log(data);
       this.pingComponents("Project items loaded.");
     });
-
   }
 
   pingComponents(msg: string){
@@ -163,11 +160,15 @@ export class DtPlannerService {
   }
 
   propagateRecurrence(itemId: number): void {
+    let itm = this.planItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.projectItems.find(x => x.id == itemId);
+    if (itm != undefined) alert ("Proagating: " + itm.title);
     let url = dtConstants.apiTarget + dtConstants.propagateEndPoint + "?sessionId=" + this.sessionId + "&seedId=" + itemId;
     this.http.get<[boolean]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {    
       if (data) {
         this.update();
-      }        
+      } 
+      alert("Complete.");
     });
   }
 
@@ -270,6 +271,10 @@ export class DtPlannerService {
       this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
         this.setRecurrenceItems(data);
         this.pingComponents("Plan item updated.")
+        if (this.projectItems.length > 0) {
+          let projId = (this.projectItems[0].projectId as number);
+          this.loadProjectItems(projId);
+        }
       })   
     });
   }

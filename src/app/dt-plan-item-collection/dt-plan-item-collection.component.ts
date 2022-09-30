@@ -42,5 +42,31 @@ export class DtPlanItemCollectionComponent implements OnInit {
         }
       }
     }
+
+    if(this.category == "All-Recurrences") {
+      for (let i=0; i<this.dtPlanner.recurrenceItems.length; i++) {
+        if ((this.dtPlanner?.recurrenceItems[i]?.recurrence as number) > 0) {
+          this.items.push(this.dtPlanner.recurrenceItems[i]);
+        }
+      }
+    }
+
+    if (this.category == "Recurrences") {
+      this.items = [];
+      for (let i=0; i<this.dtPlanner.recurrenceItems.length; i++) {
+        if (this.dtPlanner.recurrenceItems[i].recurrence != null) {
+          this.items.push(this.dtPlanner.recurrenceItems[i]);        
+        }
+      }
+    }
+
+    if(this.category == "Propagated Items") {
+      this.items = [];
+      for (let i=0; i<this.dtPlanner.planItems.length; i++) {
+        if (this.dtPlanner.planItems[i].recurrence == null) {
+          this.items.push(this.dtPlanner.planItems[i]);        
+        }
+      }
+    }
   }
 }

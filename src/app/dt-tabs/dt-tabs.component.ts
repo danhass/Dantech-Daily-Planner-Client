@@ -6,10 +6,10 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./dt-tabs.component.less']
 })
 export class DtTabsComponent implements OnInit {
-  @Input() items: Array<{ [index: string]: any }> = [];
+  @Input() items: Array<{ [index: string]: any }> = [];  
 
   public currentTab: string = "";
-
+  
   constructor(
   ) { }
 

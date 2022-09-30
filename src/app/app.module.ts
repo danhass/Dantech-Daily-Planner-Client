@@ -16,6 +16,8 @@ import { DtProjectComponent } from './dt-project/dt-project.component';
 import { DtTabsComponent } from './dt-tabs/dt-tabs.component';
 import { DtPlanItemCollectionComponent } from './dt-plan-item-collection/dt-plan-item-collection.component';
 import { DtPlanItemComponent } from './dt-plan-item/dt-plan-item.component';
+import { DtRecurrenceComponent } from './dt-recurrence/dt-recurrence.component';
+import { DtPlannerDaysComponent } from './dt-planner-days/dt-planner-days.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { DtPlanItemComponent } from './dt-plan-item/dt-plan-item.component';
     DtProjectComponent,
     DtTabsComponent,
     DtPlanItemCollectionComponent,
-    DtPlanItemComponent
+    DtPlanItemComponent,
+    DtRecurrenceComponent,
+    DtPlannerDaysComponent
   ],
   imports: [
     BrowserModule,

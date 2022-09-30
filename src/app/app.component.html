@@ -341,15 +341,14 @@
       class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
       >       
       <!-- Planner Items BEG -->
-      <div class="dtGridColumn-1s3 dtBorder-R">
+      <div class="dtGridColumn-1s3" >
         <div class="dtGrid-100P">
-          
-          <!-- Project items BEG -->          
-          <div *ngIf="data.projectVisible">
-            <app-dt-project></app-dt-project> 
-          </div>             
-          <!-- Project items END -->    
-      
+          <div class="dtGridColumn-1">
+            <app-dt-tabs 
+            [items]="[{'title': 'Items', 'selector': 'Plan Items'}, {'title': 'Recurrences', 'selector': 'All-Recurrences'}, {'title': 'Project', 'selector': 'Project'}]"
+            ></app-dt-tabs>
+          </div>          
+      <!--
           <div class="dtBorder-B" style="grid-column: 1;">
             <div class="dtGrid-25P75P">
               <div class="dtPad-LR">
@@ -424,7 +423,7 @@
                   {{item.recurrenceData}}                
                 </div>
                 <div class="dtCen dtPad-LR dtBorder-B" style="grid-column: 7; padding-top: 2px;">                  
-                  <img *ngIf="updateStatus == ''" src="./assets/icons/propagate.png" 
+                  <img *ngIf="data.updateStatus == ''" src="./assets/icons/propagate.png" 
                     tooltip="propagate" alt="propagate" (click)="propagateRecurrence(item.id)" 
                     style="width: 15px; height: 15px; border:2px solid gray;">
                 </div>
@@ -434,7 +433,7 @@
           </div>
           <div class="dtGridColumn-1" *ngFor="let item of dtPlanner.planItems">
             <div *ngIf="item.recurrence == undefined || item.recurrence < 1">
-              <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
+              <div *ngIf="item.id == data.firstPlanItemId" style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
                 <div class="dtCen dtBorder-R dtBorder-B" style="background-color: gray;"> &nbsp; </div>
                 <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" >Proj</div>
                 <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" >Title</div>
@@ -447,7 +446,7 @@
               </div>
               <div style="display: grid; grid-template-columns: 4% 7% 50% 15% 15% 9%;">
                 <div class="dtCen dtBorder-R dtBorder-B" style="grid-column-start: 1; grid-column-end: 2; background-color: gray; padding-top: 2px;">
-                  <input *ngIf="updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
+                  <input *ngIf="data.updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                 </div>
                 <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'project' && item.completed != true)" 
                   class="dtCen dtPad-LR dtBorder-R dtBorder-B" 
@@ -497,21 +496,22 @@
                 </div>
                 <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'duration'" class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column-start: 5; grid-column-end: 6;">*{{item.durationString}}*</div>
                 <div class="dtCen dtBorder-B" style="grid-column-start: 6; background-color: gray; padding-top: 2px;">                  
-                  <img *ngIf="updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
-                  <img *ngIf="updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                  <img *ngIf="data.updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                  <img *ngIf="data.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                 </div>
             </div>
           </div>
-        </div> 
+        </div>-->
       </div>
       </div>
+    
       <!-- Planner Items END -->
 
       <div style="grid-column: 4 / span 1; border-right: 2px solid black; border-left: 2px solid black;">
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
           <!-- Add new plan item BEG -->
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
-            <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
+            <h4>Add Item <span style="color: red;">{{this.data.updateStatus}}</span></h4>
           </div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
@@ -687,7 +687,7 @@
           <!-- Recurrence definition END -->
 
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
-            <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
+            <button [disabled]="data.updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
           </div>
         </div>
         <br />
@@ -697,12 +697,20 @@
             <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
               <h4>Projects</h4>
             </div>
-            <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
-              <div style="display: grid; grid-template-columns: 10% 90%;">
-                <div class="dtPad-LR dtBorder-R" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
-                <div class="dtPad-LR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+            <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0)">
+              <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
+                <div style="display: grid; grid-template-columns: 10% 90%;">
+                  <div class="dtPad-LR dtBorder-R" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
+                  <div class="dtPad-LR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+                </div>
               </div>
+              <div *ngIf="!(dtPlanner.projects && dtPlanner.projects.length > 0)" style="display: table; border-collapse: collapse; width: 100%;">        
+                <div style="display: table-row; border: 2px solid black">          
+                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">No Projects</div>        
+                </div>      
+              </div>      
             </div>
+      
           </div>
         </div>
 
@@ -754,10 +762,10 @@
       </div--> 
     </div>
   </div>
-  <div>
+  <!--div>
     <button (click)="test()">Test</button>
     <p>{{notMobile()}}</p>    
-  </div>
+  </div-->
 
     <ng-template #mobile>
       <div *ngIf="(loginInfo.email.length > 0) else noValidEmail" style="display: grid; grid-template-columns: 100%; column-gap: 2px; width: 98vw; border: 2px solid black" >    
@@ -773,7 +781,7 @@
             </div>
             <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
               <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
-                <div *ngIf="item.id == firstPlanItemId" style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
+                <div *ngIf="item.id == data.firstPlanItemId" style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
                   <div class="dtCen dtBorder-R dtBorder-B" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
                   <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 2;">Proj</div>
                   <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 3;">Title</div>
@@ -786,7 +794,7 @@
                 </div>
                 <div style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
                   <div class="dtCen dtBorder-R dtBorder-B" style="grid-column-start: 1; grid-column-end: 2; background-color: gray;">
-                    <input *ngIf="updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
+                    <input *ngIf="data.updateStatus == ''" [checked]="item.completed" tooltip="toggle complete" (change)="togglePlanItemCompleted(item.id, $event)" type="checkbox" />
                   </div>
                   <div class="dtCen dtPad-LR-M dtBorder-R dtBorder-B" style="grid-column-start: 2; grid-column-end: 3; background-color: {{ item.project?.colorString ?? 'white'}}; ">{{item.project?.shortCode ?? ""}}</div>
                   <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'title' && item.completed != true)" 
@@ -806,8 +814,8 @@
                   <div class="dtCen dtPad-LR-M dtBorder-R dtBorder-B" style="grid-column-start: 4; grid-column-end: 5;">{{item.startTime}}</div>
                   <div class="dtCen dtPad-LR-M dtBorder-R dtBorder-B" style="grid-column-start: 5; grid-column-end: 6;">{{item.durationString}}</div>
                   <div class="dtCen dtBorder-B" style="grid-column-start: 6; background-color: gray;">                  
-                    <img *ngIf="updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
-                    <img *ngIf="updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                    <img *ngIf="data.updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="movePlanItemToNextDay(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
+                    <img *ngIf="data.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deletePlanItem(item.id)" style="width: 15px; height: 15px; border:2px solid gray">
                   </div>
               </div>
             </div>
@@ -820,7 +828,7 @@
         <div style="grid-column: 1 /span 1; border-right: 2px solid black; border-left: 2px solid black; border-top: 2px solid black;">
           <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: auto auto auto auto; background-color: lightblue;">
             <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
-              <h4>Add Item <span style="color: red;">{{this.updateStatus}}</span></h4>
+              <h4>Add Item <span style="color: red;">{{this.data.updateStatus}}</span></h4>
             </div>
             <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
             <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
@@ -901,7 +909,7 @@
               </div>
             </div>
              <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
-              <button [disabled]="updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
+              <button [disabled]="data.updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
             </div>
           </div>
           

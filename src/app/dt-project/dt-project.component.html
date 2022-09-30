@@ -1,26 +1,44 @@
-<div *ngIf="data?.targetProject != null" class="dtBorder-B dtGrid-15P83P" 
-    style="background-color: {{data.targetProject?.colorString}}">
-        <div class="dtCen dtBorder-R dtPad-LR">{{data.targetProject?.shortCode}}</div>
-        <div *ngIf="!(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"
-            (click)="editItemStart(data.targetProject?.id, 'project-description')" 
-            class="dtPad-LR">
-                {{data.targetProject?.title}}
-        </div>
-        <div *ngIf="(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"
-            class="dtPad-LR dtVA-T">
-                <input type="checkbox" (change)="setProjectDescription($event)" />
-                <select id="updProjectColorCodeId" name="updProjectColorCodeId" [value]="data.editValueThird" [(ngModel)]="data.editValueThird" >                             
-                    <option *ngFor="let c of dtPlanner.colorCodes" [value]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
-                </select>                                         
-                <input type="text" [value]="data.editValueFirst" id="updProjectTitle" name="updProjecTitle" [(ngModel)]="data.editValueFirst"><br />
-                <span clsss="dtPadLR">&nbsp;</span><textarea class="dtW-40P" rows="4" id="updProjectNote" name="updProjectNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>
-        </div>
-</div>
-<app-dt-tabs 
+<div *ngIf="data?.targetProject != null" >
+    <div class="dtBorder-B dtGrid-15P83P" 
+        style="background-color: {{data.targetProject?.colorString}}">
+            <div class="dtCen dtBorder-R dtPad-LR">{{data.targetProject?.shortCode}}</div>
+            <div *ngIf="!(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"
+                (click)="editItemStart(data.targetProject?.id, 'project-description')" 
+                class="dtPad-LR">
+                    {{data.targetProject?.title}}
+            </div>
+            <div *ngIf="(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"
+                class="dtPad-LR dtVA-T">
+                    <input type="checkbox" (change)="setProjectDescription($event)" />
+                    <select id="updProjectColorCodeId" name="updProjectColorCodeId" [value]="data.editValueThird" [(ngModel)]="data.editValueThird" >                             
+                        <option *ngFor="let c of dtPlanner.colorCodes" [value]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
+                    </select>                                         
+                    <input type="text" [value]="data.editValueFirst" id="updProjectTitle" name="updProjecTitle" [(ngModel)]="data.editValueFirst"><br />
+                    <span clsss="dtPadLR">&nbsp;</span><textarea class="dtW-40P" rows="4" id="updProjectNote" name="updProjectNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>
+            </div>    
+    </div>    
+    <app-dt-tabs
     [items]="[{'title': 'Recurrences', 'selector': 'Project Recurrences'}, {'title': 'Items', 'selector': 'Project Plan Items'}]"
->    
-</app-dt-tabs>
-<div class="dtBorder-B dtGrid-98V dtBg-darkgray">              
+    >
+    </app-dt-tabs>
+</div>
+<div *ngIf="data?.targetProject == null" >
+    <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0)" class="dtGrid-100P dtBorder-T">
+        <div style="display: grid; grid-template-columns: 100%;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
+            <h4>Projects</h4>
+          </div>
+          <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
+            <div style="display: grid; grid-template-columns: 10% 90%;">
+              <div class="dtPad-LR dtBorder-R" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
+              <div class="dtPad-LR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+<div class="dtBorder-B dtGrid-100P dtBg-darkgray">              
     &nbsp;            
 </div>          
 

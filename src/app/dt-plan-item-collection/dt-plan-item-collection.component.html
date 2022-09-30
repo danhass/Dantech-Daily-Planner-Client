@@ -1,5 +1,13 @@
 
-    <div class="dtHilight" *ngFor="let item of items">        
-        <app-dt-plan-item [id]='item.id' [category]='category'></app-dt-plan-item>    
+    <div *ngIf="category == 'Project'">
+        <app-dt-project></app-dt-project>
     </div>
-
+    <div *ngIf="category == 'All-Recurrences'">
+        <app-dt-recurrence></app-dt-recurrence>
+    </div>
+    <div *ngIf="category == 'Plan Items'">
+        <app-dt-planner-days></app-dt-planner-days>
+    </div>
+    <div class="dtHilight" *ngFor="let item of items">        
+        <app-dt-plan-item [item]='item' [category]='category'></app-dt-plan-item>    
+    </div>    
