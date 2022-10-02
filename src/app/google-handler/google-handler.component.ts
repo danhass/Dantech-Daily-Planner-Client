@@ -36,17 +36,14 @@ export class GoogleHandlerComponent implements OnInit {
     let serviceFlag = this.cookies.get(dtConstants.dtPlannerServiceStatusKey);
     if(serviceFlag == "initializing") {
         setTimeout(() => { 
-        console.log ("Waiting for 10 seconds. ", new Date().toLocaleTimeString());
         this.delaySet = true;
         this.returnFromGoogle();
        }, 1000);
     }
     else {
-      console.log("Done with delay.", new Date().toLocaleTimeString());
-      console.log("Using code. ", new Date().toLocaleTimeString());
       let sentFlag = this.cookies.get("sentToGoogle");
       if (sentFlag == "true"){
-        res = "back";
+        res = "waiting for authentication...";
         let flag = this.cookies.get("sentToGoogle");
         if (flag !== 'true') {
           res = "multiple processing";
