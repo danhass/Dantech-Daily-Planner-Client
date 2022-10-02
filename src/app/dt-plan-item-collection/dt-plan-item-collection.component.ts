@@ -61,9 +61,10 @@ export class DtPlanItemCollectionComponent implements OnInit {
     }
 
     if(this.category == "Propagated Items") {
+      console.log ("Propagated Items");
       this.items = [];
       for (let i=0; i<this.dtPlanner.planItems.length; i++) {
-        if (this.dtPlanner.planItems[i].recurrence == null) {
+        if (this.dtPlanner.planItems[i].parent) {
           this.items.push(this.dtPlanner.planItems[i]);        
         }
       }

@@ -1,60 +1,5 @@
 <div *ngIf="category=='Project Recurrences' || category=='Recurrences'">
   <app-dt-recurrence-item [item]="item"></app-dt-recurrence-item>
-  <!--
-    <div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.projectMnemonic}}
-    </div>
-    <div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">
-        <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)"
-            (click)="editItemStart('title')"
-            tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : tooltipFormatted(item?.note)}}"
-        >
-            {{item?.title}}
-            <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''" 
-                style="color: red"
-            >                    *
-            </span>
-        </div>        
-        <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true" 
-            class="dtPad-LR dtBorder-R dtBorder-B" 
-            style="grid-column: 3 /span 1">
-              <input (change)="changePlanItemTitle(item?.id, $event)" type="checkbox" />
-              <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" /><br/>
-              <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
-        </div>                 
-    </div>
-    <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR">
-        <div *ngIf="!(data.fieldBeingEdited == 'startTime' && data.itemBeingEdited == item?.id)" 
-            (click)="editItemStart('startTime')"> 
-                {{item?.startTime}} 
-        </div>
-        <div *ngIf="(data.fieldBeingEdited == 'startTime' && data.itemBeingEdited == item?.id)"> 
-            <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2" 
-                (keypress)="editItemEnd($event)" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"
-            />: 
-            <input style="width: 30%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2" 
-                (keypress)="editItemEnd($event)" [value]="data.editValueSecond" [(ngModel)]="data.editValueSecond"
-            />
-        </div>
-    </div>
-    <div class="dtGridColumn-4 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.durationString}}
-    </div>
-    <div class="dtGridColumn-5 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.recurrenceName}}
-    </div>
-    <div class="dtGridColumn-6 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.recurrenceData}}
-    </div>
-    <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">        
-        <img *ngIf="data.updateStatus == ''"
-            src="./assets/icons/propagate.png" 
-            tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
-            style="width: 15px; height: 15px; border:2px solid gray;"
-        >    
-        <img *ngIf="data.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deleteRecurrence(item)" style="width: 15px; height: 15px; border:2px solid gray">
-    </div>
-  -->
 </div>
 
 <!--Plan Items-->
@@ -62,8 +7,8 @@
     <div class="dtGridColumn-1 dtBg-darkgray dtBorder-R dtBorder-B dtPad-LR">
         &nbsp;
     </div>
-    <div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.projectMnemonic}}
+    <div (click)="test()" class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">
+        {{item?.project?.shortCode}}
     </div>
     <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR"
         tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : tooltipFormatted(item?.note)}}" 

@@ -57,7 +57,6 @@ export interface DTPlanItem {
   priority: number,
   projectId: number | undefined,
   project: DTProject | undefined,
-  projectMnemonic: string,
   projectTitle: string,
   recurrence: number | undefined,
   recurrenceData: string | undefined,

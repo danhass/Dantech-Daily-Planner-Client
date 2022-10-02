@@ -118,4 +118,8 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
     let result = s?.replaceAll("\n", "<br />\n");
     return (result as string);
   }
+
+  test() {
+    console.log (this.category, this.item);
+  }
 }

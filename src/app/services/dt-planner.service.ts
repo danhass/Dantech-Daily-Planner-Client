@@ -252,7 +252,6 @@ export class DtPlannerService {
         items[i].project = this.projects.find( x => x.id == items[i].projectId);
         if (items[i].project) {
           items[i].projectTitle = (items[i].project?.title as string);
-          items[i].projectMnemonic = (items[i].project?.shortCode as string);
         }
       }
       for (let i=0; i< items.length; i++) {      
@@ -327,7 +326,7 @@ export class DtPlannerService {
             this.linkPlanItemsToProjects(this.planItems);
             url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
             this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
-              this.setRecurrenceItems(data);
+              this.setRecurrenceItems(data);            
               this.pingComponents("dtPlanner update complete");
             });
           });
