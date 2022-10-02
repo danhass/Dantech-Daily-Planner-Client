@@ -17,7 +17,6 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
     public data: DtData
   ) { 
     this.processPlannerServiceResult("");
-
   }
 
   changePlanItemTitle(itemId: number | undefined, event: any): void {
@@ -29,6 +28,16 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
       params["note"] = (this.data.editValueSecond == null || this.data.editValueSecond == 'null') ? null : this.data.editValueSecond;
       this.dtPlanner.updatePlanItem(params);
     }
+  }
+
+  deleteRecurrence(item: DTPlanItem | undefined) {
+    if (item == undefined) return;
+    let delChildren = (confirm('Delete child items of ' + item.title + ', too?'));
+    let proceed = confirm('Delete ' + item.title + "?");
+    if (proceed) {
+      this.data.updateStatus = "Deleting...";
+      this.dtPlanner.deleteRecurrence(item.id, delChildren);
+    } 
   }
 
   editItemEnd(event: any): void {
@@ -49,8 +58,7 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
     if (field == 'title') {
       this.data.editValueFirst = (this.item as DTPlanItem).title;
       this.data.editValueSecond = (this.item?.note as string);
-    }
-    
+    }    
   }
 
   getPlanItemOrRecurrenceItem(itemId: number): DTPlanItem | undefined {
@@ -110,6 +118,4 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
     let result = s?.replaceAll("\n", "<br />\n");
     return (result as string);
   }
-
-
 }

@@ -737,7 +737,10 @@
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Color:</div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <select id="newProjectColorCodeId" name="newProjectColorCodeId" [(ngModel)]="newProjectColorCodeId" >                             
-              <option *ngFor="let c of dtPlanner.colorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
+              <option *ngFor="let c of dtPlanner.colorCodes" [ngValue]="c.id" style="background-color: {{c.title}};">
+                {{c.title}}
+                <b *ngIf="dtPlanner.isColorOnAtLeastOneProject(c.id)"><i>*</i></b>
+              </option>                          
             </select>                                         
           </div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Priority:</div>

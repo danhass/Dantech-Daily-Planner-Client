@@ -7,17 +7,18 @@ export const dtConstants = {
   dtPlannerServiceStatusKey : "dtPlannerService",
   //apiTarget : "https://localhost:44324",
   apiTarget : "https://7822-54268.el-alt.com",
+  deletePlanItemEndpoint: "/Planner/DeletePlanItem",
+  deleteProjectEndpoint: "/Planner/DeleteProject",
   loginEndpoint : "/login",
   planItemsEndpoint : "/Planner/PlanItems",
   planStatiEndpoint : "/Planner/Stati",
   planColorCodeEndpoint : "/Planner/ColorCodes",
+  propagateEndpoint: "/Planner/Propagate",
   projectsEndpoint: "/Planner/Projects",
+  recurrencesEndpoint: "/Planner/Recurrences",
   sentToGoogleFlag: "sentToGoogle",
   setProjectEndpoint: "/Planner/SetProject",
-  setPlanItemEndPoint: "/Planner/SetPlanItem",
-  deletePlanItemEndPoint: "/Planner/DeletePlanItem",
-  recurrencesEndPoint: "/Planner/Recurrences",
-  propagateEndPoint: "/Planner/Propagate"
+  setPlanItemEndpoint: "/Planner/SetPlanItem"
 }
 
 export interface DTLogin {

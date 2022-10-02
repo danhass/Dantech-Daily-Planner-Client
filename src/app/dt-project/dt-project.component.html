@@ -1,21 +1,33 @@
 <div *ngIf="data?.targetProject != null" >
-    <div class="dtBorder-B dtGrid-15P83P" 
+    <div class="dtBorder-B dtGrid-15P40P43P" 
         style="background-color: {{data.targetProject?.colorString}}">
             <div class="dtCen dtBorder-R dtPad-LR">{{data.targetProject?.shortCode}}</div>
             <div *ngIf="!(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"
                 (click)="editItemStart(data.targetProject?.id, 'project-description')" 
-                class="dtPad-LR">
+                class="dtPad-LR dtBorder-R">
                     {{data.targetProject?.title}}
             </div>
             <div *ngIf="(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"
-                class="dtPad-LR dtVA-T">
+                class="dtPad-LR dtVA-T dtBorder-R">
                     <input type="checkbox" (change)="setProjectDescription($event)" />
                     <select id="updProjectColorCodeId" name="updProjectColorCodeId" [value]="data.editValueThird" [(ngModel)]="data.editValueThird" >                             
                         <option *ngFor="let c of dtPlanner.colorCodes" [value]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                          
                     </select>                                         
                     <input type="text" [value]="data.editValueFirst" id="updProjectTitle" name="updProjecTitle" [(ngModel)]="data.editValueFirst"><br />
                     <span clsss="dtPadLR">&nbsp;</span><textarea class="dtW-40P" rows="4" id="updProjectNote" name="updProjectNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>
-            </div>    
+            </div>
+            <div class="dtPad-LR" *ngIf="data.projectBeingDeleted != data.targetProject?.id">
+              <a class="deleteAnchor" (click)='data.projectBeingDeleted = data.targetProject?.id'>Delete</a>
+            </div>
+            <div class="dtPad-LR" *ngIf="data.projectBeingDeleted == data.targetProject?.id">
+              <input type="checkbox" [checked]="data.projectDeleteProjItems" (change)="data.projectDeleteProjItems = !data.projectDeleteProjItems"> Delete project's items.<br />
+              Transfer items to:
+              <select id="transferProjectItemsTarget" [value]="data.projectTransferItemsTo" [(ngModel)]="data.projectTransferItemsTo">                
+                <option [value]="0">NO TRANSFER</option>                
+                <option *ngFor="let project of filteredProjects()" [value]="project.id" style="background-color: {{project.colorString}};">{{project.title}}</option>              
+              </select><br />
+              <input type="checkbox" (click)="deleteProject(data.targetProject)" /> Delete this project.
+            </div>
     </div>    
     <app-dt-tabs
     [items]="[{'title': 'Recurrences', 'selector': 'Project Recurrences'}, {'title': 'Items', 'selector': 'Project Plan Items'}]"

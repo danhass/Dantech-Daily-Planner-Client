@@ -21,6 +21,15 @@ export class DtProjectComponent implements OnInit {
     });
   }
 
+  deleteProject(project: DTProject | undefined): void {
+    let p = (project as DTProject);
+    let proceed = confirm("Are you sure you wannt delete " + p.title);
+    if (proceed) {
+      this.dtPlanner.deleteProject(p.id, this.data.projectDeleteProjItems, this.data.projectTransferItemsTo);
+      this.data.targetProject = undefined;
+    }
+  }
+
   editItemStart(itemId: number | undefined, field: string): void {
     if (itemId == undefined) return;
     let itm = (this.dtPlanner.planItems as Array<DTPlanItem>).find(x => x.id == itemId);
@@ -57,7 +66,14 @@ export class DtProjectComponent implements OnInit {
     }
   }
 
+  filteredProjects(): Array<DTProject> {
+    return this.dtPlanner.projects.filter(x => x.id != this.data.projectBeingDeleted);
+  }
+
   processPlannerServiceResult(msg: string) {
+    this.data.projectBeingDeleted = 0;
+    this.data.projectDeleteProjItems = true;
+    this.data.projectTransferItemsTo = 0;
   }
 
   setProjectDescription(event: any): void {

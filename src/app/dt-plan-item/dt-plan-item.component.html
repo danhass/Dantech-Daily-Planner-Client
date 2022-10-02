@@ -1,4 +1,6 @@
-<div *ngIf="category=='Project Recurrences' || category=='Recurrences'" class="dtGrid-7P33P13P13P13P13P8P">
+<div *ngIf="category=='Project Recurrences' || category=='Recurrences'">
+  <app-dt-recurrence-item [item]="item"></app-dt-recurrence-item>
+  <!--
     <div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">
         {{item?.projectMnemonic}}
     </div>
@@ -45,12 +47,17 @@
         {{item?.recurrenceData}}
     </div>
     <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">        
-        <img src="./assets/icons/propagate.png" 
+        <img *ngIf="data.updateStatus == ''"
+            src="./assets/icons/propagate.png" 
             tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
             style="width: 15px; height: 15px; border:2px solid gray;"
         >    
+        <img *ngIf="data.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deleteRecurrence(item)" style="width: 15px; height: 15px; border:2px solid gray">
     </div>
+  -->
 </div>
+
+<!--Plan Items-->
 <div *ngIf="category=='Project Plan Items' || category=='Propagated Items'" class="dtGrid-4P7P35P15P15P15P9P">
     <div class="dtGridColumn-1 dtBg-darkgray dtBorder-R dtBorder-B dtPad-LR">
         &nbsp;

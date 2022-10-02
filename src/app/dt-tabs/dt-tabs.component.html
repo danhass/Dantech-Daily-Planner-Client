@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="dtGrid-100P dtW-100P dtBorder-B dtBorder-R dtBorder-L">
+<div class="dtGrid-100P dtW-100P dtBorder-B dtBorder-R">
     <div *ngFor="let item of items">
         <div *ngIf="item['title'].length > 0 && currentTab == item['title']" style="display: grid-item: 1">
             <app-dt-plan-item-collection  [category]="item['selector']"></app-dt-plan-item-collection>
