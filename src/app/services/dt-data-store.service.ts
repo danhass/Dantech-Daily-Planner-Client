@@ -52,7 +52,10 @@ export class DtData {
       this.editValueFirst = itm.title;
       if (itm.note != undefined) this.editValueSecond = (itm.note as string);
       else this.editValueSecond = "";
-    }    
+    } 
+    if (field == 'project') {
+      this.editValueFirst = (itm.project as DTProject).shortCode;
+    }
   }
 
   itemStatus(item: DTPlanItem | undefined): string {

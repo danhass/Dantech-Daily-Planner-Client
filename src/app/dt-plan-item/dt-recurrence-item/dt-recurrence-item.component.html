@@ -1,8 +1,18 @@
 <div class="dtGrid-7P33P13P13P13P13P8P">
-<div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">       
-    {{item?.project?.shortCode}}
-</div>
-<div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">    
+  <div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">    
+    <div *ngIf="!(data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id)" 
+      (click)="data.editPlanItemStart('project', item)"        
+    >
+      {{item?.project?.shortCode}}
+    </div>
+    <div *ngIf="data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id">
+      <input (change)="changePlanItem(item?.id, $event)" id="changeProject" type="checkbox" />     
+      <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="data.editValueFirst" > 
+        <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.shortCode">{{proj.shortCode}}</option>
+        </select>        
+    </div>
+  </div>
+  <div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">    
     <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)"    
         (click)="data.editPlanItemStart('title', item)"        
         tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : data.tooltipFormatted(item?.note)}}"        
@@ -16,13 +26,13 @@
     </div>            
     <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true"     
       class="dtPad-LR dtBorder-R dtBorder-B"       
-      style="grid-column: 3 /span 1"
+      style="grid-column: 2 /span 1"
     >    
-      <input (change)="changePlanItemTitle(item?.id, $event)" type="checkbox" />
-              <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" /><br/>
-              <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
-        </div>                 
-    </div>
+      <input (change)="changePlanItem(item?.id, $event)" id="changeTitle" type="checkbox" />      
+      <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" /><br/>      
+      <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
+    </div>                 
+  </div>
     <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR">
         <div *ngIf="!(data.fieldBeingEdited == 'startTime' && data.itemBeingEdited == item?.id)" 
             (click)="data.editPlanItemStart('startTime', item)"> 
@@ -47,11 +57,12 @@
         {{item?.recurrenceData}}
     </div>
     <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">        
-        <img *ngIf="data.updateStatus == ''"
+      <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>
+      <img *ngIf="data.updateStatus == '' && dtPlanner.updateStatus == ''"
             src="./assets/icons/propagate.png" 
             tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
             style="width: 15px; height: 15px; border:2px solid gray;"
         >    
-        <img *ngIf="data.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deleteRecurrence(item)" style="width: 15px; height: 15px; border:2px solid gray">
+        <img *ngIf="data.updateStatus == '' && dtPlanner.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="deleteRecurrence(item)" style="width: 15px; height: 15px; border:2px solid gray">
     </div>
   </div>

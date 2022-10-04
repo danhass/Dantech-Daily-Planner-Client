@@ -25,7 +25,8 @@
         {{item?.durationString}}
     </div>
     <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">
-        <img *ngIf="item?.parent" src="./assets/icons/propagate.png" 
+        <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>
+        <img *ngIf="item?.parent && dtPlanner.updateStatus == ''" src="./assets/icons/propagate.png" 
         tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
         style="width: 15px; height: 15px; border:2px solid gray;">
     </div>

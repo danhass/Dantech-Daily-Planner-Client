@@ -18,14 +18,27 @@ export class DtRecurrenceItemComponent implements OnInit, OnChanges {
     this.processPlannerServiceResult("");
   }
 
-  changePlanItemTitle(itemId: number | undefined, event: any): void {
+  changePlanItem(itemId: number | undefined, event: any): void {
     this.data.updateStatus = "Updating item";
     let itm = this.getPlanItemOrRecurrenceItem((itemId as number));
-    if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
-      let params = this.dtPlanner.planItemParams(itm.id);
-      params["title"] = this.data.editValueFirst;
-      params["note"] = (this.data.editValueSecond == null || this.data.editValueSecond == 'null') ? null : this.data.editValueSecond;
-      this.dtPlanner.updatePlanItem(params);
+    if (event.srcElement.id == 'changeTitle') {
+      if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
+        let params = this.dtPlanner.planItemParams(itm.id);
+        params["title"] = this.data.editValueFirst;
+        params["note"] = (this.data.editValueSecond == null || this.data.editValueSecond == 'null') ? null : this.data.editValueSecond;
+        this.dtPlanner.updatePlanItem(params);
+      }
+    }
+    if (event.srcElement.id == 'changeProject') {
+      if (itm != undefined && (itm.project?.shortCode != this.data.editValueFirst))
+      {
+        let proj = this.dtPlanner.projects.find(x => x.shortCode == this.data.editValueFirst);
+        if (proj) {          
+          let params = this.dtPlanner.planItemParams(itm.id);
+          params["projectId"] = proj.id;
+          this.dtPlanner.updatePlanItem(params);
+        }
+      }
     }
   }
 
