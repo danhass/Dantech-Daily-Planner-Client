@@ -18,46 +18,6 @@ export class DtRecurrenceItemComponent implements OnInit, OnChanges {
     this.processPlannerServiceResult("");
   }
 
-  changePlanItem(itemId: number | undefined, event: any): void {
-    this.data.updateStatus = "Updating item";
-    let itm = this.getPlanItemOrRecurrenceItem((itemId as number));
-    if (event.srcElement.id == 'changeTitle') {
-      if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
-        let params = this.dtPlanner.planItemParams(itm.id);
-        params["title"] = this.data.editValueFirst;
-        params["note"] = (this.data.editValueSecond == null || this.data.editValueSecond == 'null') ? null : this.data.editValueSecond;
-        this.dtPlanner.updatePlanItem(params);
-      }
-    }
-    if (event.srcElement.id == 'changeProject') {
-      if (itm != undefined && (itm.project?.shortCode != this.data.editValueFirst))
-      {
-        let proj = this.dtPlanner.projects.find(x => x.shortCode == this.data.editValueFirst);
-        if (proj) {          
-          let params = this.dtPlanner.planItemParams(itm.id);
-          params["projectId"] = proj.id;
-          this.dtPlanner.updatePlanItem(params);
-        }
-      }
-    }
-  }
-
-  deleteRecurrence(item: DTPlanItem | undefined) {
-    if (item == undefined) return;
-    let delChildren = (confirm('Delete child items of ' + item.title + ', too?'));
-    let proceed = confirm('Delete ' + item.title + "?");
-    if (proceed) {
-      this.data.updateStatus = "Deleting...";
-      this.dtPlanner.deleteRecurrence(item.id, delChildren);
-    } 
-  }
-
-  getPlanItemOrRecurrenceItem(itemId: number): DTPlanItem | undefined {
-    let itm = this.dtPlanner.planItems.find(x => x.id == itemId);
-    if (itm == undefined) itm = this.dtPlanner.recurrenceItems.find(x => x.id == itemId);
-    return itm;
-  }
-
   ngOnInit(): void {
     this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
       this.processPlannerServiceResult(msg);

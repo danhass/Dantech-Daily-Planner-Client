@@ -52,7 +52,7 @@ export class DtPlannerDaysComponent implements OnInit {
     let item = (this.dtPlanner.planItems.find(x => x.id == itemId) as DTPlanItem);
     let proceed = confirm('Delete ' + item.title + "?");
     if (proceed) {
-      this.dtPlanner.deletePlanItem(itemId);
+      this.dtPlanner.deletePlanItem(item);
     }
   }
 

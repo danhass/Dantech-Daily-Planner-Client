@@ -8,21 +8,78 @@
         &nbsp;
     </div>
     <div (click)="test()" class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">
+      <div *ngIf="!(data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id)" 
+        (click)="data.editPlanItemStart('project', item)"        
+      >
         {{item?.project?.shortCode}}
+      </div>
+      <div *ngIf="data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id">
+        <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond)  && data.clearPlanItem()" id="changeProject" type="checkbox" />     
+        <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="data.editValueFirst" > 
+          <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.shortCode">{{proj.shortCode}}</option>
+          </select>        
+      </div>
     </div>
-    <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR"
-        tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : tooltipFormatted(item?.note)}}" 
-    >
-        {{item?.title}}<span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''" style="color: red">*</span>
+    <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR">    
+      <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)"    
+          (click)="data.editPlanItemStart('title', item)"        
+          tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : data.tooltipFormatted(item?.note)}}"        
+      >    
+          {{item?.title}}        
+          <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''"         
+              style="color: red"            
+          >                    
+              *        
+          </span>
+      </div>            
+      <div *ngIf="data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id"     
+        class="dtPad-LR dtBorder-R dtBorder-B dtGridColumn-2"       
+      >    
+        <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond) && data.clearPlanItem()" id="changeTitle" type="checkbox" />      
+        <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" /><br/>      
+        <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
+      </div>                 
     </div>
-    <div class="dtGridColumn-4 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.dayString}}
+      <div class="dtGridColumn-4 dtBorder-R dtBorder-B dtPad-LR">
+        <div *ngIf="!(data.fieldBeingEdited == 'day' && data.itemBeingEdited == item?.id)"
+          (click)="data.editPlanItemStart('day', item)"
+        >
+          {{item?.dayString}}
+        </div>
+        <div *ngIf="data.fieldBeingEdited == 'day' && data.itemBeingEdited == item?.id">
+          <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, '')  && data.clearPlanItem()" id="changeDay" type="checkbox" />
+          <input type="date" id="editPlanItemDay" name="editPlanItemDay" [ngModel]="data.editValueFirst | date: 'yyyy-MM-dd'" (ngModelChange)="data.editValueFirst = $event"/>
+        </div>
     </div>
     <div class="dtGridColumn-5 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.startTime}}
+      <div *ngIf="!(data.fieldBeingEdited == 'startTime' && data.itemBeingEdited == item?.id)"     
+        (click)="data.editPlanItemStart('startTime', item)">       
+        {{item?.startTime}}     
+      </div>    
+      <div *ngIf="(data.fieldBeingEdited == 'startTime' && data.itemBeingEdited == item?.id)">               
+        <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"              
+          (keypress)="dtPlanner.editPlanItem($event, item?.id, 'startTime', data.editValueFirst, data.editValueSecond)" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"                  
+        />:              
+        <input style="width: 30%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2"                 
+          (keypress)="dtPlanner.editPlanItem($event, item?.id, 'startTime', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [value]="data.editValueSecond" [(ngModel)]="data.editValueSecond"                    
+        />            
+      </div>
     </div>
     <div class="dtGridColumn-6 dtBorder-R dtBorder-B dtPad-LR">
-        {{item?.durationString}}
+      <div class="dtW-100P" *ngIf="!(data.fieldBeingEdited == 'duration' && data.itemBeingEdited == item?.id)"    
+        (click)="data.editPlanItemStart('duration', item)"      
+      >    
+        {{item?.durationString}}      
+        <span *ngIf="!item?.durationString">-----------</span>    
+      </div>    
+      <div *ngIf="(data.fieldBeingEdited == 'duration' && data.itemBeingEdited == item?.id)">      
+        <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"       
+          (keypress)="dtPlanner.editPlanItem($event, item?.id, 'duration', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"        
+        />:       
+          <input style="width: 30%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2"         
+          (keypress)="dtPlanner.editPlanItem($event, item?.id, 'duration', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [(ngModel)]="data.editValueSecond"        
+        />    
+      </div>
     </div>
     <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">
         <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>

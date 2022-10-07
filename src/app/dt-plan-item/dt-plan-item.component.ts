@@ -29,17 +29,7 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
       this.dtPlanner.updatePlanItem(params);
     }
   }
-
-  deleteRecurrence(item: DTPlanItem | undefined) {
-    if (item == undefined) return;
-    let delChildren = (confirm('Delete child items of ' + item.title + ', too?'));
-    let proceed = confirm('Delete ' + item.title + "?");
-    if (proceed) {
-      this.data.updateStatus = "Deleting...";
-      this.dtPlanner.deleteRecurrence(item.id, delChildren);
-    } 
-  }
-
+  
   editItemEnd(event: any): void {
     this.data.fieldBeingEdited = "";
   }

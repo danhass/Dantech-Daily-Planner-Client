@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrence } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
+import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { Time } from '@angular/common';
 
@@ -55,21 +56,72 @@ export class DtPlannerService {
     });
   }
 
-  deletePlanItem(itemId: number) {
-    let item = (this.planItems.find(x => x.id == itemId) as DTPlanItem);    
+  changePlanItem(event: any, item: DTPlanItem | undefined, editValueFirst: string, editValueSecond: string): boolean {
+    if (item == undefined) return true;
+    let itm = (item as DTPlanItem);
+    if (event.srcElement.id == 'changeTitle') {
+      if (itm != undefined && (itm.title != editValueFirst || itm.note != editValueSecond)) {
+        this.updateStatus = "Updating...";
+        let params = this.planItemParamsFromItem(itm);
+        params["title"] = editValueFirst;
+        params["note"] = (editValueSecond == null || editValueSecond == 'null') ? null : editValueSecond;
+        this.updatePlanItem(params);
+      }
+    }
+    if (event.srcElement.id == 'changeProject') {
+      if (itm != undefined && (itm.project?.shortCode != editValueFirst)) {
+        this.updateStatus = "Updating...";
+        let proj = this.projects.find(x => x.shortCode == editValueFirst);
+        if (proj) {          
+          let params = this.planItemParamsFromItem(itm);
+          params["projectId"] = proj.id;
+          this.updatePlanItem(params);
+        }
+      }
+    }
+
+    if (event.srcElement.id == 'changeDay') {      
+      let startDate = new Date(itm.start);      
+      let newDate = new Date(editValueFirst);
+      newDate = new Date(newDate.setDate(newDate.getDate() + 1));
+      if (startDate.toLocaleDateString() != newDate.toLocaleDateString()) {
+        let endDate = new Date(itm.start);
+        let newStart = new Date(new Date(newDate.setHours(startDate.getHours())).setMinutes(startDate.getMinutes()));
+        if (itm.durationString) {
+          let Hr = +itm.durationString.split(':')[0];      
+          if (isNaN(Hr)) Hr = 0;      
+          let Mins = +itm.durationString.split(':')[1];      
+          if (isNaN(Mins)) Mins = 0;      
+          endDate = new Date(newStart.setHours(newDate.getHours() + Hr));
+          endDate = new Date(endDate.setMinutes(endDate.getMinutes() + Mins));
+        }
+        let params = this.planItemParamsFromItem(itm);
+        params['startTime'] = moment(newStart.toLocaleTimeString(), "h:mm:ss A").format("HH:mm");   
+        params['start'] = newStart.toLocaleDateString();  
+        params['endTime'] = moment(endDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm");      
+        params['end'] = endDate.toLocaleDateString();  
+        this.updatePlanItem(params);
+      }
+    }
+    return true;
+  }
+
+  deletePlanItem(item: DTPlanItem | undefined): boolean {
+    if (item === undefined) return false;
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };    
     let params: { [index: string]: any } = {      
       sessionId: this.sessionId,      
       planItemId: item.id    
     }      
-    let url = dtConstants.apiTarget + dtConstants.deletePlanItemEndpoint;    
+    let url = dtConstants.apiTarget + dtConstants.deletePlanItemEndpoint; 
+    this.updateStatus = "Deleting...";
     this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {    
       url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";    
-      this.http.get<[DTPlanItem]>(url, { headers: { 'Content-Type': 'text/plain' } }).subscribe(data => {    
-        this.setPlanItems(data);    
-        this.pingComponents("Delete complete.")    
+      this.http.get<[DTPlanItem]>(url, { headers: { 'Content-Type': 'text/plain' } }).subscribe(data => {   
+        this.update();  
       });    
-    });    
+    });
+    return true;    
   }
 
   deleteProject(projectId: number, deleteItems: boolean, transfer: number): void {
@@ -86,17 +138,86 @@ export class DtPlannerService {
     });        
   }
 
-  deleteRecurrence(itemId: number, deleteChildren: boolean) {
+  deleteRecurrence(item: DTPlanItem | undefined) {
+    if (item == undefined) return;
+    let delChildren = (confirm('Delete child items of ' + item.title + ', too?'));
+    let proceed = confirm('Delete ' + item.title + "?");
+    if (!proceed) return;
+    this.updateStatus = "Deleting...";
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };    
     let params: { [index: string]: any } = {      
       sessionId: this.sessionId,      
-      planItemId: itemId,
-      deleteChildren: deleteChildren    
+      planItemId: item?.id,
+      deleteChildren: delChildren    
     }      
     let url = dtConstants.apiTarget + dtConstants.deletePlanItemEndpoint;    
     this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {    
       this.update();
     });        
+  }
+
+  editPlanItem(event: any, itemId: number | undefined, field: string, newVal1: string, newVal2: string): boolean {
+    if (event['key'] !== 'Enter') return true;
+    let itm = this.planItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.recurrenceItems.find(x => x.id == itemId);
+    if (itm == undefined) itm = this.projectItems.find(x => x.id == itemId);
+    if (itm == undefined || !field || (!newVal1 && !newVal2) ) return true;
+
+    let doUpdate = false;
+    let params = this.planItemParamsFromItem(itm);
+
+    if (field == 'duration') {      
+      let hr = +newVal1;       
+      if (isNaN(hr)) hr = 0;             
+      let mins = +newVal2;      
+      if (isNaN(mins)) mins = 0;         
+      let oldHr = +itm.durationString.split(':')[0];      
+      if (isNaN(oldHr)) oldHr = 0;      
+      let oldMin = +itm.durationString.split(':')[1];      
+      if (isNaN(oldMin)) oldMin = 0;      
+      if (hr == oldHr && mins == oldMin) return true;          
+      doUpdate = true;      
+      let startDate = new Date(itm.start);      
+      let endDate = new Date(itm.start);                   
+      if (!isNaN(hr)) endDate = new Date(endDate.setHours(endDate.getHours() + hr));           
+      if (!isNaN(mins)) endDate = new Date(endDate.setMinutes(endDate.getMinutes() + mins));      
+      params['startTime'] = moment(startDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm");      
+      params['endTime'] = moment(endDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm");      
+      params['end'] = endDate.toLocaleDateString();         
+    }
+
+    if (field == 'startTime') {
+      let hr = +newVal1;       
+      if (isNaN(hr)) hr = 0;             
+      let mins = +newVal2;      
+      if (isNaN(mins)) mins = 0;         
+      let oldHr = +itm.startTime.split(':')[0];      
+      if (isNaN(oldHr)) oldHr = 0;      
+      let oldMin = +itm.startTime.split(':')[1];      
+      if (isNaN(oldMin)) oldMin = 0;      
+      if (hr == oldHr && mins == oldMin) return true;          
+      doUpdate = true;
+      let startDate = new Date(new Date(new Date(itm.day).setHours(hr)).setMinutes(mins));
+      let endDate = startDate;
+      if (itm.durationString && itm.durationString.length > 0) {
+        hr = +itm.durationString.split(':')[0];
+        if (isNaN(hr)) hr = 0;             
+        mins = +itm.durationString.split(':')[1];
+        if (isNaN(mins)) mins = 0;
+        endDate = new Date(endDate.setHours(endDate.getHours() + hr))
+        endDate = new Date(endDate.setMinutes(endDate.getMinutes() + mins));         
+      }      
+      params['start'] = startDate.toLocaleDateString();
+      params['startTime'] = (moment(startDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm"));
+      params['end'] = endDate.toLocaleDateString();
+      params['endTime'] = (moment(endDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm"));
+    }
+
+    if (doUpdate) {
+      this.updateStatus = 'Updating...';
+      this.updatePlanItem(params);
+    }
+    return true;
   }
 
   getColorCodes(): Array<DTColorCode>{
@@ -198,6 +319,13 @@ export class DtPlannerService {
   planItemParams(itemId: number): { [index: string]: any } {
     let item = this.planItems.find(x => x.id == itemId) as DTPlanItem;
     if (item == undefined) item = this.recurrenceItems.find(x => x.id == itemId) as DTPlanItem;
+    if (item == undefined) item = this.projectItems.find(x => x.id == itemId) as DTPlanItem;
+    if (item == undefined) return [];
+    return this.planItemParamsFromItem(item);
+  }
+
+  planItemParamsFromItem(item: DTPlanItem): { [index: string]: any } {
+    if (item == undefined) return [];
     let start = new Date(item.start);
     start.setDate(start.getDate());
     let end = new Date(start.toLocaleDateString());
@@ -347,23 +475,7 @@ export class DtPlannerService {
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' }; 
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint;
     this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newPlanItems: Array<DTPlanItem> = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          newPlanItems = [...newPlanItems, data[i]];
-        }
-      }
-      this.setPlanItems(newPlanItems);
-      this.firstPlanItemId = (this.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id; 
-      url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
-      this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
-        this.setRecurrenceItems(data);
-        this.pingComponents("Plan item updated.")
-        if (this.projectItems.length > 0) {
-          let projId = (this.projectItems[0].projectId as number);
-          this.loadProjectItems(projId);
-        }
-      })   
+      this.update();
     });
   }
 }

@@ -58,7 +58,7 @@
         </div>
         <div *ngIf="!(data.itemBeingEdited == item.id && data.fieldBeingEdited == 'duration')" 
           class="dtCen dtPad-LR dtBorder-R dtBorder-B"                   
-          style="grid-column-start: 5; grid-column-end: 6;">                  
+          style="grid-column-start: 5; grid-column-end: 6; background-color: {{data.itemStatus(item)}};">                  
             {{item.durationString}}
         </div>
         <div *ngIf="data.itemBeingEdited == item.id && data.fieldBeingEdited == 'duration'" class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column-start: 5; grid-column-end: 6;">*{{item.durationString}}*</div>

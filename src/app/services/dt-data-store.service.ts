@@ -32,8 +32,15 @@ export class DtData {
   constructor() {    
   }
 
-  editPlanItemEnd(event: any): void {
-    this.fieldBeingEdited = "";  
+  clearPlanItem() : boolean {
+    this.fieldBeingEdited = "";
+    this.itemBeingEdited = 0;
+    return true;  
+  }
+
+  editPlanItemEnd(event: any): boolean {
+    if (event['key'] !== 'Enter') return true;
+    return this.clearPlanItem();
   }
 
   editPlanItemStart(field: string, item: DTPlanItem | undefined ): void {
@@ -48,6 +55,14 @@ export class DtData {
         this.editValueSecond = (itm.startTime as string).split(':')[1];  
       }
     }
+    if (field == 'duration') {
+      this.editValueFirst = '00';
+      this.editValueSecond = '00';
+      if (itm.durationString.length && itm.durationString.indexOf(":") > 0) {
+        this.editValueFirst = (itm.durationString as string).split(':')[0];
+        this.editValueSecond = (itm.durationString as string).split(':')[1];  
+      }
+    }    
     if (field == 'title') {
       this.editValueFirst = itm.title;
       if (itm.note != undefined) this.editValueSecond = (itm.note as string);
@@ -55,6 +70,9 @@ export class DtData {
     } 
     if (field == 'project') {
       this.editValueFirst = (itm.project as DTProject).shortCode;
+    }
+    if (field == 'day') {
+      this.editValueFirst = itm.dayString;
     }
   }
 
