@@ -38,7 +38,7 @@ export class DtPlannerDaysComponent implements OnInit {
     }
   }
 
- dayOfWeek(date: any): string {
+  dayOfWeek(date: any): string {
     let theDate = new Date(date);
     let returnValue = ("0" + (theDate.getMonth() + 1)).slice(-2) + "-" + ("0" + theDate.getDate()).slice(-2);
     if (this.data.notMobile()) {
@@ -47,16 +47,7 @@ export class DtPlannerDaysComponent implements OnInit {
     return returnValue;
   }
 
-  deletePlanItem(itemId: number) {
-    this.data.updateStatus = "Deleting...";
-    let item = (this.dtPlanner.planItems.find(x => x.id == itemId) as DTPlanItem);
-    let proceed = confirm('Delete ' + item.title + "?");
-    if (proceed) {
-      this.dtPlanner.deletePlanItem(item);
-    }
-  }
-
- editItemEnd(event: any): void {
+  editItemEnd(event: any): void {
     if (event['key'] === 'Enter') {
       let itm = this.dtPlanner.planItems.find(x => x.id == this.data.itemBeingEdited);
       if (itm != undefined) {
@@ -132,18 +123,6 @@ export class DtPlannerDaysComponent implements OnInit {
     return itm;
   }
   
-  movePlanItemToNextDay(itemId: number) {
-    this.data.updateStatus = "Updating item";
-    let params = this.planItemParams(itemId);
-    let start = new Date(params["start"]);
-    start.setDate(start.getDate() + 1);
-    let end = new Date(params["end"]);
-    end.setDate(end.getDate() + 1);
-    params["start"] = start.toLocaleDateString();
-    params["end"] = end.toLocaleDateString();
-    this.dtPlanner.updatePlanItem(params);
-  }
-
   planItemDateChanged(date: any): boolean {
     let thisDate = this.dayOfWeek(date);
     let changed = false;

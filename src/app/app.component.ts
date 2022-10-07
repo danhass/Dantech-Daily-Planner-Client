@@ -363,7 +363,7 @@ export class AppComponent implements OnInit {
 
   processPlannerServiceResult(msg: string): void {
     this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
-    this.data.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
+    this.dtPlanner.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
     this.data.updateStatus = "";
     this.data.itemBeingEdited = 0; 
     this.newPlanItemRecurrenceData = ""; 

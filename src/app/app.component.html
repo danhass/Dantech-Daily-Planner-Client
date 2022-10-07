@@ -700,8 +700,16 @@
             <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0)">
               <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
                 <div style="display: grid; grid-template-columns: 10% 90%;">
-                  <div class="dtPad-LR dtBorder-R" (click)="showOrHideProject(project.id)" style="grid-column: 1 /span 1; background-color: {{project.colorString}};"><span>&nbsp;</span></div>
-                  <div class="dtPad-LR" (click)="showOrHideProject(project.id)" style="grid-column: 2 /span 1; background-color: {{project.statusObj.colorString}}">{{project.title}}</div>
+                  <div class="dtPad-LR dtGridColumn-1 dtBorder-R" (click)="data.setTargetProject(project) && dtPlanner.loadProjectItems(project.id)" style="background-color: {{project.colorString}};">
+                    <span>&nbsp;</span></div>
+                  <div class="dtGridColumn-2 dtPad-LR" (click)="data.setTargetProject(project) && dtPlanner.loadProjectItems(project.id)" style="background-color: {{project.statusObj.colorString}}"
+                    tooltip="{{project?.notes == undefined || project?.notes == null || project?.notes == 'null'? '' : data.tooltipFormatted(project?.notes)}}"
+                  >{{project.title}}
+                    <span *ngIf="project?.notes != undefined && project?.notes != null && project?.notes != 'null' && project?.notes != ''"         
+                      style="color: red"            
+                    > *
+                    </span>               
+                  </div>
                 </div>
               </div>
               <div *ngIf="!(dtPlanner.projects && dtPlanner.projects.length > 0)" style="display: table; border-collapse: collapse; width: 100%;">        
@@ -784,7 +792,7 @@
             </div>
             <div style="grid-column: 1; " *ngFor="let item of dtPlanner.planItems">
               <div *ngIf="item.recurrence == undefined || item.recurrence < 1" style="border-bottom: none;">
-                <div *ngIf="item.id == data.firstPlanItemId" style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
+                <div *ngIf="item.id == dtPlanner.firstPlanItemId" style="display: grid; grid-template-columns: 7% 9% 45% 12% 12% 14%;">
                   <div class="dtCen dtBorder-R dtBorder-B" style="grid-column: 1; background-color: gray;"> &nbsp; </div>
                   <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 2;">Proj</div>
                   <div class="dtCen dtPad-LR dtBorder-R dtBorder-B" style="grid-column: 3;">Title</div>

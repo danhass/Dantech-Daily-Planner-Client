@@ -19,6 +19,7 @@ import { DtPlanItemComponent } from './dt-plan-item/dt-plan-item.component';
 import { DtRecurrenceComponent } from './dt-recurrence/dt-recurrence.component';
 import { DtPlannerDaysComponent } from './dt-planner-days/dt-planner-days.component';
 import { DtRecurrenceItemComponent } from './dt-plan-item/dt-recurrence-item/dt-recurrence-item.component';
+import { DtDateSeparatedPlanItemComponent } from './dt-plan-item/dt-date-separated-plan-item/dt-date-separated-plan-item.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { DtRecurrenceItemComponent } from './dt-plan-item/dt-recurrence-item/dt-
     DtPlanItemComponent,
     DtRecurrenceComponent,
     DtPlannerDaysComponent,
-    DtRecurrenceItemComponent
+    DtRecurrenceItemComponent,
+    DtDateSeparatedPlanItemComponent
   ],
   imports: [
     BrowserModule,

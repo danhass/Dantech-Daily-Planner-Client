@@ -95,16 +95,4 @@ export class DtProjectComponent implements OnInit {
     this.data.editValueSecond = "";
     this.data.editValueThird = "";
   }
-
-  showOrHideProject(projId: number): void {
-    if (this.data.projectVisible) {
-      this.data.projectVisible = false;
-      this.data.targetProject = undefined;
-      this.data.projectItems = [];
-    } else {
-      this.data.projectVisible = true;
-      this.data.targetProject = this.dtPlanner.projects.find(x => x.id == projId);
-      this.dtPlanner.loadProjectItems(projId);    
-    }
-  }
 }
