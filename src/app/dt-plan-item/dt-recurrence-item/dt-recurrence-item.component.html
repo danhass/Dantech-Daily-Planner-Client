@@ -1,4 +1,4 @@
-<div class="dtGrid-7P33P13P13P13P13P8P">
+<div class="dtGrid-7P33P12P12P17P12P7P">
   <div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">    
     <div *ngIf="!(data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id)" 
       (click)="data.editPlanItemStart('project', item)"        
@@ -13,16 +13,16 @@
     </div>
   </div>
   <div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">    
-    <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)"    
-        (click)="data.editPlanItemStart('title', item)"        
-        tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : data.tooltipFormatted(item?.note)}}"        
+    <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)" 
+      tooltip={{data.tooltipFormatted(item?.note)}}
+      (click)="data.editPlanItemStart('title', item)"        
     >    
-        {{item?.title}}        
-        <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''"         
+      {{item?.title}}        
+      <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''"         
             style="color: red"            
-        >                    
-          *        
-        </span>
+      >                    
+        *        
+      </span>
     </div>            
     <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true"     
       class="dtPad-LR dtBorder-R dtBorder-B dtGridColumn-2"       
@@ -68,13 +68,19 @@
   <div class="dtGridColumn-6 dtBorder-R dtBorder-B dtPad-LR">    
     {{item?.recurrenceData}}  
   </div>  
-  <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">            
+  <div class="dtGridColumn-7 dtDFlex dtBg-darkgray dtBorder-B dtPad-LR">                
     <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>    
-    <img *ngIf="data.updateStatus == '' && dtPlanner.updateStatus == ''"    
-      src="./assets/icons/propagate.png"       
-      tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)"       
-      style="width: 15px; height: 15px; border:2px solid gray;"      
-    >       
-      <img *ngIf="data.updateStatus == '' && dtPlanner.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="dtPlanner.deleteRecurrence(item)" style="width: 15px; height: 15px; border:2px solid gray">    
-    </div>
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+      *ngIf="dtPlanner.updateStatus == ''"
+      tooltip="delete" (click)="dtPlanner.deleteRecurrence(item)"         
+    >      
+      highlight_off
+    </mat-icon>    
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+      *ngIf="dtPlanner.updateStatus == ''"
+      tooltip="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)"         
+    >      
+      import_export
+    </mat-icon>    
   </div>
+</div>

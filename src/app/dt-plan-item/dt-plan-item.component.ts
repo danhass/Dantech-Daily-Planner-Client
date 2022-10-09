@@ -20,7 +20,7 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
   }
 
   changePlanItemTitle(itemId: number | undefined, event: any): void {
-    this.data.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating item";
     let itm = this.getPlanItemOrRecurrenceItem((itemId as number));
     if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
       let params = this.planItemParams(itm.id);
@@ -102,11 +102,6 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
   }
 
   processPlannerServiceResult(msg: string): void {         
-  }
-
-  tooltipFormatted(s:string | undefined): string {    
-    let result = s?.replaceAll("\n", "<br />\n");
-    return (result as string);
   }
 
   test() {

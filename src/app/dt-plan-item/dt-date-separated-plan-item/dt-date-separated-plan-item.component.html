@@ -1,6 +1,6 @@
 <div class="dtGrid-4P7P50P15P15P9P">
-  <div class="dtCen dtGridColumn-1 dtBg-Gray dtBorder-R dtBorder-B ">
-    <input *ngIf="data.updateStatus == ''" [checked]="item?.completed" tooltip="toggle complete" (change)="dtPlanner.togglePlanItemCompleted(item, $event)" type="checkbox" />
+  <div class="dtCen dtGridColumn-1 dtBg-gray dtBorder-R dtBorder-B ">
+    <input *ngIf="dtPlanner.updateStatus == ''" [checked]="item?.completed" (change)="dtPlanner.togglePlanItemCompleted(item, $event)" type="checkbox" />
   </div>
   <div *ngIf="!(data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'project' && item?.completed != true)" 
     class="dtCen dtGridColumn-2dtPad-LR dtBorder-R dtBorder-B" 
@@ -19,10 +19,13 @@
   </div>
   <div *ngIf="!(data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true)" 
     class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B" 
+    tooltip={{data.tooltipFormatted(item?.note)}}
     (click)="data.editPlanItemStart('title', item)"
-    tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : data.tooltipFormatted(item?.note)}}" 
     style="background-color: {{data.itemStatus(item)}}">
-      {{item?.title}} <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''" style="color: red">*</span>
+      {{item?.title}} 
+      <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''" style="color: red">
+        *
+      </span>
   </div>                 
   <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true" 
     class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B" 
@@ -66,9 +69,26 @@
     
     />    
   </div>
-  <div class="dtCen dtBg-Gray dtPad-T dtGridColumn-6 dtBorder-B">                  
-    <img *ngIf="data.updateStatus == ''" src="./assets/icons/next.png" tooltip="next day" alt="next day" (click)="dtPlanner.movePlanItemToNextDay(item)" style="width: 15px; height: 15px; border:2px solid gray">
-    <img *ngIf="data.updateStatus == ''" src="./assets/icons/delete.jpg" tooltip="delete" alt="delete" (click)="dtPlanner.deletePlanItem(item)" style="width: 15px; height: 15px; border:2px solid gray">
+  <div class="dtCen dtDFlex dtBg-darkgray dtPad-T dtGridColumn-6 dtBorder-B">  
+    <span *ngIf="dtPlanner.updateStatus != ''"> {{dtPlanner.updateStatus}} </span>                
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"     
+      *ngIf="dtPlanner.updateStatus == ''"
+      tooltip="next day" (click)="dtPlanner.movePlanItemToNextDay(item)"         
+    >      
+      arrow_circle_right      
+    </mat-icon>    
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+      *ngIf="dtPlanner.updateStatus == ''"
+      tooltip="delete" (click)="dtPlanner.deletePlanItem(item)"         
+    >      
+      highlight_off
+    </mat-icon>    
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"     
+      *ngIf="dtPlanner.updateStatus == '' && item?.parent"
+      tooltip="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)"         
+    >      
+      import_export      
+    </mat-icon>    
   </div>
 </div>
 

@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
   }
 
   addPlanItem(): void {
-    this.data.updateStatus = "Update underway.";
+    this.dtPlanner.updateStatus = "Update underway.";
     if (!(this.newPlanItemTitle.length > 0)) return;
     this.newPlanItemStart = this.newPlanItemStartDate.toString();
     if (this.newPlanItemEndDate >= this.newPlanItemStartDate) {
@@ -147,7 +147,7 @@ export class AppComponent implements OnInit {
   }
 
   changePlanItemTitle(itemId: number, event: any): void {
-    this.data.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating item";
     let itm = this.getPlanItemOrRecurrenceItem(itemId);
     if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
       let params = this.planItemParams(itm.id);
@@ -158,7 +158,7 @@ export class AppComponent implements OnInit {
   }
 
   clearUpdateStatus(): void {
-    this.data.updateStatus = "";
+    this.dtPlanner.updateStatus = "";
   }
  
   dayOfWeek(date: any): string {
@@ -171,7 +171,7 @@ export class AppComponent implements OnInit {
   }
 
   deletePlanItem(itemId: number) {
-    this.data.updateStatus = "Deleting...";
+    this.dtPlanner.updateStatus = "Deleting...";
     let item = (this.dtPlanner.planItems.find(x => x.id == itemId) as DTPlanItem);
     let proceed = confirm('Delete ' + item.title + "?");
     if (proceed) {
@@ -300,7 +300,7 @@ export class AppComponent implements OnInit {
   }
 
   movePlanItemToNextDay(itemId: number) {
-    this.data.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating item";
     let params = this.planItemParams(itemId);
     let start = new Date(params["start"]);
     start.setDate(start.getDate() + 1);
@@ -363,8 +363,7 @@ export class AppComponent implements OnInit {
 
   processPlannerServiceResult(msg: string): void {
     this.plannerInitializedFlag = !(this.cookies.check(dtConstants.dtPlannerServiceStatusKey));
-    this.dtPlanner.firstPlanItemId = (this.dtPlanner.planItems.find(x => x.recurrence == undefined || x.recurrence < 1) as DTPlanItem).id;  
-    this.data.updateStatus = "";
+    this.dtPlanner.updateStatus = "";
     this.data.itemBeingEdited = 0; 
     this.newPlanItemRecurrenceData = ""; 
     this.newProjectTitle = '';
@@ -393,7 +392,7 @@ export class AppComponent implements OnInit {
   }
 
   propagateRecurrence(itemId: number): void {
-    this.data.updateStatus = "Updateing...";
+    this.dtPlanner.updateStatus = "Updateing...";
     this.dtPlanner.propagateRecurrence(itemId);
   }
 
@@ -477,7 +476,7 @@ export class AppComponent implements OnInit {
   }
 
   togglePlanItemCompleted(itemId: number, event: any): void {
-    this.data.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating item";
     let completed = event.srcElement.checked;
     let params = this.planItemParams(itemId);
     params["completed"] = completed;
@@ -486,11 +485,6 @@ export class AppComponent implements OnInit {
 
   toggleShowRecurrences() : void {
     this.showRecurrences = !this.showRecurrences;
-  }
-
-  tooltipFormatted(s:string): string {
-    let result = s.replaceAll("\n", "<br />\n");
-    return result;
   }
 
   trackProjectsItem(index: number, project: DTProject): number {

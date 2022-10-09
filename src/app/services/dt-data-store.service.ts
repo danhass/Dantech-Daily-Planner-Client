@@ -26,7 +26,6 @@ export class DtData {
   public targetProject: DTProject | undefined = undefined;
   public test: string | undefined = undefined;
   public timeStamp: string = new Date().toLocaleString();
-  public updateStatus: string = "";
 
   constructor() {    
   }

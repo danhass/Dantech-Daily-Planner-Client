@@ -21,9 +21,9 @@
       </div>
     </div>
     <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR">    
-      <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)"    
-          (click)="data.editPlanItemStart('title', item)"        
-          tooltip="{{item?.note == undefined || item?.note == null || item?.note == 'null'? '' : data.tooltipFormatted(item?.note)}}"        
+      <div *ngIf="!(data.fieldBeingEdited == 'title' && data.itemBeingEdited == item?.id)"          
+        tooltip={{data.tooltipFormatted(item?.note)}}        
+        (click)="data.editPlanItemStart('title', item)"        
       >    
           {{item?.title}}        
           <span *ngIf="item?.note != undefined && item?.note != null && item?.note != 'null' && item?.note != ''"         
@@ -81,11 +81,26 @@
         />    
       </div>
     </div>
-    <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">
-        <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>
-        <img *ngIf="item?.parent && dtPlanner.updateStatus == ''" src="./assets/icons/propagate.png" 
-        tooltip="propagate" alt="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)" 
-        style="width: 15px; height: 15px; border:2px solid gray;">
-    </div>
+    <div class="dtGridColumn-7 dtDFlex dtBg-darkgray dtBorder-B dtPad-LR">      
+      <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>      
+      <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"     
+        *ngIf="dtPlanner.updateStatus == ''"
+        tooltip="next day" (click)="dtPlanner.movePlanItemToNextDay(item)"         
+      >      
+        arrow_circle_right      
+      </mat-icon>    
+      <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+        *ngIf="dtPlanner.updateStatus == ''"
+        tooltip="delete" (click)="dtPlanner.deletePlanItem(item)"         
+      >      
+        highlight_off
+      </mat-icon>    
+      <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+        *ngIf="item?.parent && dtPlanner.updateStatus == ''"        
+        tooltip="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)"         
+      >      
+        import_export      
+      </mat-icon>
+  </div>
 </div>
 
