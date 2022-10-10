@@ -74,6 +74,7 @@ export class DtProjectComponent implements OnInit {
     this.data.projectBeingDeleted = 0;
     this.data.projectDeleteProjItems = true;
     this.data.projectTransferItemsTo = 0;
+    this.data.targetProject = this.dtPlanner.projects.find(x => x.id == this.data.targetProject?.id);
   }
 
   setProjectDescription(event: any): void {

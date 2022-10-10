@@ -1,17 +1,27 @@
-  <div *ngIf="data?.targetProject != null && data?.targetProject != undefined" >
-    <div class="dtBorder-B dtGrid-15P40P43P" 
-      style="background-color: {{data.targetProject?.colorString}}"
+  <div *ngIf="data.targetProject != null && data.targetProject != undefined" >
+    <div class="dtBorder-B dtGrid-15P60P23P" 
+      style="background-color: {{data.targetProject.colorString}}"
     >
-      <div *ngIf="!(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-title')"
+      <div *ngIf="!(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-shortCode')"
+       (click)="data.editProjectStart('project-shortCode', data.targetProject)"                         
         class="dtCen dtBorder-R dtPad-LR"
       >
-        {{data.targetProject?.shortCode}}
-      </div>      
+        {{data.targetProject.shortCode}}
+      </div>  
+      <div *ngIf="data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-shortCode'"
+        class="dtCen dtBorder-R dtPad-LR"
+      >
+        <input type="checkbox" (change)="dtPlanner.changeProject($event, data.targetProject, 'project-shortCode', data.editValueFirst) && data.clearPlanItem()" />        
+        <input type="text" style="width: 50%;" (keyup)="data.keyUp($event)" [value]="data.editValueFirst" id="updProjectShortCode" name="updProjecShortCode" 
+          [(ngModel)]="data.editValueFirst"
+        >   
+      </div>    
       <div *ngIf="!(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"      
-        (click)="editItemStart(data.targetProject?.id, 'project-description')"                         
+        (click)="editItemStart(data.targetProject.id, 'project-description')"                         
+        tooltip={{data.tooltipFormatted(data.targetProject.notes)}}
         class="dtPad-LR dtBorder-R"
       >      
-        {{data.targetProject?.title}}        
+        {{data.targetProject.title}}        
         <span *ngIf="data.targetProject?.notes != undefined && data.targetProject?.notes != null && data.targetProject?.notes != 'null' && data.targetProject?.notes != ''"                 
           style="color: red"                      
         > 
@@ -21,23 +31,29 @@
       <div *ngIf="(data.itemBeingEdited == data.targetProject?.id && data.fieldBeingEdited == 'project-description')"      
         class="dtPad-LR dtVA-T dtBorder-R"
       >      
-        <input type="checkbox" (change)="setProjectDescription($event)" />        
-        <select id="updProjectColorCodeId" name="updProjectColorCodeId" [value]="data.editValueThird" [(ngModel)]="data.editValueThird">         
+        <input type="checkbox" (change)="setProjectDescription($event)" /> Update<br />       
+        Title: 
+        <input class="dtW-30P" type="text" [value]="data.editValueFirst" id="updProjectTitle" name="updProjecTitle" [(ngModel)]="data.editValueFirst">       
+        <br />
+        Color:
+        <select class="30P" id="updProjectColorCodeId" name="updProjectColorCodeId" [value]="data.editValueThird" 
+          [(ngModel)]="data.editValueThird"
+        >         
           <option *ngFor="let c of dtPlanner.colorCodes" [value]="c.id" style="background-color: {{c.title}};">{{c.title}}</option>                                  
         </select>                                                 
-        <input type="text" [value]="data.editValueFirst" id="updProjectTitle" name="updProjecTitle" [(ngModel)]="data.editValueFirst"><br />        
-        <span clsss="dtPadLR">&nbsp;</span><textarea class="dtW-40P" rows="4" id="updProjectNote" name="updProjectNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>      
+        <br />
+        <textarea class="dtW-40P" rows="4" id="updProjectNote" name="updProjectNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>      
       </div>      
       <div class="dtPad-LR" *ngIf="data.projectBeingDeleted != data.targetProject?.id">        
         <mat-icon class="dtCen dtMatButton dtBorder-W"
           *ngIf="dtPlanner.updateStatus == ''"
-          tooltip="delete" (click)="data.projectBeingDeleted = data.targetProject?.id"         
+          tooltip="delete" (click)="data.projectBeingDeleted = data.targetProject.id"         
         >      
           highlight_off
         </mat-icon>    
         <mat-icon class="dtCen dtMatButton dtBorder-W"
           *ngIf="dtPlanner.updateStatus == ''"
-          tooltip="done" (click)="data.targetProject = undefined"         
+          tooltip="done" (click)="data.clearPlanItem() && dtPlanner.clearProject()"         
         >      
           done
         </mat-icon>    
@@ -51,12 +67,13 @@
         </select><br />          
         <input type="checkbox" (click)="deleteProject(data.targetProject)" /> Delete this project.        
       </div>            
-    </div>    
+    </div> 
+  </div>
+
     <app-dt-tabs
       [items]="[{'title': 'Recurrences', 'selector': 'Project Recurrences'}, {'title': 'Items', 'selector': 'Project Plan Items'}]"
     >
     </app-dt-tabs>
-  </div>
 
   <div *ngIf="data?.targetProject == null" >
     <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0)" class="dtGrid-100P dtBorder-T">
@@ -82,10 +99,5 @@
         </div>
     </div>
   </div>
-
-  <div class="dtBorder-B dtGrid-100P dtBg-darkgray">              
-    &nbsp;            
-  </div>          
-
 
 

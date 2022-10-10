@@ -33,6 +33,7 @@ export class DtData {
   clearPlanItem() : boolean {
     this.fieldBeingEdited = "";
     this.itemBeingEdited = 0;
+    this.targetProject = undefined;
     return true;  
   }
 
@@ -67,10 +68,19 @@ export class DtData {
       else this.editValueSecond = "";
     } 
     if (field == 'project') {
-      this.editValueFirst = (itm.project as DTProject).shortCode;
+      this.editValueFirst = (itm.project as DTProject).shortCode;    
     }
     if (field == 'day') {
       this.editValueFirst = itm.dayString;
+    }
+  }
+
+  editProjectStart(field: string, project: DTProject | undefined): void {
+    this.fieldBeingEdited = field;
+    let proj = (project as DTProject);
+    this.itemBeingEdited = proj.id;
+    if (field == 'project-shortCode') {
+      this.editValueFirst = proj.shortCode;
     }
   }
 
@@ -95,6 +105,10 @@ export class DtData {
     if (new Date(startDate) < new Date(nowDate)) statusColor = "Pink";
     if (item?.completed == true) statusColor = "DarkSeaGreen";
     return statusColor;
+  }
+  
+  keyUp(event: any) {
+    console.log(event, this.editValueFirst);
   }
 
   notMobile(): boolean {

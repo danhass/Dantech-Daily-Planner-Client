@@ -487,10 +487,6 @@ export class AppComponent implements OnInit {
     this.showRecurrences = !this.showRecurrences;
   }
 
-  trackProjectsItem(index: number, project: DTProject): number {
-    return project.id;
-  }
-
   validEmail(): boolean {
     return this.loginInfo != undefined &&
       this.loginInfo.email != undefined &&

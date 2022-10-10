@@ -52,7 +52,7 @@ export class DtPlannerService {
       let newProjects: Array<DTProject> = [];
       if (data) { for (let i = 0; i < data.length; i++) { newProjects = [...newProjects, data[i]]; } }
       this.setProjects(newProjects);
-      this.pingComponents("Project Added.");
+      this.update();
     });
   }
 
@@ -103,6 +103,27 @@ export class DtPlannerService {
         this.updatePlanItem(params);
       }
     }
+    return true;
+  }
+
+  changeProject(event: any, project: DTProject | undefined, field: string, editValueFirst: string): boolean {
+    let proj = (project as DTProject)
+    if (field == 'project-shortCode' && proj.shortCode == editValueFirst) return true;
+    let params: { [index: string]: any } = {
+      sessionId: this.sessionId,
+      id: proj.id,
+      title: proj.title,
+      shortCode: editValueFirst,
+      status: proj.status,
+      colorCode: proj.colorCodeId,
+    };
+    if (proj.notes && proj.notes !== 'null') params['notes'] = proj.notes;
+    this.addProject(params);
+    return true;
+  }
+
+  clearProject(): boolean {
+    this.projectItems = [];
     return true;
   }
 
