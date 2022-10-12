@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrence } from './dt-constants.service';
+import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrence, itemStatus } from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
@@ -34,14 +34,7 @@ export class DtPlannerService {
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint;
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
     this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
-      let newPlanItems: Array<DTPlanItem> = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          newPlanItems = [...newPlanItems, data[i]];
-        }
-      }
-      this.setPlanItems(newPlanItems);
-      this.pingComponents("Item added.");
+      this.update();
     });
   }
   
@@ -106,24 +99,50 @@ export class DtPlannerService {
     return true;
   }
 
-  changeProject(event: any, project: DTProject | undefined, field: string, editValueFirst: string): boolean {
+  changeProject(
+    event: any, project: DTProject | undefined, 
+    field: string, 
+    editValueFirst: string,
+    editValueSecond: string,
+    editValueThird: string,
+    editValueFourth: string)
+    : boolean {
     let proj = (project as DTProject)
     if (field == 'project-shortCode' && proj.shortCode == editValueFirst) return true;
+    if (field == 'project-description' && 
+        proj.title == editValueFirst &&
+        proj.notes == editValueSecond &&
+        proj.colorCodeId?.toString() == editValueThird &&
+        proj.priority?.toString() == editValueFourth
+       ) return true;
+
     let params: { [index: string]: any } = {
       sessionId: this.sessionId,
       id: proj.id,
       title: proj.title,
-      shortCode: editValueFirst,
+      shortCode: proj.shortCode,
       status: proj.status,
       colorCode: proj.colorCodeId,
     };
-    if (proj.notes && proj.notes !== 'null') params['notes'] = proj.notes;
+    if (proj.priority && editValueFourth) params['priority'] = proj.priority.toString();
+    if (proj.notes && proj.notes !== 'null' && !(field == 'project-description' && !editValueSecond)) params['notes'] = proj.notes;
+
+    if (field == 'project-shortCode') params['shortCode'] = editValueFirst;
+
+    if (field == 'project-description') {
+      params['title'] = editValueFirst;
+      if (editValueSecond || params['notes']) params['notes'] = editValueSecond
+      params['colorCode'] = editValueThird;
+      if (editValueFourth) params['priority'] = editValueFourth;
+    }
+
     this.addProject(params);
     return true;
   }
 
   clearProject(): boolean {
     this.projectItems = [];
+    this.pingComponents("Clear project");
     return true;
   }
 
@@ -265,7 +284,7 @@ export class DtPlannerService {
     this.cookie.set(dtConstants.dtPlannerServiceStatusKey, "initializing")
     this.updateStatus = 'Initializing...'
     let header = new HttpHeaders({'Content-Type':'text/plain'});
-    let url = dtConstants.apiTarget + dtConstants.planColorCodeEndpoint;    
+    let url = dtConstants.apiTarget + dtConstants.planColorCodeEndpoint; 
     this.http.get<[DTColorCode]>(url, {headers: header}).subscribe(data => {      
       this.colorCodes = [ {id: 0, title: "None", note: ""} ];      
       for (let i=0; i < data.length; i++){        
@@ -498,6 +517,21 @@ export class DtPlannerService {
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
           }
           this.pingComponents("dtPlanner update complete");          
+          for (let i = 0; i < this.planItems.length; i++) {
+            this.planItems[i].statusColor = itemStatus(this.planItems[i]);
+          }
+          let today = new Date().toDateString();
+          let todayItems = this.planItems.filter((item) => { return (item.dayString == today && !item.completed); }) 
+          for (let i = 1; i < todayItems.length; i++)
+          {
+            for (let j = i-1; j >= 0 && todayItems[i].statusColor != 'DarkKhaki' && todayItems[i].statusColor != 'PaleGoldenRod'; j--)
+            {
+              let itemStart = new Date(todayItems[i].start);
+              if (todayItems[j].durationString && (moment(todayItems[j].start).add(todayItems[j].duration.hours, 'h').add(todayItems[j].duration.minutes, 'm').toDate() > itemStart)) {
+                todayItems[i].statusColor = todayItems[i].durationString ? 'DarkKhaki' : 'PaleGoldenRod';
+              }
+            }
+          }
         });
       });           
     });  

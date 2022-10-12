@@ -384,7 +384,6 @@ export class AppComponent implements OnInit {
           updatedProject?.notes != this.data.targetProject.notes
         ) {
           this.data.targetProject = updatedProject;
-          console.log ("calling update.");
           this.dtPlanner.update();
         } 
       this.data.projectItems = this.dtPlanner.projectItems;     

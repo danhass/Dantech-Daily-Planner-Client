@@ -70,13 +70,13 @@
   </div>  
   <div class="dtGridColumn-7 dtDFlex dtBg-darkgray dtBorder-B dtPad-LR">                
     <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>    
-    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder"
       *ngIf="dtPlanner.updateStatus == ''"
       tooltip="delete" (click)="dtPlanner.deleteRecurrence(item)"         
     >      
       highlight_off
     </mat-icon>    
-    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder-W"
+    <mat-icon class="dtCen dtFont-White dtMatButton dtBorder"
       *ngIf="dtPlanner.updateStatus == ''"
       tooltip="propagate" (click)="dtPlanner.propagateRecurrence(item?.id!)"         
     >      

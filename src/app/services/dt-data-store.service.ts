@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { dtConstants, DTLogin, DTProject, DTPlanItem } from './dt-constants.service';
+import { dtConstants, DTLogin, DTProject, DTPlanItem, itemStatus } from './dt-constants.service';
 
 // The point here is to expose data that can be used across all components.
 
@@ -12,6 +12,7 @@ export class DtData {
   public editValueFirst: string = "";
   public editValueSecond: string = "";
   public editValueThird: string = "";
+  public editValueFourth: string = "";
   public fieldBeingEdited: string = "";
   public itemBeingEdited: number = 0;
   public itemsRowCount: number = 0;
@@ -30,16 +31,21 @@ export class DtData {
   constructor() {    
   }
 
-  clearPlanItem() : boolean {
+  clearPlanItem(fieldOnly: boolean) : boolean {
     this.fieldBeingEdited = "";
+    if (fieldOnly) return true;
     this.itemBeingEdited = 0;
     this.targetProject = undefined;
+    this.editValueFirst = '';
+    this.editValueSecond = '';
+    this.editValueThird = '';
+    this.editValueFourth = '';
     return true;  
   }
 
   editPlanItemEnd(event: any): boolean {
     if (event['key'] !== 'Enter') return true;
-    return this.clearPlanItem();
+    return this.clearPlanItem(false);
   }
 
   editPlanItemStart(field: string, item: DTPlanItem | undefined ): void {
@@ -82,29 +88,12 @@ export class DtData {
     if (field == 'project-shortCode') {
       this.editValueFirst = proj.shortCode;
     }
-  }
-
-  itemStatus(item: DTPlanItem | undefined): string {
-    let now = new Date();
-    let start = new Date(item?.start as Date);
-    let end = new Date(item?.start as Date)
-    end.setHours(start.getHours() + (item as DTPlanItem).duration.hours);
-    end.setMinutes(start.getMinutes() + (item as DTPlanItem).duration.minutes);
-
-    let nowDate = now.toLocaleDateString();
-    let nowTime = now.toLocaleTimeString();
-    let startDate = start.toLocaleDateString();
-    let startTime = start.toLocaleTimeString();
-    let endDate = end.toLocaleDateString();
-    let endTime = end.toLocaleTimeString();
-
-    let statusColor = "LightGray";
-    if (startDate == nowDate) statusColor = "LightGoldenrodYellow"
-    if (startDate == nowDate && start < now) statusColor = "Khaki";
-    if (endDate == nowDate && end < now) statusColor = "LightPink";
-    if (new Date(startDate) < new Date(nowDate)) statusColor = "Pink";
-    if (item?.completed == true) statusColor = "DarkSeaGreen";
-    return statusColor;
+    if (field == 'project-description') {
+      this.editValueFirst = proj.title;
+      this.editValueSecond = proj.notes;
+      this.editValueThird = (proj.colorCodeId as number).toString();
+      this.editValueFourth = (proj.priority as number).toString();
+    }
   }
   
   keyUp(event: any) {

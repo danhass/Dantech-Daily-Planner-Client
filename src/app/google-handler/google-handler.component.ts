@@ -29,10 +29,8 @@ export class GoogleHandlerComponent implements OnInit {
 
   returnFromGoogle(): string {
     this.cycleCount = this.cycleCount + 1;
-    console.log ("Cycle: ", this.cycleCount);
     this.justBackFromGoogle = false;
     let res = "";
-    console.log("Setting 10 sec dely.", new Date().toLocaleTimeString());  
     let serviceFlag = this.cookies.get(dtConstants.dtPlannerServiceStatusKey);
     if(serviceFlag == "initializing") {
         setTimeout(() => { 

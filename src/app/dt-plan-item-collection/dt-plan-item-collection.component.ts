@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DTPlanItem } from '../services/dt-constants.service';
+import { dtConstants, DTPlanItem, itemStatus } from '../services/dt-constants.service';
 import { DtData } from '../services/dt-data-store.service';
 import { DtPlannerService } from '../services/dt-planner.service';
 
@@ -26,6 +26,9 @@ export class DtPlanItemCollectionComponent implements OnInit {
   }
 
   processPlannerServiceResult(msg: string): void {
+    if (msg === 'Clear project') {
+    }
+
     this.items = []; 
     if (this.category == "Project Recurrences") {
       for (let i = 0; i<this.dtPlanner.projectItems.length; i++) {
