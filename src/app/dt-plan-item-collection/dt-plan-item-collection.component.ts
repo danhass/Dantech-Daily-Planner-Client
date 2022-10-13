@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { dtConstants, DTPlanItem, itemStatus } from '../services/dt-constants.service';
+import { dtConstants, DTPlanItem } from '../services/dt-constants.service';
 import { DtData } from '../services/dt-data-store.service';
 import { DtPlannerService } from '../services/dt-planner.service';
 

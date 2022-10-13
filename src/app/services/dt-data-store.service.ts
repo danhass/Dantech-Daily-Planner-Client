@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { dtConstants, DTLogin, DTProject, DTPlanItem, itemStatus } from './dt-constants.service';
+import { dtConstants, DTLogin, DTProject, DTPlanItem} from './dt-constants.service';
 
 // The point here is to expose data that can be used across all components.
 

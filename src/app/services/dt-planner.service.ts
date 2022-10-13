@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrence, itemStatus } from './dt-constants.service';
+import { dtConstants, DTColorCode, DTLogin, DTPlanItem, DTProject, DTStatus, DTUser, DTRecurrence} from './dt-constants.service';
 import { CookieService } from 'ngx-cookie-service';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
@@ -54,7 +54,6 @@ export class DtPlannerService {
     let itm = (item as DTPlanItem);
     if (event.srcElement.id == 'changeTitle') {
       if (itm != undefined && (itm.title != editValueFirst || itm.note != editValueSecond)) {
-        this.updateStatus = "Updating...";
         let params = this.planItemParamsFromItem(itm);
         params["title"] = editValueFirst;
         params["note"] = (editValueSecond == null || editValueSecond == 'null') ? null : editValueSecond;
@@ -63,7 +62,6 @@ export class DtPlannerService {
     }
     if (event.srcElement.id == 'changeProject') {
       if (itm != undefined && (itm.project?.shortCode != editValueFirst)) {
-        this.updateStatus = "Updating...";
         let proj = this.projects.find(x => x.shortCode == editValueFirst);
         if (proj) {          
           let params = this.planItemParamsFromItem(itm);
@@ -72,7 +70,6 @@ export class DtPlannerService {
         }
       }
     }
-
     if (event.srcElement.id == 'changeDay') {      
       let startDate = new Date(itm.start);      
       let newDate = new Date(editValueFirst);
@@ -517,21 +514,6 @@ export class DtPlannerService {
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
           }
           this.pingComponents("dtPlanner update complete");          
-          for (let i = 0; i < this.planItems.length; i++) {
-            this.planItems[i].statusColor = itemStatus(this.planItems[i]);
-          }
-          let today = new Date().toDateString();
-          let todayItems = this.planItems.filter((item) => { return (item.dayString == today && !item.completed); }) 
-          for (let i = 1; i < todayItems.length; i++)
-          {
-            for (let j = i-1; j >= 0 && todayItems[i].statusColor != 'DarkKhaki' && todayItems[i].statusColor != 'PaleGoldenRod'; j--)
-            {
-              let itemStart = new Date(todayItems[i].start);
-              if (todayItems[j].durationString && (moment(todayItems[j].start).add(todayItems[j].duration.hours, 'h').add(todayItems[j].duration.minutes, 'm').toDate() > itemStart)) {
-                todayItems[i].statusColor = todayItems[i].durationString ? 'DarkKhaki' : 'PaleGoldenRod';
-              }
-            }
-          }
         });
       });           
     });  

@@ -118,29 +118,6 @@ export interface DTRecurrence {
   daysToPopulate: number | undefined
 }
 
-export function itemStatus(item: DTPlanItem | undefined): string {
-  let now = new Date();
-  let start = new Date(item?.start as Date);
-  let end = new Date(item?.start as Date)
-  end.setHours(start.getHours() + (item as DTPlanItem).duration.hours);
-  end.setMinutes(start.getMinutes() + (item as DTPlanItem).duration.minutes);
-
-  let nowDate = now.toLocaleDateString();
-  let nowTime = now.toLocaleTimeString();
-  let startDate = start.toLocaleDateString();
-  let startTime = start.toLocaleTimeString();
-  let endDate = end.toLocaleDateString();
-  let endTime = end.toLocaleTimeString();
-
-  let statusColor = "LightGray";
-  if (startDate == nowDate) statusColor = "LightGoldenrodYellow"
-  if (startDate == nowDate && start < now) statusColor = "Khaki";
-  if (endDate == nowDate && end < now) statusColor = "LightPink";
-  if (new Date(startDate) < new Date(nowDate)) statusColor = "Pink";
-  if (item?.completed == true) statusColor = "DarkSeaGreen";
-  return statusColor;
-}
-
 @Injectable({
   providedIn: 'root'
 })

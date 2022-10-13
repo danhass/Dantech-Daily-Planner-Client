@@ -13,7 +13,7 @@
     style="background-color: {{ item?.project?.colorString ?? 'white'}}; "
   >
     <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond)  && data.clearPlanItem(false)" id="changeProject" type="checkbox" />     
-    <select id="updPlanItemProjectId" name="updPlanItemProjectId" [(ngModel)]="data.editValueFirst" > 
+    <select id="updPlanItemProjectId" name="updPlanItemProjectId" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" > 
         <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
       </select>          
   </div>
