@@ -28,8 +28,7 @@ export class DtPlanItemCollectionComponent implements OnInit {
   processPlannerServiceResult(msg: string): void {
     if (msg === 'Clear project') {
     }
-
-    this.items = []; 
+    this.items = [];
     if (this.category == "Project Recurrences") {
       for (let i = 0; i<this.dtPlanner.projectItems.length; i++) {
         if ((this.dtPlanner?.projectItems[i]?.recurrence as Number) > 0) {
@@ -37,7 +36,6 @@ export class DtPlanItemCollectionComponent implements OnInit {
         }
       }
     }
-
     if(this.category == "Project Plan Items"){
       for (let i=0; i<this.dtPlanner.projectItems.length; i++) {
         if (this.dtPlanner.projectItems[i].recurrence == null) {
@@ -45,7 +43,6 @@ export class DtPlanItemCollectionComponent implements OnInit {
         }
       }
     }
-
     if(this.category == "All-Recurrences") {
       for (let i=0; i<this.dtPlanner.recurrenceItems.length; i++) {
         if ((this.dtPlanner?.recurrenceItems[i]?.recurrence as number) > 0) {
@@ -53,7 +50,6 @@ export class DtPlanItemCollectionComponent implements OnInit {
         }
       }
     }
-
     if (this.category == "Recurrences") {
       this.items = [];
       for (let i=0; i<this.dtPlanner.recurrenceItems.length; i++) {
@@ -62,7 +58,6 @@ export class DtPlanItemCollectionComponent implements OnInit {
         }
       }
     }
-
     if(this.category == "Propagated Items") {
       this.items = [];
       for (let i=0; i<this.dtPlanner.planItems.length; i++) {

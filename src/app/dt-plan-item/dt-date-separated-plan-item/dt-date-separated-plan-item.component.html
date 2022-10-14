@@ -14,7 +14,12 @@
   >
     <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond)  && data.clearPlanItem(false)" id="changeProject" type="checkbox" />     
     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" > 
-        <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
+        <option style="background-color: {{proj.colorString}};" 
+          *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id"
+          [value]="proj.shortCode"
+        >
+          {{proj.title}}
+        </option>
       </select>          
   </div>
   <div *ngIf="!(data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true)" 
@@ -65,8 +70,7 @@
       (keypress)="dtPlanner.editPlanItem($event, item?.id, 'duration', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"        
     />:         
     <input style="width: 30%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2"             
-      (keypress)="dtPlanner.editPlanItem($event, item?.id, 'duration', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [(ngModel)]="data.editValueSecond"        
-    
+      (keypress)="dtPlanner.editPlanItem($event, item?.id, 'duration', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [(ngModel)]="data.editValueSecond"            
     />    
   </div>
   <div class="dtCen dtDFlex dtBg-darkgray dtPad-T dtGridColumn-6 dtBorder-B">  

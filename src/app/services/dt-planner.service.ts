@@ -202,7 +202,7 @@ export class DtPlannerService {
 
     let doUpdate = false;
     let params = this.planItemParamsFromItem(itm);
-
+ 
     if (field == 'duration') {      
       let hr = +newVal1;       
       if (isNaN(hr)) hr = 0;             
@@ -235,15 +235,15 @@ export class DtPlannerService {
       if (hr == oldHr && mins == oldMin) return true;          
       doUpdate = true;
       let startDate = new Date(new Date(new Date(itm.day).setHours(hr)).setMinutes(mins));
-      let endDate = startDate;
-      if (itm.durationString && itm.durationString.length > 0) {
+      let endDate = new Date(startDate);
+      if (itm.durationString.length > 0) {
         hr = +itm.durationString.split(':')[0];
         if (isNaN(hr)) hr = 0;             
         mins = +itm.durationString.split(':')[1];
         if (isNaN(mins)) mins = 0;
-        endDate = new Date(endDate.setHours(endDate.getHours() + hr))
-        endDate = new Date(endDate.setMinutes(endDate.getMinutes() + mins));         
-      }      
+        endDate.setHours(endDate.getHours() + hr);
+        endDate.setMinutes(endDate.getMinutes() + mins);         
+      }   
       params['start'] = startDate.toLocaleDateString();
       params['startTime'] = (moment(startDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm"));
       params['end'] = endDate.toLocaleDateString();
@@ -493,7 +493,7 @@ export class DtPlannerService {
     this.updateStatus = 'Items...';
     let url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true";
     this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
-      this.setPlanItems(data);      
+      this.setPlanItems(data); 
       this.updateStatus = 'Recurrences';
       url = dtConstants.apiTarget + dtConstants.planItemsEndpoint + "?sessionId=" + this.sessionId + "&includeCompleted=true&getAll=true&onlyRecurrences=true";
       this.http.get<[DTPlanItem]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe( data => {
@@ -510,7 +510,7 @@ export class DtPlannerService {
           this.updateStatus = '';                               
           if (this.projectItems.length > 0) {
             this.projectItems = this.recurrenceItems.filter(x => x.project != undefined && x.project.id == projId);
-            this.projectItems = this.projectItems.concat(this.planItems.filter(x => x.project != undefined && x.project.id == projId));
+            this.projectItems = this.projectItems.concat(this.planItems.filter(x => x.project != undefined && x.project.id == projId && !x.recurrence));
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
           }
           this.pingComponents("dtPlanner update complete");          

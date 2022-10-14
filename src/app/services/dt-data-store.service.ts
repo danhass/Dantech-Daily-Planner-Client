@@ -74,7 +74,7 @@ export class DtData {
       else this.editValueSecond = "";
     } 
     if (field == 'project') {
-      this.editValueFirst = (itm.project as DTProject).shortCode;    
+      this.editValueFirst = (itm.project as DTProject).shortCode; 
     }
     if (field == 'day') {
       this.editValueFirst = itm.dayString;
