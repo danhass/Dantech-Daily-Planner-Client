@@ -49,7 +49,7 @@ export class DtPlannerService {
     });
   }
 
-  changePlanItem(event: any, item: DTPlanItem | undefined, editValueFirst: string, editValueSecond: string): boolean {
+  changePlanItem(event: any, item: DTPlanItem | undefined, editValueFirst: string, editValueSecond: string, editValueThird: string): boolean {
     if (item == undefined) return true;
     let itm = (item as DTPlanItem);
     if (event.srcElement.id == 'changeTitle') {
@@ -58,6 +58,39 @@ export class DtPlannerService {
         params["title"] = editValueFirst;
         params["note"] = (editValueSecond == null || editValueSecond == 'null') ? null : editValueSecond;
         this.updatePlanItem(params);
+      }
+    }
+    if (event.srcElement.id == 'changeStart') {
+      if (itm != undefined && 
+          ((itm.startTime as string).split(':')[0] != editValueFirst || 
+            (itm.startTime as string).split(':')[1] != editValueSecond ||
+            ((itm.fixedStart && !editValueThird) || (!itm.fixedStart && editValueThird)
+          ))) {
+        let params = this.planItemParamsFromItem(itm);
+        let hr = +editValueFirst;       
+        if (isNaN(hr)) hr = 0;             
+        let mins = +editValueSecond;      
+        if (isNaN(mins)) mins = 0;         
+        let oldHr = +itm.startTime.split(':')[0];      
+        if (isNaN(oldHr)) oldHr = 0;      
+        let oldMin = +itm.startTime.split(':')[1];      
+        if (isNaN(oldMin)) oldMin = 0;   
+        let startDate = new Date(new Date(new Date(itm.day).setHours(hr)).setMinutes(mins));
+        let endDate = new Date(startDate);
+        if (itm.durationString.length > 0) {
+          hr = +itm.durationString.split(':')[0];
+          if (isNaN(hr)) hr = 0;             
+          mins = +itm.durationString.split(':')[1];
+          if (isNaN(mins)) mins = 0;
+          endDate.setHours(endDate.getHours() + hr);
+          endDate.setMinutes(endDate.getMinutes() + mins);         
+        }   
+        params['start'] = startDate.toLocaleDateString();
+        params['startTime'] = (moment(startDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm"));
+        params['end'] = endDate.toLocaleDateString();
+        params['endTime'] = (moment(endDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm"));
+        if (editValueThird) params['fixedStart'] = true;
+        this.updatePlanItem(params);    
       }
     }
     if (event.srcElement.id == 'changeProject') {
@@ -222,7 +255,6 @@ export class DtPlannerService {
       params['endTime'] = moment(endDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm");      
       params['end'] = endDate.toLocaleDateString();         
     }
-
     if (field == 'startTime') {
       let hr = +newVal1;       
       if (isNaN(hr)) hr = 0;             
@@ -249,7 +281,6 @@ export class DtPlannerService {
       params['end'] = endDate.toLocaleDateString();
       params['endTime'] = (moment(endDate.toLocaleTimeString(), "h:mm:ss A").format("HH:mm"));
     }
-
     if (doUpdate) {
       this.updateStatus = 'Updating...';
       this.updatePlanItem(params);

@@ -62,7 +62,8 @@ export interface DTPlanItem {
   recurrence: number | undefined,
   recurrenceData: string | undefined,
   recurrenceName: string | undefined,
-  statusColor: string | undefined
+  statusColor: string | undefined,
+  fixedStart: boolean | undefined
 }
 
 export interface DTStatus {

@@ -12,7 +12,7 @@
     class="dtCen dtGridColumn-2 dtBorder-R dtBorder-B" 
     style="background-color: {{ item?.project?.colorString ?? 'white'}}; "
   >
-    <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond)  && data.clearPlanItem(false)" id="changeProject" type="checkbox" />     
+    <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond, '')  && data.clearPlanItem(false)" id="changeProject" type="checkbox" />     
     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" > 
         <option style="background-color: {{proj.colorString}};" 
           *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id"
@@ -35,25 +35,39 @@
   <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'title' && item?.completed != true" 
     class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B" 
     style="background-color: {{item?.statusColor}}">
-      <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond) && data.clearPlanItem(false)" id="changeTitle" type="checkbox" />      
+      <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond, '') && data.clearPlanItem(false)" id="changeTitle" type="checkbox" />      
       <input type="text" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" /><br/>      
       <span>Notes:</span><br /><textarea style="width: 100%;" rows="4" id="updPlanItemNote" name="updPlanItemNote" [(ngModel)]="data.editValueSecond" placeholder="Notes"></textarea>         
   </div>                 
   <div *ngIf="!(data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'startTime' && item?.completed != true)" 
     class="dtCen dtGridColumn-4 dtPad-LR dtBorder-R dtBorder-B" 
+    tooltip={{data.tooltipBool(item?.fixedStart)}}
     (click)="data.editPlanItemStart('startTime', item)"
-    style="background-color: {{item?.statusColor}};">
+    style="background-color: {{item?.statusColor}};">    
       {{item?.startTime}}
+      <span *ngIf="item?.note != undefined && item?.note != null && item?.fixedStart" style="color: red">
+        *
+      </span>
   </div>
   <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'startTime' && item?.completed != true" 
     class="dtCen dtGridColumn-4 dtBorder-R dtBorder-B" 
-    style="background-color: {{item?.statusColor}};">
-      <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"              
-      (keypress)="dtPlanner.editPlanItem($event, item?.id, 'startTime', data.editValueFirst, data.editValueSecond)" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"                  
-    />:              
-    <input style="width: 30%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2"                 
-      (keypress)="dtPlanner.editPlanItem($event, item?.id, 'startTime', data.editValueFirst, data.editValueSecond) && data.editPlanItemEnd($event)" [value]="data.editValueSecond" [(ngModel)]="data.editValueSecond"                    
-    />            
+    style="background-color: {{item?.statusColor}};"
+  >
+      <input 
+        (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond, data.editValueThird) && data.clearPlanItem(false)" 
+        id="changeStart" type="checkbox" 
+      /> 
+      Update
+      <br />
+      <input style="width: 20%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"              
+        [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst"                  
+      />:              
+      <input style="width: 20%;" name="minutes" type="number" min="0" max="60" size="2" maxlength="2"                 
+        [value]="data.editValueSecond" [(ngModel)]="data.editValueSecond"                    
+      />            
+      <br />
+      <input type="checkbox" [checked]="data.editValueThird == 'true'" (change)="data.toggleValueThird()" />
+      Fixed
   </div>
   <div *ngIf="!(data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'duration')" 
     class="dtCen dtGridColumn-5 dtPad-LR dtBorder-R dtBorder-B"                   

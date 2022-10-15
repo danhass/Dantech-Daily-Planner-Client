@@ -111,6 +111,16 @@ export class DtData {
     return true;
   }
 
+  toggleValueThird() {
+    if (this.editValueThird && this.editValueThird === "true") this.editValueThird = "";
+    else this.editValueThird = "true";
+  }
+
+  tooltipBool(b: boolean | undefined): string {
+    if (b) return 'fixed';
+    return '';
+  }
+
   tooltipFormatted(s:string | undefined): string {    
     let result = s?.replaceAll("\n", "<br />\n");
     return (result as string);
