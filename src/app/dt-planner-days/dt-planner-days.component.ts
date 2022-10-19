@@ -28,7 +28,7 @@ export class DtPlannerDaysComponent implements OnInit {
   }
 
   changePlanItemTitle(itemId: number, event: any): void {
-    this.dtPlanner.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating...";
     let itm = this.getPlanItemOrRecurrenceItem(itemId);
     if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
       let params = this.planItemParams(itm.id);
@@ -168,7 +168,7 @@ export class DtPlannerDaysComponent implements OnInit {
   }
 
   togglePlanItemCompleted(itemId: number, event: any): void {
-    this.dtPlanner.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating...";
     let completed = event.srcElement.checked;
     let params = this.planItemParams(itemId);
     params["completed"] = completed;

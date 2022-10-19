@@ -20,7 +20,7 @@ export class DtPlanItemComponent implements OnInit, OnChanges {
   }
 
   changePlanItemTitle(itemId: number | undefined, event: any): void {
-    this.dtPlanner.updateStatus = "Updating item";
+    this.dtPlanner.updateStatus = "Updating...";
     let itm = this.getPlanItemOrRecurrenceItem((itemId as number));
     if (itm != undefined && (itm.title != this.data.editValueFirst || itm.note != this.data.editValueSecond)) {
       let params = this.planItemParams(itm.id);

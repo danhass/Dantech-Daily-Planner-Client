@@ -383,7 +383,7 @@ export class DtPlannerService {
   movePlanItemToNextDay(item: DTPlanItem | undefined) {
     this.firstPlanItemDate = this.planItems.sort((a, b) => a.dayString < b.dayString ? -1 : 1)[0].dayString;
     let itm = (item as DTPlanItem)
-    this.updateStatus = "Updating item";
+    this.updateStatus = "Updating...";
     let params = this.planItemParamsFromItem(itm);
     let start = new Date(params["start"]);
     start.setDate(start.getDate() + 1);
@@ -528,7 +528,7 @@ export class DtPlannerService {
 
   togglePlanItemCompleted(item: DTPlanItem | undefined, event: any): void {
     let itm = (item as DTPlanItem);
-    this.updateStatus = "Updating item";
+    this.updateStatus = "Updating...";
     let completed = event.srcElement.checked;
     let params = this.planItemParamsFromItem(itm);
     params["completed"] = completed;
