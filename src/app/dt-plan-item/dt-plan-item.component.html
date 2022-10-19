@@ -7,9 +7,11 @@
     <div class="dtGridColumn-1 dtBg-darkgray dtBorder-R dtBorder-B dtPad-LR">
         &nbsp;
     </div>
-    <div (click)="test()" class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">
-      <div *ngIf="!(data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id)" 
+    <div (click)="test()" class="dtGridColumn-2 dtCen dtBorder-R dtBorder-B">
+      <div *ngIf="!(data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id)"
+        class="dtCen dtW-100P" 
         (click)="data.editPlanItemStart('project', item)"        
+        style="background-color: {{ item?.project?.colorString ?? 'white'}}; "
       >
         {{item?.project?.shortCode}}
       </div>

@@ -1,7 +1,8 @@
 <div class="dtGrid-7P33P12P12P17P12P7P">
-  <div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">    
+  <div class="dtGridColumn-1 dtCen dtBorder-R dtBorder-B">    
     <div *ngIf="!(data.fieldBeingEdited == 'project' && data.itemBeingEdited == item?.id)" 
       (click)="data.editPlanItemStart('project', item)"        
+      style="background-color: {{ item?.project?.colorString ?? 'white'}}; "
     >
       {{item?.project?.shortCode}}
     </div>

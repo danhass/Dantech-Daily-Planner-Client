@@ -3,14 +3,14 @@
     <input *ngIf="dtPlanner.updateStatus == ''" [checked]="item?.completed" (change)="dtPlanner.togglePlanItemCompleted(item, $event)" type="checkbox" />
   </div>
   <div *ngIf="!(data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'project' && item?.completed != true)" 
-    class="dtCen dtGridColumn-2dtPad-LR dtBorder-R dtBorder-B" 
+    class="dtGridColumn-2 dtCen dtBorder-R dtBorder-B dtPad-LR"
     (click)="data.editPlanItemStart('project', item)"
-    style="background-color: {{ item?.project?.colorString ?? 'white'}}; ">
+    style="background-color: {{ item?.project?.colorString ?? 'white'}}; "
+  >
     {{item?.project?.shortCode ?? ""}}
   </div>
   <div *ngIf="data.itemBeingEdited == item?.id && data.fieldBeingEdited == 'project' && item?.completed != true" 
-    class="dtCen dtGridColumn-2 dtBorder-R dtBorder-B" 
-    style="background-color: {{ item?.project?.colorString ?? 'white'}}; "
+    class="dtCen dtGridColumn-2 dtBorder-R dtBorder-B"     
   >
     <input (change)="dtPlanner.changePlanItem($event, item, data.editValueFirst, data.editValueSecond, '')  && data.clearPlanItem(false)" id="changeProject" type="checkbox" />     
     <select id="updPlanItemProjectId" name="updPlanItemProjectId" [value]="data.editValueFirst" [(ngModel)]="data.editValueFirst" > 
