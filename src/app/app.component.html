@@ -385,6 +385,9 @@
           <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="date" id="newPlanItemEnd" name="newPlanItemEnd" [ngModel]="newPlanItemEndDate | date: 'yyyy-MM-dd'" (ngModelChange)="newPlanItemEndDate = $event"/>
           </div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">Fixed:          
+            <input [checked]="newPlanItemStartFixed" (change)="newPlanItemStartFixed = !newPlanItemStartFixed" type="checkbox" /> Fixed starting time
+          </div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Priority:</div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <input type="text" id="newPlanItemPriority" name="newPlanItemPriority" [(ngModel)]="newPlanItemPriority" />

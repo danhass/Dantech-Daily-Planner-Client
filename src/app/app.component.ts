@@ -52,6 +52,7 @@ export class AppComponent implements OnInit {
   newPlanItemIsRecurrence: boolean | null = false;
   newPlanItemRecurrenceId: number | null = 0;
   newPlanItemRecurrenceData: string | null = "";
+  newPlanItemStartFixed: boolean = false;
 
   //Recurrence parameters
   recurrenceSunday: boolean | null = null;
@@ -106,6 +107,7 @@ export class AppComponent implements OnInit {
       projectId: this.newPlanItemProjectId,
       includeCompleted: true
     }
+    if (this.newPlanItemStartFixed) params['fixedStart'] = true;
     if (this.newPlanItemNote) params['note'] = this.newPlanItemNote;
     if (this.newPlanItemIsRecurrence && (this.newPlanItemRecurrenceId as number) > 0) {
       params['recurrence'] = this.newPlanItemRecurrenceId as number;
@@ -113,7 +115,6 @@ export class AppComponent implements OnInit {
         params['recurrenceData'] = this.newPlanItemRecurrenceData;
       }
     }
-
     this.dtPlanner.addPlanItem(params);
   }
 

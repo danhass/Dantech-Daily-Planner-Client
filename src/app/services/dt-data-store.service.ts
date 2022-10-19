@@ -59,6 +59,8 @@ export class DtData {
         this.editValueFirst = (itm.startTime as string).split(':')[0];
         this.editValueSecond = (itm.startTime as string).split(':')[1];  
       }
+      this.editValueThird = "";
+      if (itm.fixedStart) this.editValueThird = "true";
     }
     if (field == 'duration') {
       this.editValueFirst = '00';
@@ -72,6 +74,7 @@ export class DtData {
       this.editValueFirst = itm.title;
       if (itm.note != undefined) this.editValueSecond = (itm.note as string);
       else this.editValueSecond = "";
+      this.editValueThird = itm.priority.toString();
     } 
     if (field == 'project') {
       this.editValueFirst = (itm.project as DTProject).shortCode; 
@@ -119,11 +122,19 @@ export class DtData {
   tooltipBool(b: boolean | undefined): string {
     if (b) return 'fixed';
     return '';
-  }
+  }  
 
   tooltipFormatted(s:string | undefined): string {    
     let result = s?.replaceAll("\n", "<br />\n");
     return (result as string);
   }
-
+  
+  tooltipForTitle(item: DTPlanItem | undefined): string {
+    if (item === undefined) return "";
+    let sVal = "Priority: " + item.priority.toString();
+    if (item.note) {
+      sVal = this.tooltipFormatted(item.note) + "<br /><br />" + "Priority: " + item.priority.toString();
+    }
+    return sVal;
+  }
 }

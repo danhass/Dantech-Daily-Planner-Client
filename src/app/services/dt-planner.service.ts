@@ -49,14 +49,28 @@ export class DtPlannerService {
     });
   }
 
+  adjust(): void {
+    let url = dtConstants.apiTarget + dtConstants.adjustEndpoint;
+    let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
+    let params: { [index: string]: any} = {};
+    params["sessionId"] = this.sessionId;
+    this.updateStatus = "Adjusting";
+    this.http.post<any>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+      this.update();
+    });  
+  }
+
   changePlanItem(event: any, item: DTPlanItem | undefined, editValueFirst: string, editValueSecond: string, editValueThird: string): boolean {
     if (item == undefined) return true;
-    let itm = (item as DTPlanItem);
+    let itm = (item as DTPlanItem);    
     if (event.srcElement.id == 'changeTitle') {
-      if (itm != undefined && (itm.title != editValueFirst || itm.note != editValueSecond)) {
+      let priority = +editValueThird;
+      if (isNaN(priority)) priority = 0;
+      if (itm != undefined && (itm.title != editValueFirst || itm.note != editValueSecond || itm.priority != priority)) {
         let params = this.planItemParamsFromItem(itm);
         params["title"] = editValueFirst;
         params["note"] = (editValueSecond == null || editValueSecond == 'null') ? null : editValueSecond;
+        if (itm.priority != priority) params['priority'] = priority.toString();
         this.updatePlanItem(params);
       }
     }
@@ -443,6 +457,7 @@ export class DtPlannerService {
   setItems (data: Array<DTPlanItem>): Array<DTPlanItem> {
     let items: Array<DTPlanItem> = [];
     if (data) {
+      data = data.sort((a, b) => a.dayString < b.dayString ? -1 : 1);
       for (let i=0; i< data.length; i++) {
         items.push(data[i]); 
         items[i].dayString = new Date(items[i].day as Date).toDateString();
@@ -544,6 +559,7 @@ export class DtPlannerService {
             this.projectItems = this.projectItems.concat(this.planItems.filter(x => x.project != undefined && x.project.id == projId && !x.recurrence));
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
           }
+          this.firstPlanItemDate = new Date().toDateString();          
           this.pingComponents("dtPlanner update complete");          
         });
       });           

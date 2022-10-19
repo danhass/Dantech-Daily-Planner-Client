@@ -9,7 +9,9 @@
           <div class="dtCen dtGridColumn-5 dtPad-LR dtBorder-R dtBorder-B" >Dur</div>
           <div class="dtCen dtGridColumn-6 dtBorder-B" style="background-color: gray;"> &nbsp; </div>
         </div>
-        <div class="dtPad-LR dtGridColumn-1s3 dtBorder-B">{{fullDate(item.day)}}</div>
+        <div class="dtPad-LR dtGridColumn-1s3 dtBorder-B">{{fullDate(item.day)}}
+          <span class="dtPad-DeepL" *ngIf="dtPlanner.firstPlanItemDate == item.dayString"><button (click)="dtPlanner.adjust()">Adjust</button></span>
+        </div>
       </div>
       <app-dt-date-separated-plan-item [item]="item"></app-dt-date-separated-plan-item>
     </div>
