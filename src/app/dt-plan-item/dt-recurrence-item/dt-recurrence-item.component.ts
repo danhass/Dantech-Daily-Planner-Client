@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DtPlannerService } from '../../services/dt-planner.service';
 import { DtData} from '../../services/dt-data-store.service';
-import { DTPlanItem } from '../../services/dt-constants.service';
+import { DTPlanItem, DTEmptyPlanItem } from '../../services/dt-constants.service';
 
 @Component({
   selector: 'app-dt-recurrence-item',
@@ -9,7 +9,7 @@ import { DTPlanItem } from '../../services/dt-constants.service';
   styleUrls: ['./dt-recurrence-item.component.less']
 })
 export class DtRecurrenceItemComponent implements OnInit, OnChanges {
-  @Input() item: DTPlanItem | undefined;
+  @Input() item: DTPlanItem = new DTEmptyPlanItem();
 
   constructor(
     public dtPlanner: DtPlannerService,

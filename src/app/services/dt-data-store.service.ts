@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { dtConstants, DTLogin, DTProject, DTPlanItem} from './dt-constants.service';
+import { DtPlanItemCollectionComponent } from '../dt-plan-item-collection/dt-plan-item-collection.component';
+import { dtConstants, DTLogin, DTProject, DTPlanItem, DTEmptyPlanItem} from './dt-constants.service';
 
 // The point here is to expose data that can be used across all components.
 
@@ -13,6 +14,7 @@ export class DtData {
   public editValueSecond: string = "";
   public editValueThird: string = "";
   public editValueFourth: string = "";
+  public emptyPlanItem: DTPlanItem = new DTEmptyPlanItem();
   public fieldBeingEdited: string = "";
   public itemBeingEdited: number = 0;
   public itemsRowCount: number = 0;
@@ -24,6 +26,7 @@ export class DtData {
   public projectItems: Array<DTPlanItem> = [];
   public projectVisible: boolean = false;
   public sessionId: string = "";
+  public targetPlanItem: DTPlanItem = new DTEmptyPlanItem();
   public targetProject: DTProject | undefined = undefined;
   public test: string | undefined = undefined;
   public timeStamp: string = new Date().toLocaleString();
@@ -40,6 +43,7 @@ export class DtData {
     this.editValueSecond = '';
     this.editValueThird = '';
     this.editValueFourth = '';
+    this.targetPlanItem = this.emptyPlanItem;
     return true;  
   }
 

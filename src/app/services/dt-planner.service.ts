@@ -366,6 +366,11 @@ export class DtPlannerService {
     if (flag == null || flag.length == 0) {
       for (let i=0; i < items.length; i++) {
         items[i].project = this.projects.find( x => x.id == items[i].projectId);
+        if (items[i].project) {
+          items[i].projectId = items[i].project?.id;
+          items[i].projectTitle = (items[i].project?.title as string);
+          items[i].projectMnemonic = (items[i].project?.shortCode as string);
+        }
       }
     }
   }
@@ -460,23 +465,25 @@ export class DtPlannerService {
       data = data.sort((a, b) => a.dayString < b.dayString ? -1 : 1);
       for (let i=0; i< data.length; i++) {
         items.push(data[i]); 
-        items[i].dayString = new Date(items[i].day as Date).toDateString();
-        let dateBuffer = new Date(items[i].start as Date);        
-        items[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
-        items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?        
-          items[i].duration.hours.toString().padStart(2, "0") + ":" +           
-          items[i].duration.minutes.toString().padStart(2,"0") : "";   
         items[i].project = this.projects.find( x => x.id == items[i].projectId);
         if (items[i].project) {
           items[i].projectTitle = (items[i].project?.title as string);
+          items[i].projectId = (items[i].project?.id as number);
+          items[i].projectMnemonic = (items[i].project?.shortCode as string);
         }
       }
-      for (let i=0; i< items.length; i++) {      
+      for (let i=0; i< items.length; i++) { 
+        if (items[i].fixedStart == null) items[i].fixedStart = false;
         let dateBuffer = new Date(items[i].start as Date);  
         items[i].startTime = dateBuffer.getHours().toString().padStart(2, "0")  + ":" + dateBuffer.getMinutes().toString().padStart(2, "0");
-            items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?
-        items[i].duration.hours.toString().padStart(2, "0") + ":" + 
-        items[i].duration.minutes.toString().padStart(2,"0") : "";
+        items[i].startHour = dateBuffer.getHours().toString().padStart(2, "0");
+        items[i].startMinutes = dateBuffer.getMinutes().toString().padStart(2, "0");
+        items[i].dayString = dateBuffer.toDateString();
+        items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?
+          items[i].duration.hours.toString().padStart(2, "0") + ":" + 
+          items[i].duration.minutes.toString().padStart(2,"0") : "";
+        items[i].durationHour = items[i].durationString.length > 0 ? items[i].durationString.split(':')[0]: '00';
+        items[i].durationMinutes = (items[i].durationString.length > 0 && items[i].durationString.split(':').length > 0) ? items[i].durationString.split(':')[1] : '00'
       }
       for (let i=0; i< items.length; i++) {
         if (items[i].recurrence != undefined && items[i].recurrence != null) {
@@ -559,11 +566,58 @@ export class DtPlannerService {
             this.projectItems = this.projectItems.concat(this.planItems.filter(x => x.project != undefined && x.project.id == projId && !x.recurrence));
             this.cookie.delete(dtConstants.dtPlannerServiceStatusKey);
           }
-          this.firstPlanItemDate = new Date().toDateString();          
+          for(let i = 0; i<this.projectItems.length; i++) this.projectItems[i].projectMnemonic = (this.projectItems[i].project?.shortCode as string);
+          this.firstPlanItemDate = new Date().toDateString(); 
           this.pingComponents("dtPlanner update complete");          
         });
       });           
     });  
+  }
+
+  updateFromItem(item: DTPlanItem): boolean {
+    if (!item.touched) return true;
+    if (item.projectMnemonic) {
+      item.project = this.projects.find(x => x.shortCode == item.projectMnemonic);
+      if (item.project) item.projectId = item.project.id;
+    }
+    let original = item.recurrence ? this.recurrenceItems.find(x => x.id == item.id) : this.planItems.find(x => x.id == item.id); 
+    if (original == undefined) return true;
+    item.startTime = item.startHour.toString().padStart(2, '0') + ':' + item.startMinutes.toString().padStart(2,'0');
+    let start = new Date(item.start);
+    let hr = +item.startHour;
+    if (!isNaN(hr) && start.getHours() != hr) start.setHours(hr);
+    let mins = +item.startMinutes;
+    if (!isNaN(mins) && start.getMinutes() != mins) start.setMinutes(mins);
+    item.start = start;
+    hr = +item.durationHour;
+    if (isNaN(hr)) hr = 0;
+    mins = +item.durationMinutes;
+    if (isNaN(mins)) mins = 0;
+    if ((isNaN(hr) && isNaN(mins)) || (hr == 0 && mins == 0)) {
+      item.durationString = '';
+      item.duration.hours = 0;
+      item.duration.minutes = 0;
+    } else {
+      if (!isNaN(hr)) {
+        item.durationString = hr.toString().padStart(2, '0');
+        item.duration.hours = hr;
+      } else {
+        item.durationString = '00';
+        item.duration.hours = 0;
+      }
+      item.durationString = item.durationString + ':';
+      if (!isNaN(mins)) {
+        item.durationString = item.durationString + mins.toString().padStart(2, '0');
+        item.duration.minutes = mins;
+      } else {
+        item.durationString = item.durationString + '00';
+      }
+    }
+    let params = this.planItemParamsFromItem(item);
+    if (item.priority) params['priority'] = item.priority;
+    if (item.fixedStart) params['fixedStart'] = true;
+    this.updatePlanItem(params);
+    return true;
   }
 
   updatePlanItem(params: {[index:  string]: any}): void{

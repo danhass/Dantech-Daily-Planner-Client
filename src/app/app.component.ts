@@ -85,7 +85,7 @@ export class AppComponent implements OnInit {
   }
 
   addPlanItem(): void {
-    this.dtPlanner.updateStatus = "Update underway.";
+    this.dtPlanner.updateStatus = "Update...";
     if (!(this.newPlanItemTitle.length > 0)) return;
     this.newPlanItemStart = this.newPlanItemStartDate.toString();
     if (this.newPlanItemEndDate >= this.newPlanItemStartDate) {

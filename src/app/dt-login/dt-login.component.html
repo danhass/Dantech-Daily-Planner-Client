@@ -5,6 +5,7 @@
 </div>
 <div style="display: grid; grid-template-columns: 100%" *ngIf="!(data.login?.email?.length)">
     <div style="grid-item">Not logged in.</div>
+    <div *ngIf="data.updateStatus">{{data.updateStatus}}</div>
     <div style="grid-item">&nbsp;</div>
     <div style="grid-item"><button (click)="login()">Login</button></div>
 </div>

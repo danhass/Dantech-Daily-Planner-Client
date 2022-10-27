@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DtPlannerService } from '../../services/dt-planner.service';
 import { DtData} from '../../services/dt-data-store.service';
-import { DTPlanItem } from '../../services/dt-constants.service';
+import { DTEmptyPlanItem, DTPlanItem } from '../../services/dt-constants.service';
 import { DTConstants } from '../../services/dt-constants.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { DTConstants } from '../../services/dt-constants.service';
   styleUrls: ['./dt-date-separated-plan-item.component.less']
 })
 export class DtDateSeparatedPlanItemComponent implements OnInit, OnChanges {
-  @Input() item: DTPlanItem | undefined;
+  @Input() item: DTPlanItem = new DTEmptyPlanItem();
 
   constructor(
     public dtPlanner: DtPlannerService,

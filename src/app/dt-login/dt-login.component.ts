@@ -25,6 +25,7 @@ export class DtLoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data.loginComplete == undefined || this.data?.loginComplete == false) {
+      this.data.updateStatus = "Logging in";
       this.data.sessionId = this.cookies.get(dtConstants.dtSessionKey);
       this.cookies.delete(dtConstants.dtPlannerServiceStatusKey);      
       let code = this.route.snapshot.queryParamMap.get('code');
@@ -34,6 +35,7 @@ export class DtLoginComponent implements OnInit {
       if (flag.length == 0 && (logginInProgress == null || logginInProgress.length == 0) && 
         this.data.sessionId != null && this.data.sessionId.length > 0 && (code == null || code?.length == 0)) {
         this.cookies.set("loginInProgress", "true");
+        this.data.updateStatus = "Authenticating..."
         let url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.data.sessionId;        
         let res = this.http.get<DTLogin>(url).subscribe(data => {          
           this.cookies.delete("loginInProgress");

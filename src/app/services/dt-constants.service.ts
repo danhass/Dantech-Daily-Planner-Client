@@ -44,27 +44,63 @@ export interface DTUser {
 }
 
 export interface DTPlanItem {
-  id: number,
-  title: string,
-  note: string | undefined,
-  start: Date,
-  startTime: string
   addToCalendar: boolean,
   completed: boolean,
   day: Date,
   dayString: string,
   duration: Time,
+  durationHour: string,
+  durationMinutes: string,
   durationString: string,
+  fixedStart: boolean,
+  id: number,
+  note: string | undefined,
   parent: number | undefined,
   priority: number,
-  projectId: number | undefined,
   project: DTProject | undefined,
+  projectId: number | undefined,
+  projectMnemonic: string,
   projectTitle: string,
   recurrence: number | undefined,
   recurrenceData: string | undefined,
   recurrenceName: string | undefined,
+  start: Date,
+  startHour: string,
+  startMinutes: string,
+  startTime: string
   statusColor: string | undefined,
-  fixedStart: boolean | undefined
+  title: string,
+  touched: boolean
+}
+
+export class DTEmptyPlanItem implements DTPlanItem {
+  id = 0;
+  title = '';
+  note = undefined;
+  start = new Date();
+  startTime = '00:00';
+  startHour = '00';
+  startMinutes = '00';
+  addToCalendar = false;
+  completed = false;
+  day = new Date();
+  dayString = new Date().toDateString();
+  duration = { hours: 0, minutes: 0 };
+  durationString = '00:00';
+  durationHour = '00';
+  durationMinutes = '00';
+  parent = undefined;
+  priority = 0;
+  projectId = undefined;
+  project = undefined;
+  projectMnemonic = '';
+  projectTitle = '';
+  recurrence = undefined;
+  recurrenceData = undefined;
+  recurrenceName = undefined;
+  statusColor = undefined;
+  fixedStart = false;
+  touched = false;
 }
 
 export interface DTStatus {
