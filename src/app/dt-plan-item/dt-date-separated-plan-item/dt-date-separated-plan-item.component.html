@@ -56,7 +56,7 @@
           (change)="data.targetPlanItem.touched = true"
           [value]="data.targetPlanItem.note" [(ngModel)]="data.targetPlanItem.note" placeholder="Notes">
         </textarea>         
-    </div>                 
+  </div>                 
   <div *ngIf="data.targetPlanItem.id != item.id" 
     class="dtCen dtGridColumn-4 dtPad-LR dtBorder-R dtBorder-B" 
     tooltip={{data.tooltipBool(item.fixedStart)}}
@@ -95,7 +95,7 @@
     >    
       {{item.durationString}}      
       <span *ngIf="!item.durationString">-----------</span>    
-  </div>
+    </div>
   </div>    
   <div *ngIf="data.targetPlanItem.id == item.id"
     class="dtCen dtGridColumn-5 dtPad-LR dtBorder-R dtBorder-B"                   

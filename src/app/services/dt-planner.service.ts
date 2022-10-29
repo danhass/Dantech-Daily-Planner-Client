@@ -588,7 +588,17 @@ export class DtPlannerService {
     if (!isNaN(hr) && start.getHours() != hr) start.setHours(hr);
     let mins = +item.startMinutes;
     if (!isNaN(mins) && start.getMinutes() != mins) start.setMinutes(mins);
-    item.start = start;
+    item.start = start;    
+    let dayBuf = new Date(item.day);
+    if (dayBuf.toDateString() != (item.day + "") && (item.day + "").split('-').length > 2) {
+      let mn = +(item.day + "").split('-')[1];
+      let dy = +(item.day + "").split('-')[2];
+      if (!isNaN(dy)) dayBuf.setDate(dy);
+      if (!isNaN(mn)) dayBuf.setMonth(mn - 1);
+    }
+    if (dayBuf.toDateString() != item.start.toDateString()) {
+      item.start = dayBuf;
+    }
     hr = +item.durationHour;
     if (isNaN(hr)) hr = 0;
     mins = +item.durationMinutes;
