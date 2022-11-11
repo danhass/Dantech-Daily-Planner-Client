@@ -336,7 +336,7 @@
   </div>
   <!-- Header end -->
 
-  <div *ngIf="notMobile() else mobile">
+  <div *ngIf="!data.isMobile else mobile">
     <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
       class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
       >       

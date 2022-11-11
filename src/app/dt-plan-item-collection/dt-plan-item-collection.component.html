@@ -10,22 +10,22 @@
     </div>
     <div class="dtHilight" *ngFor="let item of items; let i = index">
       <div *ngIf="i==0 && (category == 'Recurrences' || category == 'Project Recurrences')" class="dtGrid-7P33P14P14P13P12P7P">
-        <div class="dtGridColumn-1 dtBorder-R dtBorder-B dtPad-LR">Proj</div> 
-        <div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">Description</div> 
-        <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR">Start</div> 
-        <div class="dtGridColumn-4 dtBorder-R dtBorder-B dtPad-LR">Duration</div> 
-        <div class="dtGridColumn-5 dtBorder-R dtBorder-B dtPad-LR">Scheme</div> 
-        <div class="dtGridColumn-6 dtBorder-R dtBorder-B dtPad-LR">Mask</div> 
-        <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">&nbsp;</div> 
+          <div class="dtGridColumn-1 dtBorder-R dtBorder-B">Proj</div> 
+          <div class="dtGridColumn-2 dtBorder-R dtBorder-B">Description</div> 
+          <div class="dtGridColumn-3 dtBorder-R dtBorder-B">Start</div> 
+          <div class="dtGridColumn-4 dtBorder-R dtBorder-B">Duration</div> 
+          <div class="dtGridColumn-5 dtBorder-R dtBorder-B">Scheme</div> 
+          <div class="dtGridColumn-6 dtBorder-R dtBorder-B">Mask</div> 
+          <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B">&nbsp;</div>
       </div>
       <div *ngIf="i==0 && (category=='Project Plan Items' || category=='Propagated Items')" class="dtGrid-4P7P35P15P15P15P9P">
-        <div class="dtGridColumn-1 dtBg-darkgray dtBorder-R dtBorder-B dtPad-LR">&nbsp;</div> 
-        <div class="dtGridColumn-2 dtBorder-R dtBorder-B dtPad-LR">Proj</div> 
-        <div class="dtGridColumn-3 dtBorder-R dtBorder-B dtPad-LR">Description</div> 
-        <div class="dtGridColumn-4 dtBorder-R dtBorder-B dtPad-LR">Day</div> 
-        <div class="dtGridColumn-5 dtBorder-R dtBorder-B dtPad-LR">Time</div> 
-        <div class="dtGridColumn-6 dtBorder-R dtBorder-B dtPad-LR">Dur</div> 
-        <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B dtPad-LR">&nbsp;</div> 
+          <div class="dtGridColumn-1 dtBg-darkgray dtBorder-R dtBorder-B">&nbsp;</div> 
+          <div class="dtGridColumn-2 dtBorder-R dtBorder-B">Proj</div> 
+          <div class="dtGridColumn-3 dtBorder-R dtBorder-B">Description</div> 
+          <div class="dtGridColumn-4 dtBorder-R dtBorder-B">Day</div> 
+          <div class="dtGridColumn-5 dtBorder-R dtBorder-B">Time</div> 
+          <div class="dtGridColumn-6 dtBorder-R dtBorder-B">Dur</div> 
+          <div class="dtGridColumn-7 dtBg-darkgray dtBorder-B">&nbsp;</div> 
       </div>
       <app-dt-plan-item [item]='item' [category]='category'></app-dt-plan-item>    
     </div>    
