@@ -1,5 +1,8 @@
 <div [ngClass]="data.isMobile ? 'dtGrid-7P10P33P15P15P20P' : 'dtGrid-4P7P50P15P15P9P'">
-  <div class="dtCen dtGridColumn-1 dtBg-gray dtBorder-R dtBorder-B ">
+  <div class="dtCen dtBg-gray dtBorder-R dtBorder-B "
+    [ngClass]="data.isMobile ? '' : 'dtPadLR'"
+    [ngClass]="(data.targetPlanItem.id == item.id && data.isMobile) ? 'dtGridColumn-1s6' : 'dtGridColumn-1'"
+  >
     <input *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id" [checked]="item.completed" (change)="dtPlanner.togglePlanItemCompleted(item, $event)" type="checkbox" />
     <span *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id == item.id">
       <mat-icon class="dtCen dtFont-White dtMatButton dtBorder"
@@ -11,7 +14,7 @@
     </span>
   </div>
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtGridColumn-2 dtCen dtBorder-R dtBorder-B"
+    class="dtCen dtGridColumn-2 dtBorder-R dtBorder-B"
     [ngClass]="data.isMobile ? '' : 'dtPadLR'"
     style="background-color: {{ item.project?.colorString ?? 'white'}}; "
   >
@@ -19,6 +22,7 @@
   </div>
   <div *ngIf="data.targetPlanItem.id == item.id && item.completed != true" 
     class="dtCen dtGridColumn-2 dtBorder-R dtBorder-B"     
+    [ngClass]="data.isMobile ? 'dtGridColumn-1s6' : 'dtGridColumn-2 dtPadLR'"
   >
     <select id="updPlanItemProjectId" name="updPlanItemProjectId" 
       (change)="data.targetPlanItem.touched = true"
@@ -34,7 +38,7 @@
       </select>          
   </div>
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B" 
+    class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B"
     tooltip={{data.tooltipForTitle(item)}}
     tooltip-class="dtAlign-left"
     (click)="data.editPlanItemStart('title', item)"
@@ -45,7 +49,8 @@
       </span>
   </div>                 
   <div *ngIf="data.targetPlanItem.id == item.id && item.completed != true" 
-    class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B" 
+    class="dtPad-LR dtBorder-R dtBorder-B" 
+    [ngClass]="data.isMobile ? 'dtGridColumn-1s6' : 'dtGridColumn-3'"
     style="background-color: {{item.statusColor}}">
       <input type="text" [value]="data.targetPlanItem.title" [(ngModel)]="data.targetPlanItem.title"
         (change)="data.targetPlanItem.touched = true" 
@@ -61,7 +66,7 @@
   </div>                 
   <div *ngIf="data.targetPlanItem.id != item.id" 
     class="dtCen dtGridColumn-4 dtBorder-R dtBorder-B" 
-    [ngClass]="data.isMobile ? '' : 'dtPadLR'"
+    [ngClass]="data.isMobile ? 'dtGridColumn-1s6' : 'dtPadLR'"
     tooltip={{data.tooltipBool(item.fixedStart)}}
     (click)="data.editPlanItemStart('startTime', item)"
     style="background-color: {{item.statusColor}};">    
@@ -71,7 +76,8 @@
       </span>
   </div>
   <div *ngIf="data.targetPlanItem.id == item.id && item.completed != true" 
-    class="dtCen dtGridColumn-4 dtBorder-R dtBorder-B" 
+    class="dtCen dtBorder-R dtBorder-B" 
+    [ngClass]="data.isMobile ? 'dtGridColumn-1s6' : 'dtGridColumn-4 dtPadLR'"
     style="background-color: {{item.statusColor}};"
   >  
     <input style="width: 20%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"
@@ -102,8 +108,8 @@
     </div>
   </div>    
   <div *ngIf="data.targetPlanItem.id == item.id"
-    class="dtCen dtGridColumn-5 dtBorder-R dtBorder-B"                   
-    [ngClass]="data.isMobile ? '' : 'dtPadLR'"
+    class="dtCen dtBorder-R dtBorder-B"                   
+    [ngClass]="data.isMobile ? 'dtGridColumn-1s6' : 'dtGridColumn-5 dtPadLR'"
     style="background-color: {{item.statusColor}};"
   >      
     <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"       
@@ -115,7 +121,8 @@
       [value]="data.targetPlanItem.durationMinutes" [(ngModel)]="data.targetPlanItem.durationMinutes"           
     />    
   </div>
-  <div class="dtCen dtDFlex dtBg-darkgray dtPad-T dtGridColumn-6 dtBorder-B">  
+  <div class="dtCen dtDFlex dtBg-darkgray dtPad-T dtGridColumn-6 dtBorder-B"
+    >  
     <span *ngIf="dtPlanner.updateStatus != ''"> {{dtPlanner.updateStatus}} </span>
     <mat-icon class="dtCen dtFont-White dtMatButton dtBorder"
       *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id"
