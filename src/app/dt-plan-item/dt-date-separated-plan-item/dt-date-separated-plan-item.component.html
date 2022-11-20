@@ -60,7 +60,8 @@
         </textarea>         
   </div>                 
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtCen dtGridColumn-4 dtPad-LR dtBorder-R dtBorder-B" 
+    class="dtCen dtGridColumn-4 dtBorder-R dtBorder-B" 
+    [ngClass]="data.isMobile ? '' : 'dtPadLR'"
     tooltip={{data.tooltipBool(item.fixedStart)}}
     (click)="data.editPlanItemStart('startTime', item)"
     style="background-color: {{item.statusColor}};">    
@@ -90,7 +91,8 @@
       Fixed
   </div>
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtCen dtGridColumn-5 dtPad-LR dtBorder-R dtBorder-B"                   
+    class="dtCen dtGridColumn-5 dtBorder-R dtBorder-B"                   
+    [ngClass]="data.isMobile ? '' : 'dtPadLR'"
     style="background-color: {{item.statusColor}};">                  
     <div class="dtW-100P" 
       *ngIf="data.targetPlanItem.id != item.id"                
@@ -100,7 +102,8 @@
     </div>
   </div>    
   <div *ngIf="data.targetPlanItem.id == item.id"
-    class="dtCen dtGridColumn-5 dtPad-LR dtBorder-R dtBorder-B"                   
+    class="dtCen dtGridColumn-5 dtBorder-R dtBorder-B"                   
+    [ngClass]="data.isMobile ? '' : 'dtPadLR'"
     style="background-color: {{item.statusColor}};"
   >      
     <input style="width: 30%;" name="hours" type="number" min="0" max="24" size="2" maxlength="2"       
