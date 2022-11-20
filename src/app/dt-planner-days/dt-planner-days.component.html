@@ -1,7 +1,7 @@
 <div class="dtGridColumn-1" *ngFor="let item of dtPlanner.planItems">
     <div *ngIf="item.recurrence == undefined || item.recurrence < 1">
       <div *ngIf="planItemDateChanged(item.day)">
-        <div class="dtGrid-4P7P50P15P15P9P" *ngIf="dtPlanner.firstPlanItemDate == item.dayString">          
+        <div [ngClass]="data.isMobile ? 'dtGrid-7P15P33P15P15P15P' : 'dtGrid-4P7P50P15P15P9P'" *ngIf="dtPlanner.firstPlanItemDate == item.dayString">          
           <div class="dtCen dtGridColumn-1 dtBorder-R dtBorder-B" style="background-color: gray;"> &nbsp; </div>
           <div class="dtCen dtGridColumn-2 dtPad-LR dtBorder-R dtBorder-B" >Proj</div>
           <div class="dtCen dtGridColumn-3 dtPad-LR dtBorder-R dtBorder-B" >Title</div>
