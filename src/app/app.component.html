@@ -336,12 +336,14 @@
   </div>
   <!-- Header end -->
 
+  <!--
   <div *ngIf="!data.isMobile else mobile">
+  --> 
     <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
       class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
       >       
       <!-- Planner Items BEG -->
-      <div class="dtGridColumn-1s3" >
+      <div [ngClass]="data.isMobile ? 'dtGridColumn-1s4' : 'dtGridColumn-1s3'" >
         <div class="dtGrid-100P">
           <div class="dtGridColumn-1">
             <app-dt-tabs 
@@ -353,7 +355,8 @@
     
       <!-- Planner Items END -->
 
-      <div style="grid-column: 4 / span 1; border-right: 2px solid black; border-left: 2px solid black;">
+      <div style="border-right: 2px solid black; border-left: 2px solid black;" [ngClass]="data.isMobile ? 'dtGridColumn-1' : 'dtGridColumn-4'"
+        >
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
           <!-- Add new plan item BEG -->
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
@@ -539,7 +542,9 @@
             <button [disabled]="dtPlanner.updateStatus == '' ? null : 'disabled'" (click)="addPlanItem()">Add Item</button>
           </div>
         </div>
-        <br />
+        <div style="background-color: purple;" [ngStyle]="[{'background-color': (data.isMobile == true) ? 'red' : 'blue'}]">
+          <br />
+        </div>
 
         <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
           <div style="display: grid; grid-template-columns: 100%;">
@@ -619,14 +624,15 @@
           
       </div>
     </div>
+  <!--
   </div>
-
-    <ng-template #mobile>
+-->
+   <ng-template #mobile>
       <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
       class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
       >       
       <!-- Planner Items BEG -->
-      <div class="dtGridColumn-1s4" >
+     <div class="dtGridColumn-1s4" >
         <div class="dtGrid-100P">
           <div class="dtGridColumn-1">
             <app-dt-tabs 
@@ -638,7 +644,7 @@
     
       <!-- Planner Items END -->
 
-      <div style="grid-column: 1 / span 6; border-right: 2px solid black; border-left: 2px solid black;">
+     <div style="grid-column: 1 / span 6; border-right: 2px solid black; border-left: 2px solid black;">
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
           <!-- Add new plan item BEG -->
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">

@@ -23,6 +23,8 @@ export class DtPlanItemCollectionComponent implements OnInit {
     this.dtPlanner.componentMethodCalled$.subscribe((msg: string) => {
       this.processPlannerServiceResult(msg);
     });
+
+    console.log("isMobile: ", this.data.isMobile);
   }
 
   processPlannerServiceResult(msg: string): void {

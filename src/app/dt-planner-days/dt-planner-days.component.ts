@@ -13,7 +13,8 @@ export class DtPlannerDaysComponent implements OnInit {
   constructor(
     public dtPlanner: DtPlannerService,
     public data: DtData
-  ) { }
+  ) {
+   }
 
   ngOnInit(): void {
   }

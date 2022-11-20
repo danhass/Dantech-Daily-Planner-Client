@@ -35,6 +35,7 @@
   <div *ngIf="data.targetPlanItem.id != item.id" 
     class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B" 
     tooltip={{data.tooltipForTitle(item)}}
+    tooltip-class="dtAlign-left"
     (click)="data.editPlanItemStart('title', item)"
     style="background-color: {{item.statusColor}}">
       {{item.title}} 
