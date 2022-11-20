@@ -1,4 +1,4 @@
-<div [ngClass]="data.isMobile ? 'dtGrid-7P15P33P15P15P15P' : 'dtGrid-4P7P50P15P15P9P'">
+<div [ngClass]="data.isMobile ? 'dtGrid-7P10P33P15P15P20P' : 'dtGrid-4P7P50P15P15P9P'">
   <div class="dtCen dtGridColumn-1 dtBg-gray dtBorder-R dtBorder-B ">
     <input *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id" [checked]="item.completed" (change)="dtPlanner.togglePlanItemCompleted(item, $event)" type="checkbox" />
     <span *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id == item.id">
