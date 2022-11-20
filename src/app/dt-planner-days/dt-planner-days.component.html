@@ -3,7 +3,7 @@
       <div *ngIf="planItemDateChanged(item.day)">
         <div [ngClass]="data.isMobile ? 'dtGrid-7P10P33P15P15P20P' : 'dtGrid-4P7P50P15P15P9P'" *ngIf="dtPlanner.firstPlanItemDate == item.dayString">          
           <div class="dtCen dtGridColumn-1 dtBorder-R dtBorder-B" style="background-color: gray;"> &nbsp; </div>
-          <div class="dtCen dtGridColumn-2 dtPad-LR dtBorder-R dtBorder-B" >Proj</div>
+          <div class="dtCen dtGridColumn-2 dtBorder-R dtBorder-B" [ngClass]="data.isMobile ? '' : 'dtPad-LR'" >Proj</div>
           <div class="dtCen dtGridColumn-3 dtPad-LR dtBorder-R dtBorder-B" >Title</div>
           <div class="dtCen dtGridColumn-4 dtPad-LR dtBorder-R dtBorder-B" >Start</div>
           <div class="dtCen dtGridColumn-5 dtPad-LR dtBorder-R dtBorder-B" >Dur</div>
