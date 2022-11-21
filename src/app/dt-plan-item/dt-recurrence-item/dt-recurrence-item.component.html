@@ -1,4 +1,4 @@
-<div class="dtGrid-7P33P14P14P13P12P7P">
+<div [ngClass]="data.isMobile ? 'dtGrid-10P30P15P15P15P15P' : 'dtGrid-7P33P14P14P13P12P7P'">
   <div *ngIf="data.targetPlanItem.id != item.id" 
     class="dtGridColumn-1 dtCen dtBorder-R dtBorder-B dtPad-LR"
     style="background-color: {{ item.project?.colorString ?? 'white'}}; "
