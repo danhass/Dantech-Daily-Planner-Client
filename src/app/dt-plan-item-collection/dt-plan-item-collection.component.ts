@@ -9,13 +9,14 @@ import { DtPlannerService } from '../services/dt-planner.service';
   styleUrls: ['./dt-plan-item-collection.component.less']
 })
 export class DtPlanItemCollectionComponent implements OnInit {
-  @Input() data: DtData | any;
   @Input() category: string | any;  
   items: Array<DTPlanItem> = [];
 
   constructor(
-    private dtPlanner: DtPlannerService
-  ) {  
+    private dtPlanner: DtPlannerService,    
+    public data: DtData
+  ) { 
+    console.log(this.data); 
   }
 
   ngOnInit(): void {
