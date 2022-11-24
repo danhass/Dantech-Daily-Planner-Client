@@ -1,6 +1,6 @@
-<div [ngClass]="data.isMobile ? 'dtGrid-10P30P15P15P15P15P' : 'dtGrid-7P33P14P14P13P12P7P'">
+<div [ngClass]="data.isMobile ? 'dtGrid-9P25P14P14P14P14P14P' : 'dtGrid-7P33P14P14P13P12P7P'">
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtGridColumn-1 dtCen dtBorder-R dtBorder-B dtPad-LR"
+    class="dtGridColumn-1 dtCen dtBorder-R dtBorder-B"
     style="background-color: {{ item.project?.colorString ?? 'white'}}; "
   >
     {{item.project?.shortCode ?? ""}}
@@ -47,7 +47,7 @@
         </textarea>         
   </div>                 
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtCen dtGridColumn-3 dtPad-LR dtBorder-R dtBorder-B" 
+    class="dtCen dtGridColumn-3 dtBorder-R dtBorder-B" 
     tooltip={{data.tooltipBool(item.fixedStart)}}
     (click)="data.editPlanItemStart('startTime', item)"
     style="background-color: {{item.statusColor}};">    
@@ -77,7 +77,7 @@
       Fixed
   </div>
   <div *ngIf="data.targetPlanItem.id != item.id" 
-    class="dtCen dtGridColumn-4 dtPad-LR dtBorder-R dtBorder-B"                   
+    class="dtCen dtGridColumn-4 dtBorder-R dtBorder-B"                   
     style="background-color: {{item.statusColor}};">                  
     <div class="dtW-100P" 
       *ngIf="data.targetPlanItem.id != item.id"                
@@ -108,7 +108,7 @@
   <div class="dtGridColumn-7 dtDFlex dtBg-darkgray dtBorder-B dtPad-LR">                
     <span class="dtFont-White" *ngIf="dtPlanner.updateStatus != ''">{{dtPlanner.updateStatus}}</span>    
     <mat-icon class="dtCen dtFont-White dtMatButton dtBorder"
-      *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id"
+      *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id && !item.completed"
       tooltip="edit" (click)="data.targetPlanItem = item"
     >
       mode_edit

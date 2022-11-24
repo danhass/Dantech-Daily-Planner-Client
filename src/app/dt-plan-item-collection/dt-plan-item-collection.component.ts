@@ -16,7 +16,6 @@ export class DtPlanItemCollectionComponent implements OnInit {
     private dtPlanner: DtPlannerService,    
     public data: DtData
   ) { 
-    console.log(this.data); 
   }
 
   ngOnInit(): void {
@@ -24,8 +23,6 @@ export class DtPlanItemCollectionComponent implements OnInit {
     this.dtPlanner.componentMethodCalled$.subscribe((msg: string) => {
       this.processPlannerServiceResult(msg);
     });
-
-    console.log("isMobile: ", this.data.isMobile);
   }
 
   processPlannerServiceResult(msg: string): void {

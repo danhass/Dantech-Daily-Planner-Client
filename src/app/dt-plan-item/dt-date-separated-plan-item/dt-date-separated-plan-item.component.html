@@ -39,6 +39,7 @@
   </div>
   <div *ngIf="data.targetPlanItem.id != item.id" 
     class="dtPad-LR dtGridColumn-3 dtBorder-R dtBorder-B"
+    [ngClass]="(data.focusedItems.includes(item.id) && !item.completed) ? 'dtFocused' : ''"
     tooltip={{data.tooltipForTitle(item)}}
     tooltip-class="dtAlign-left"
     (click)="data.editPlanItemStart('title', item)"
@@ -54,7 +55,10 @@
     style="background-color: {{item.statusColor}}">
       <input type="text" [value]="data.targetPlanItem.title" [(ngModel)]="data.targetPlanItem.title"
         (change)="data.targetPlanItem.touched = true" 
-      /><br />
+      />
+      <br />
+      <input type="checkbox" [checked]="data.focusedItems.includes(item.id)" (change)="data.focusedToggle(item)"> Focus
+      <br />
       <input type="number" [value]="data.targetPlanItem.priority" [(ngModel)]="data.targetPlanItem.priority" 
         (change)="data.targetPlanItem.touched = true"
       /><br />
@@ -125,7 +129,8 @@
     >  
     <span *ngIf="dtPlanner.updateStatus != ''"> {{dtPlanner.updateStatus}} </span>
     <mat-icon class="dtCen dtFont-White dtMatButton dtBorder"
-      *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id"
+      *ngIf="dtPlanner.updateStatus == '' && data.targetPlanItem.id != item.id && !item.completed"
+      
       tooltip="edit" (click)="data.targetPlanItem = item"
     >
       mode_edit
