@@ -108,8 +108,9 @@ export class DtData {
   focusedToggle(item: DTPlanItem): void {
     if (item && item.id) {
       const ndx = this.focusedItems.indexOf(item.id);
-      if (ndx > -1) this.focusedItems.slice(ndx, 1);
-      else this.focusedItems.push(item.id);
+      if (ndx > -1) { 
+        this.focusedItems = this.focusedItems.filter(x => x != item.id);
+      } else this.focusedItems.push(item.id);
     }
   }
 
