@@ -1,3 +1,7 @@
+<div>
+  <div *ngIf="dtPlanner.planItems.length > 0 && this.validate()">
+  </div>
+</div>
 <div class="dtGridColumn-1" *ngFor="let item of dtPlanner.planItems">
     <div *ngIf="item.recurrence == undefined || item.recurrence < 1">
       <div *ngIf="planItemDateChanged(item.day)">

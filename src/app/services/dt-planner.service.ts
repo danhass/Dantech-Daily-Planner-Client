@@ -60,6 +60,12 @@ export class DtPlannerService {
     });  
   }
 
+  reversPlanItems(): void {
+    if (this.planItems.length > 0) {
+      this.planItems = this.planItems.reverse();
+    }
+  }
+
   changePlanItem(event: any, item: DTPlanItem | undefined, editValueFirst: string, editValueSecond: string, editValueThird: string): boolean {
     if (item == undefined) return true;
     let itm = (item as DTPlanItem);    

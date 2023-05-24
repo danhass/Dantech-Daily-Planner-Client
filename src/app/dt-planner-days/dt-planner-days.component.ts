@@ -175,4 +175,16 @@ export class DtPlannerDaysComponent implements OnInit {
     params["completed"] = completed;
     this.dtPlanner.updatePlanItem(params);
   }
+
+  validate(): boolean {
+    console.log("Validating...");
+    console.log("Planner items: ", this.dtPlanner.planItems);
+
+    console.log(navigator.userAgent.toLocaleLowerCase());
+    if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase() && navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+      this.dtPlanner.reversPlanItems();
+    }
+    return true;
+  }
+  
 }
