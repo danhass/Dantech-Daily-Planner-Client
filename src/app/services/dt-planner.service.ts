@@ -62,7 +62,9 @@ export class DtPlannerService {
 
   reversPlanItems(): void {
     if (this.planItems.length > 0) {
-      this.planItems = this.planItems.reverse();
+      if (this.planItems[0].day > this.planItems[this.planItems.length - 1].day) {
+        this.planItems = this.planItems.reverse();
+      }
     }
   }
 
