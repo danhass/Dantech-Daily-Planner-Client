@@ -15,6 +15,7 @@
         </div>
         <div class="dtPad-LR dtGridColumn-1s3 dtBorder-B">{{fullDate(item.day)}}
           <span class="dtPad-DeepL" *ngIf="dtPlanner.firstPlanItemDate == item.dayString"><button (click)="dtPlanner.adjust()">Adjust</button></span>
+          <span class="dtPad-DeepL" *ngIf="this.isMarkAllComplete() && dtPlanner.updateStatus === '' && dtPlanner.planItemIsPastDate(item)"><button (click)="markAllComplete(item.dayString)">Mark All</button></span>
         </div>
       </div>
       <app-dt-date-separated-plan-item [item]="item"></app-dt-date-separated-plan-item>

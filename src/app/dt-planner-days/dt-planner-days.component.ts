@@ -10,6 +10,9 @@ import { DtPlannerService} from '../services/dt-planner.service';
 })
 export class DtPlannerDaysComponent implements OnInit {
 
+  private markingAll: boolean = false;
+  private markingAllTarget: string = "";
+
   constructor(
     public dtPlanner: DtPlannerService,
     public data: DtData
@@ -122,6 +125,29 @@ export class DtPlannerDaysComponent implements OnInit {
     let itm = this.dtPlanner.planItems.find(x => x.id == itemId);
     if (itm == undefined) itm = this.dtPlanner.recurrenceItems.find(x => x.id == itemId);
     return itm;
+  }
+
+  isMarkAllComplete(): boolean {
+    if (this.markingAll && this.dtPlanner.updateStatus == '') {
+      this.markAllComplete(this.markingAllTarget);
+    }
+    return !this.markingAll;
+  }
+
+  markAllComplete(targetDate: string | undefined): void {
+    if (targetDate === undefined) { return; }
+    this.markingAll = true;
+    this.markingAllTarget = targetDate;
+    console.log("Marking all complete on date: ", this.markingAllTarget);
+    let target = this.dtPlanner.planItems.find(x => x.dayString == this.markingAllTarget && !x.recurrence && !x.completed);
+    console.log("Targets: ", target);
+    if (target) {
+      let event = { srcElement: {checked: true}};
+      this.togglePlanItemCompleted(target.id, event);
+    } else {
+      this.markingAll = false;
+      this.markingAllTarget = "";
+    }
   }
   
   planItemDateChanged(date: any): boolean {

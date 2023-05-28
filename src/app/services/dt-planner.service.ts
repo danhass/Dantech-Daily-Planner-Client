@@ -410,6 +410,19 @@ export class DtPlannerService {
   pingComponents(msg: string){
     this.componentMethodCallSource.next(msg);
   }
+
+  planItemIsPastDate(item: DTPlanItem): boolean {
+    let now = new Date();
+    if (item.dayString === now.toDateString()) { return false; }
+    let itemDate = new Date(item.day);
+    if (itemDate.getFullYear() < now.getFullYear() 
+        || (itemDate.getFullYear() === now.getFullYear() && itemDate.getMonth() < now.getMonth())
+        || (itemDate.getFullYear() === now.getFullYear() && itemDate.getMonth() === now.getMonth() && itemDate.getDate() < now.getDate())
+       ) { 
+          return true; 
+    }
+    return false;
+  }
   
   planItemParams(itemId: number): { [index: string]: any } {
     let item = this.planItems.find(x => x.id == itemId) as DTPlanItem;
@@ -544,7 +557,7 @@ export class DtPlannerService {
   togglePlanItemCompleted(item: DTPlanItem | undefined, event: any): void {
     let itm = (item as DTPlanItem);
     this.updateStatus = "Updating...";
-    let completed = event.srcElement.checked;
+    let completed = (event && event.srcElement && event.srcElement.checked);
     let params = this.planItemParamsFromItem(itm);
     params["completed"] = completed;
     this.updatePlanItem(params);

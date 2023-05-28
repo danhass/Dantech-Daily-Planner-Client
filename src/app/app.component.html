@@ -272,7 +272,7 @@
   }
 
   ::-webkit-datetime-edit-second-field {
-    background: $color-white;
+    background: color-white;
     color: transparent;
     margin-left: -3px;
     position: absolute;
@@ -369,7 +369,7 @@
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Project:</div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
             <select id="newPlanItemProjectId" name="newPlanItemProjectId" [(ngModel)]="newPlanItemProjectId" > 
-              <option style="background-color: {{proj.colorString}};" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
+              <option style="background-color: {{proj.colorString}}" *ngFor="let proj of dtPlanner.projects" [ngValue]="proj.id">{{proj.title}}</option>
               </select>          
           </div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1">Time:</div>
@@ -546,7 +546,8 @@
           <br />
         </div>
 
-        <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0) else noProjects" style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;">
+        <div *ngIf="dtPlanner.projects.length >= 1 else noProjects" 
+          style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;" >
           <div style="display: grid; grid-template-columns: 100%;">
             <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
               <h4>Projects</h4>
