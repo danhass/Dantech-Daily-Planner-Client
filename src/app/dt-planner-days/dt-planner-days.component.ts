@@ -138,9 +138,7 @@ export class DtPlannerDaysComponent implements OnInit {
     if (targetDate === undefined) { return; }
     this.markingAll = true;
     this.markingAllTarget = targetDate;
-    console.log("Marking all complete on date: ", this.markingAllTarget);
     let target = this.dtPlanner.planItems.find(x => x.dayString == this.markingAllTarget && !x.recurrence && !x.completed);
-    console.log("Targets: ", target);
     if (target) {
       let event = { srcElement: {checked: true}};
       this.togglePlanItemCompleted(target.id, event);
