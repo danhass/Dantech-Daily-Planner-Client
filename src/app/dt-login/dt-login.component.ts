@@ -36,8 +36,8 @@ export class DtLoginComponent implements OnInit {
         this.data.sessionId != null && this.data.sessionId.length > 0 && (code == null || code?.length == 0)) {
         this.cookies.set("loginInProgress", "true");
         this.data.updateStatus = "Authenticating..."
-        let url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.data.sessionId;        
-        let res = this.http.get<DTLogin>(url).subscribe(data => {          
+        const url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.data.sessionId;        
+        const res = this.http.get<DTLogin>(url).subscribe(data => {          
           this.cookies.delete("loginInProgress");
           this.data.login = data;
           if (this.data.login == undefined ||

@@ -51,7 +51,7 @@ export class GoogleHandlerComponent implements OnInit {
         if (window.location.port.length > 0) domain += ":" + window.location.port;  
         let url = dtConstants.apiTarget +"/google?code=" + code +
         "&useCaller=true" +        
-        "&domain=" + domain;        
+        "&domain=" + domain;  
         let session = this.http.get<DTLogin>(url).subscribe(data => {
           this.cookies.delete('sentToGoogle');          
           this.sessionId=data.session;            
