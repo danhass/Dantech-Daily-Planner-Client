@@ -624,10 +624,10 @@ export class DtPlannerService {
     if (isNaN(hr)) hr = 0;
     mins = +item.durationMinutes;
     if (isNaN(mins)) mins = 0;
+    console.log(item);
     if ((isNaN(hr) && isNaN(mins)) || (hr == 0 && mins == 0)) {
       item.durationString = '';
-      item.duration.hours = 0;
-      item.duration.minutes = 0;
+      item.duration = { hours: 0, minutes: 0 }
     } else {
       if (!isNaN(hr)) {
         item.durationString = hr.toString().padStart(2, '0');
