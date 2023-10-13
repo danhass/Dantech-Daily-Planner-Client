@@ -25,6 +25,7 @@ export class GoogleHandlerComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    console.log("Back...");
   }
 
   returnFromGoogle(): string {

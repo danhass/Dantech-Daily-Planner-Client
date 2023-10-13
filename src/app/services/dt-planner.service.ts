@@ -500,9 +500,10 @@ export class DtPlannerService {
         items[i].startHour = dateBuffer.getHours().toString().padStart(2, "0");
         items[i].startMinutes = dateBuffer.getMinutes().toString().padStart(2, "0");
         items[i].dayString = dateBuffer.toDateString();
-        items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?
+        items[i].durationString = items[i].duration.toString();
+/*        items[i].durationString = (items[i].duration.hours > 0 || items[i].duration.minutes > 0) ?
           items[i].duration.hours.toString().padStart(2, "0") + ":" + 
-          items[i].duration.minutes.toString().padStart(2,"0") : "";
+          items[i].duration.minutes.toString().padStart(2,"0") : ""; */
         items[i].durationHour = items[i].durationString.length > 0 ? items[i].durationString.split(':')[0]: '00';
         items[i].durationMinutes = (items[i].durationString.length > 0 && items[i].durationString.split(':').length > 0) ? items[i].durationString.split(':')[1] : '00'
       }
@@ -631,15 +632,15 @@ export class DtPlannerService {
     } else {
       if (!isNaN(hr)) {
         item.durationString = hr.toString().padStart(2, '0');
-        item.duration.hours = hr;
+        item.duration = { hours: hr, minutes: 0 }
       } else {
         item.durationString = '00';
-        item.duration.hours = 0;
+        item.duration = { hours: 0, minutes: 0};
       }
       item.durationString = item.durationString + ':';
       if (!isNaN(mins)) {
         item.durationString = item.durationString + mins.toString().padStart(2, '0');
-        item.duration.minutes = mins;
+        item.duration = { hours: item.duration.hours, minutes: mins };
       } else {
         item.durationString = item.durationString + '00';
       }

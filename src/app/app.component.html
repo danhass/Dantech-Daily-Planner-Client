@@ -327,7 +327,7 @@
     </div>
     <div>
       <div class="card highlight-card card-small">    
-          <h2>DanTech Daily Planner (v.1.0.4)</h2>
+          <h2>DanTech Daily Planner (v.1.0.5)</h2>
       </div>
     </div>
     <div class="dtBorder-L dtPad-LR" style="border-left: 2px solid black; padding-left: 10px;">
@@ -546,7 +546,7 @@
           <br />
         </div>
 
-        <div *ngIf="dtPlanner.projects.length >= 1 else noProjects" 
+        <div *ngIf="(dtPlanner && dtPlanner.projects && dtPlanner.projects.length >= 1) else noProjects"
           style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;" >
           <div style="display: grid; grid-template-columns: 100%;">
             <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">

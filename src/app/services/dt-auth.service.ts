@@ -27,6 +27,7 @@ export class DtAuthService {
                 "&scope=" + "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar" +
                 "&client_id=" + GoogleClientId;
     this.cookie.set("sentToGoogle", "true");
+  
     window.location.href = url;
   }
 }

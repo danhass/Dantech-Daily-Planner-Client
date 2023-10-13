@@ -107,8 +107,8 @@
     <div class="dtW-100P" 
       *ngIf="data.targetPlanItem.id != item.id"                
     >    
-      {{item.durationString}}      
-      <span *ngIf="!item.durationString">-----------</span>    
+      <span *ngIf="item.durationString && item.durationString != '00:00:00'">{{item.durationString}}</span>      
+      <span *ngIf="!item.durationString || item.durationString == '00:00:00'">-----------</span>    
     </div>
   </div>    
   <div *ngIf="data.targetPlanItem.id == item.id"
