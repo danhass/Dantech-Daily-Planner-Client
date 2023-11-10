@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule} from '@angular/common/http/testing';
 import { GoogleHandlerComponent } from './google-handler.component';
 
 describe('GoogleHandlerComponent', () => {
@@ -8,7 +9,11 @@ describe('GoogleHandlerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GoogleHandlerComponent ]
+      declarations: [ GoogleHandlerComponent ],
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule
+      ],
     })
     .compileComponents();
 

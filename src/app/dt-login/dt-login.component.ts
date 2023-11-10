@@ -24,7 +24,7 @@ export class DtLoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (this.data.loginComplete == undefined || this.data?.loginComplete == false) {
+    if (this.data != undefined && (this.data.loginComplete == undefined || this.data?.loginComplete == false)) {
       this.data.updateStatus = "Logging in";
       this.data.sessionId = this.cookies.get(dtConstants.dtSessionKey);
       this.cookies.delete(dtConstants.dtPlannerServiceStatusKey);      
@@ -37,28 +37,32 @@ export class DtLoginComponent implements OnInit {
         this.cookies.set("loginInProgress", "true");
         this.data.updateStatus = "Authenticating..."
         const url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.data.sessionId;  
-        console.log(url);      
-        const res = this.http.get<DTLogin>(url).subscribe(data => {          
+        console.log(url); 
+        let res = this.http.get<DTLogin>(url).subscribe(data => {          
           this.cookies.delete("loginInProgress");
-          this.data.login = data;
-          if (this.data.login == undefined ||
-            this.data.login.session === 'null' ||
-            this.data.login.session == null ||
-            this.data.login.session == undefined ||
-            this.data.login.session == "") {
-            this.cookies.delete(dtConstants.dtSessionKey);
-          } else {
-            this.cookies.set(dtConstants.dtSessionKey, data.session, 7);
-            this.dtPlanner.setSession(this.data.login.session);
-          }
-          this.dtPlanner.initialize();
-          this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
-            this.processPlannerServiceResult(msg);
-          });
-          this.data.loginComplete = true;          
+          if (this.data) {
+            this.data.login = data;
+            if (this.data.login == undefined ||
+              this.data.login.session === 'null' ||
+              this.data.login.session == null ||
+              this.data.login.session == undefined ||
+              this.data.login.session == "") {
+              this.cookies.delete(dtConstants.dtSessionKey);
+            } else {
+              this.cookies.set(dtConstants.dtSessionKey, data.session, 7);
+              this.dtPlanner.setSession(this.data.login.session);
+            }
+            this.dtPlanner.initialize();
+            this.dtPlanner.componentMethodCalled$.subscribe((msg) => {
+              this.processPlannerServiceResult(msg);
+            });
+            this.data.loginComplete = true; 
+          }         
         }); 
       } else {
-        this.data.loginComplete = true;
+        if (this.data) {
+          this.data.loginComplete = true;
+        }
       }      
     }    
   }

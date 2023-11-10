@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule} from '@angular/common/http/testing';
 import { DtProjectComponent } from './dt-project.component';
 
 describe('DtProjectItemsComponent', () => {
@@ -8,7 +8,10 @@ describe('DtProjectItemsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DtProjectComponent ]
+      declarations: [ DtProjectComponent ],
+      imports: [
+         HttpClientTestingModule
+      ]
     })
     .compileComponents();
 

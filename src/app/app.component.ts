@@ -76,6 +76,7 @@ export class AppComponent implements OnInit {
     this.newPlanItemStart = moment().format("MM/DD/YYYY");
     this.cookies.delete("loginInProgress");
     this.data.test = "Test set";
+    console.log(this.dtPlanner);
   }
 
   ngOnInit(): void {

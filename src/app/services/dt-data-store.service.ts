@@ -20,7 +20,9 @@ export class DtData {
   public isMobile: boolean = !this.notMobile();
   public itemBeingEdited: number = 0;
   public itemsRowCount: number = 0;
+  public justBackFromGoogle: boolean = false;
   public login: DTLogin | null = null;
+  public loginEmail: string = (this.login && this.login?.email && this.login?.email?.length) ? this.login.email : "";
   public loginComplete: boolean | undefined = undefined;
   public projectBeingDeleted: number | undefined = 0;
   public projectDeleteProjItems: boolean = true;

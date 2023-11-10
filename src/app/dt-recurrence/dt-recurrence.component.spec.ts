@@ -1,5 +1,5 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DtRecurrenceComponent } from './dt-recurrence.component';
 
 describe('DtRecurrenceComponent', () => {
@@ -8,7 +8,10 @@ describe('DtRecurrenceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DtRecurrenceComponent ]
+      declarations: [ DtRecurrenceComponent ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ],
     })
     .compileComponents();
 

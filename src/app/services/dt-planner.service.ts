@@ -575,7 +575,7 @@ export class DtPlannerService {
         this.setRecurrenceItems(data);  
         let projId = this.projectItems.length > 0 ? (this.projectItems[0].projectId as number) : 0;          
         url = dtConstants.apiTarget + dtConstants.projectsEndpoint + "?sessionId=" + this.sessionId; 
-        this.updateStatus = 'Projects';       
+        //this.updateStatus = 'Projects';       
         this.http.get<[DTProject]>(url, {headers: {'Content-Type':'text/plain'}}).subscribe(data => {          
           this.projects = [];          
           this.setProjects(data);

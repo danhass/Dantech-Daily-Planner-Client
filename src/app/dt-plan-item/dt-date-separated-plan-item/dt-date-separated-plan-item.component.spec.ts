@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule} from '@angular/common/http/testing';
 import { DtDateSeparatedPlanItemComponent } from './dt-date-separated-plan-item.component';
 
 describe('DtDateSeparatedPlanItemComponent', () => {
@@ -8,7 +8,11 @@ describe('DtDateSeparatedPlanItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DtDateSeparatedPlanItemComponent ]
+      declarations: [ DtDateSeparatedPlanItemComponent ],
+      imports: [
+        HttpClientTestingModule
+      ],
+
     })
     .compileComponents();
 

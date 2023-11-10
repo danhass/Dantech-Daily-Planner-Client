@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { dtConstants, DTLogin } from '../services/dt-constants.service';
+import { DtData } from '../services/dt-data-store.service';
 import { CookieService } from 'ngx-cookie-service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -22,7 +23,9 @@ export class GoogleHandlerComponent implements OnInit {
   cycleCount = 0;
   constructor(private http: HttpClient, 
               private readonly cookies: CookieService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              public data: DtData
+              ) { }
 
   ngOnInit(): void {
     console.log("Back...");
@@ -30,7 +33,11 @@ export class GoogleHandlerComponent implements OnInit {
 
   returnFromGoogle(): string {
     this.cycleCount = this.cycleCount + 1;
-    this.justBackFromGoogle = false;
+    this.data.justBackFromGoogle = false;
+    console.log(this.cycleCount);
+    if (this.cycleCount >= 10) {
+      console.log("ERROR!");
+    }
     let res = "";
     let serviceFlag = this.cookies.get(dtConstants.dtPlannerServiceStatusKey);
     if(serviceFlag == "initializing") {

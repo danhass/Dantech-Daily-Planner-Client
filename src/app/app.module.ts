@@ -25,6 +25,15 @@ import { MaterialModule } from './shared/modules/material/material.module';
 import { TooltipModule } from 'ng2-tooltip-directive';
 
 @NgModule({
+  imports: [
+    BrowserModule,
+    FormsModule,
+    AppRoutingModule,
+    HttpClientModule,
+    OAuthModule.forRoot(),
+    MaterialModule,
+    TooltipModule
+  ],
   declarations: [
     AppComponent,
     GoogleHandlerComponent,
@@ -40,16 +49,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     DtPlannerDaysComponent,
     DtRecurrenceItemComponent,
     DtDateSeparatedPlanItemComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    OAuthModule.forRoot(),
-    MaterialModule,
-    TooltipModule
-  ],
+  ],  
   providers: [ DatePipe ],
   bootstrap: [AppComponent]
 })

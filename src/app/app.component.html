@@ -328,6 +328,7 @@
     <div>
       <div class="card highlight-card card-small">    
           <h2>DanTech Daily Planner (v.1.0.6)</h2>
+          <span>email: {{this.data.loginEmail}}</span>
       </div>
     </div>
     <div class="dtBorder-L dtPad-LR" style="border-left: 2px solid black; padding-left: 10px;">
@@ -339,7 +340,7 @@
   <!--
   <div *ngIf="!data.isMobile else mobile">
   --> 
-    <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
+    <div *ngIf="(data && data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
       class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
       >       
       <!-- Planner Items BEG -->
@@ -545,38 +546,38 @@
         <div style="background-color: purple;" [ngStyle]="[{'background-color': (data.isMobile == true) ? 'red' : 'blue'}]">
           <br />
         </div>
+        
 
-        <div *ngIf="(dtPlanner && dtPlanner.projects && dtPlanner.projects.length >= 1) else noProjects"
-          style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;" >
-          <div style="display: grid; grid-template-columns: 100%;">
-            <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
-              <h4>Projects</h4>
-            </div>
-            <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0)">
-              <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
-                <div style="display: grid; grid-template-columns: 10% 90%;">
-                  <div class="dtPad-LR dtGridColumn-1 dtBorder-R" (click)="data.setTargetProject(project) && dtPlanner.loadProjectItems(project.id)" style="background-color: {{project.colorString}};">
-                    <span>&nbsp;</span></div>
-                  <div class="dtGridColumn-2 dtPad-LR" (click)="data.setTargetProject(project) && dtPlanner.loadProjectItems(project.id)" style="background-color: {{project.statusObj.colorString}}"
-                    tooltip={{data.tooltipFormatted(project.notes)}}
-                  >
-                    {{project.title}}
-                    <span *ngIf="project?.notes != undefined && project?.notes != null && project?.notes != 'null' && project?.notes != ''"         
-                      style="color: red"            
-                    > *
-                    </span>               
+          <div *ngIf="dtPlanner.projects.length >= 1 else noProjects"
+            style="display: grid; grid-template-columns: 100%; border-top: 2px solid black;" >
+            <div style="display: grid; grid-template-columns: 100%;">
+              <div class="dtPad-LR dtBorder-B" style="grid-column: 1;">
+                <h4>Projects</h4>
+              </div>
+              <div *ngIf="(dtPlanner.projects && dtPlanner.projects.length > 0)">
+                <div class="dtBorder-B" style="grid-column: 1;" *ngFor="let project of dtPlanner.projects">
+                  <div style="display: grid; grid-template-columns: 10% 90%;">
+                    <div class="dtPad-LR dtGridColumn-1 dtBorder-R" (click)="data.setTargetProject(project) && dtPlanner.loadProjectItems(project.id)" style="background-color: {{project.colorString}};">
+                      <span>&nbsp;</span></div>
+                    <div class="dtGridColumn-2 dtPad-LR" (click)="data.setTargetProject(project) && dtPlanner.loadProjectItems(project.id)" style="background-color: {{project.statusObj.colorString}}"
+                      tooltip={{data.tooltipFormatted(project.notes)}}
+                    >
+                      {{project.title}}
+                      <span *ngIf="project?.notes != undefined && project?.notes != null && project?.notes != 'null' && project?.notes != ''"         
+                        style="color: red"            
+                      > *
+                      </span>               
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div *ngIf="!(dtPlanner.projects && dtPlanner.projects.length > 0)" style="display: table; border-collapse: collapse; width: 100%;">        
-                <div style="display: table-row; border: 2px solid black">          
-                  <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">No Projects</div>        
+                <div *ngIf="!(dtPlanner.projects && dtPlanner.projects.length > 0)" style="display: table; border-collapse: collapse; width: 100%;">        
+                  <div style="display: table-row; border: 2px solid black">          
+                    <div style="display: table-cell; padding-left: 10px; padding-right: 10px; width: 100%;">No Projects</div>        
+                  </div>      
                 </div>      
               </div>      
             </div>
-      
           </div>
-        </div>
 
         <br />
         
