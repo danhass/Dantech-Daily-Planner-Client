@@ -18,17 +18,17 @@ export interface session {
 export class GoogleHandlerComponent implements OnInit {
 
   sessionId = "";
+  justBackFromGoogle = true;
   delaySet = false;
   cycleCount = 0;
   constructor(private http: HttpClient, 
               private readonly cookies: CookieService,
               private route: ActivatedRoute,
               public data: DtData
-              ) { this.data.justBackFromGoogle = true; }
+              ) { }
 
   ngOnInit(): void {
     console.log("Back...");
-    console.log(this.data);
   }
 
   returnFromGoogle(): string {
