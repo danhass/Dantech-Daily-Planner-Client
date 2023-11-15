@@ -1,11 +1,11 @@
 <div style="display: grid; grid-template-columns: 100%" *ngIf="data && data.login?.email?.length">
     <div style="grid-item">Logged in as {{data.login?.email}}</div>
     <div style="grid-item">at {{data.timeStamp}}</div>
-    <div style="grid-item;"><button (click)="login()">Change login</button></div>
+    <div style="grid-item" class="continueBottonDiv"><button (click)="login()"><img class="continueButton" src="../../assets/buttons/Continue.Google.png"></button></div>
 </div>
 <div style="display: grid; grid-template-columns: 100%" *ngIf="!(data) || !(data.login?.email?.length)">
     <div style="grid-item">Not logged in.</div>
     <div *ngIf="data && data.updateStatus">{{data.updateStatus}}</div>
     <div style="grid-item">&nbsp;</div>
-    <div style="grid-item"><button (click)="login()">Login</button></div>
+    <div style="grid-item" class="continueBottonDiv"><button (click)="login()"><img class="continueButton" src="../../assets/buttons/Continue.Google.png"></button></div>
 </div>
