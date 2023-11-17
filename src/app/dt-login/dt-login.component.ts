@@ -37,7 +37,6 @@ export class DtLoginComponent implements OnInit {
         this.cookies.set("loginInProgress", "true");
         this.data.updateStatus = "Authenticating..."
         const url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.data.sessionId;  
-        console.log(url); 
         let res = this.http.get<DTLogin>(url).subscribe(data => {          
           this.cookies.delete("loginInProgress");
           if (this.data) {
@@ -72,5 +71,9 @@ export class DtLoginComponent implements OnInit {
   }
 
   processPlannerServiceResult(msg: string): void {    
+  }
+
+  showLogin(): void {
+    this.data.showLoginDialog = true;
   }
 }

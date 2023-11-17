@@ -76,7 +76,6 @@ export class AppComponent implements OnInit {
     this.newPlanItemStart = moment().format("MM/DD/YYYY");
     this.cookies.delete("loginInProgress");
     this.data.test = "Test set";
-    console.log(this.dtPlanner);
   }
 
   ngOnInit(): void {
@@ -443,6 +442,9 @@ export class AppComponent implements OnInit {
          this.newPlanItemRecurrenceId == 4)) this.newPlanItemRecurrenceData = this.recurrenceNumberWeeks.toString() + ":" + filter;    
   }
 
+  showLoginDialog(): boolean {
+    return this.data.showLoginDialog;
+  }
   showOrHideProject(projId: number): void {
     if (this.data.projectVisible) {
       this.data.projectVisible = false;

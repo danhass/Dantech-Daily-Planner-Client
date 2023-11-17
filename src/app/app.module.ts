@@ -23,6 +23,7 @@ import { DtRecurrenceItemComponent } from './dt-plan-item/dt-recurrence-item/dt-
 import { DtDateSeparatedPlanItemComponent } from './dt-plan-item/dt-date-separated-plan-item/dt-date-separated-plan-item.component';
 import { MaterialModule } from './shared/modules/material/material.module';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { DtUserCredentialsComponent } from './dt-user-credentials/dt-user-credentials.component';
 
 @NgModule({
   imports: [
@@ -48,7 +49,8 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     DtRecurrenceComponent,
     DtPlannerDaysComponent,
     DtRecurrenceItemComponent,
-    DtDateSeparatedPlanItemComponent
+    DtDateSeparatedPlanItemComponent,
+    DtUserCredentialsComponent
   ],  
   providers: [ DatePipe ],
   bootstrap: [AppComponent]

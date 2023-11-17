@@ -27,6 +27,8 @@
     "ng2-tooltip-directive": "^2.10.3",
     "ngx-bootstrap": "^9.0.0",
     "ngx-cookie-service": "^16.0.1",
+    "primeicons": "^6.0.1",
+    "primeng": "^16.4.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.3"

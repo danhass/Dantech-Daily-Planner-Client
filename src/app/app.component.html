@@ -316,7 +316,10 @@
 </style>
 
 <div class="content" role="main">
-
+  <div *ngIf="showLoginDialog()">
+    <app-dt-user-credentials></app-dt-user-credentials>
+  </div>
+  <div id="dtMainContainer" [style.display]="showLoginDialog() ? 'none' : 'block'">  
   <!-- Header beg -->
   <div class="dtGrid-30P40P30P dtW-98V dtBorder">              
     <div class="dtBorder-R">
@@ -327,8 +330,7 @@
     </div>
     <div>
       <div class="card highlight-card card-small">    
-          <h2>DanTech Daily Planner (v.1.0.6)</h2>
-          <span>email: {{this.data.loginEmail}}</span>
+          <h2>DanTech Daily Planner (v.1.0.7)</h2>          
       </div>
     </div>
     <div class="dtBorder-L dtPad-LR" style="border-left: 2px solid black; padding-left: 10px;">
@@ -628,7 +630,7 @@
     </div>
   <!--
   </div>
--->
+  -->
    <ng-template #mobile>
       <div *ngIf="(data.login && data.login?.email && data.login?.email?.length) else noValidEmail" 
       class="dtGrid-25V24V24V2V dtW-98V dtBorder-LRB"
@@ -941,5 +943,6 @@
 
     <ng-template #noValidEmail>         
     </ng-template>
+    </div>
  </div>
   <router-outlet></router-outlet>
