@@ -39,7 +39,7 @@ export class DtLoginComponent implements OnInit {
         const url = dtConstants.apiTarget + dtConstants.loginEndpoint + "?sessionId=" + this.data.sessionId;  
         let res = this.http.get<DTLogin>(url).subscribe(data => {          
           this.cookies.delete("loginInProgress");
-          if (this.data) {
+          if (this.data) {            
             this.data.login = data;
             if (this.data.login == undefined ||
               this.data.login.session === 'null' ||
@@ -56,6 +56,10 @@ export class DtLoginComponent implements OnInit {
               this.processPlannerServiceResult(msg);
             });
             this.data.loginComplete = true; 
+            if (this.data.login) {
+              if (this.data.login.doNotSetPW == null || this.data.login.doNotSetPW == false) this.data.showLoginDialog = true;
+              else this.data.showLoginDialog = false;
+            } 
           }         
         }); 
       } else {

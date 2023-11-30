@@ -20,7 +20,8 @@ export const dtConstants = {
   recurrencesEndpoint: "/Planner/Recurrences",
   sentToGoogleFlag: "sentToGoogle",
   setProjectEndpoint: "/Planner/SetProject",
-  setPlanItemEndpoint: "/Planner/SetPlanItem"
+  setPlanItemEndpoint: "/Planner/SetPlanItem",
+  setPWEndPoint: "/Admin/SetPW"
 }
 
 export interface DTLogin {
@@ -28,6 +29,7 @@ export interface DTLogin {
   fName: string,
   lName: string,
   email: string,
+  doNotSetPW: boolean | null,
   message: string
 }
 
@@ -36,7 +38,7 @@ export interface DTUser {
   email: string,
   fName: string,
   lastLogin: Date,
-  otherName: null,
+  otherName: null | undefined | string,
   refreshToken: string,
   session: string,
   suspending: boolean,

@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
     public dtPlanner: DtPlannerService,
     public data: DtData
   ) {
-    this.loginInfo = { session: "", email: "", fName: "", lName: "", message: "" };
+    this.loginInfo = { session: "", email: "", fName: "", lName: "", doNotSetPW: null, message: "" };
     this.newPlanItemStart = moment().format("MM/DD/YYYY");
     this.cookies.delete("loginInProgress");
     this.data.test = "Test set";
@@ -445,6 +445,7 @@ export class AppComponent implements OnInit {
   showLoginDialog(): boolean {
     return this.data.showLoginDialog;
   }
+  
   showOrHideProject(projId: number): void {
     if (this.data.projectVisible) {
       this.data.projectVisible = false;
