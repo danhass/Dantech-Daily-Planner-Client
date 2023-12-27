@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChildren, ViewChild, ElementRef, QueryList, IterableDiffers } from '@angular/core';
 import { DtAuthService } from './services/dt-auth.service';
+import { FormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { dtConstants, DTLogin, DTPlanItem, DTProject, DTUser, DTStatus, DTColorCode, DTRecurrence } from './services/dt-constants.service';
 import { HttpClient } from '@angular/common/http';

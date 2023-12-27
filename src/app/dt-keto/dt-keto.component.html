@@ -1,0 +1,9 @@
+<p>
+    Grams of:
+    <br />
+    Fat: <input type="number" width="10" id="dtKetoFat" name="dtKetoFat" [(ngModel)]="ketoFatGrams"/><br />
+    Protein: <input type="number" width="10" id="dtKetoProtein" name="dtKetoProtein" [(ngModel)]="ketoProteinGrams"/><br />
+    Carb: <input type="number" width="10" id="dtKetoCarb" name="dtKeto" [(ngModel)]="ketoCarbGrams"/><br />
+    <button (click)="this.calcKeto()">Calculate</button><br />
+    Is keto? {{this.isKeto}}
+</p>
