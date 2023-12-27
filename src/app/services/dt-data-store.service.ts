@@ -30,6 +30,7 @@ export class DtData {
   public projectItems: Array<DTPlanItem> = [];
   public projectVisible: boolean = false;
   public sessionId: string = "";
+  public showKeto: boolean = false;
   public showLoginDialog: boolean = false;
   public targetPlanItem: DTPlanItem = new DTEmptyPlanItem();
   public targetProject: DTProject | undefined = undefined;

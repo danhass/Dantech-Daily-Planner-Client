@@ -442,8 +442,16 @@ export class AppComponent implements OnInit {
          this.newPlanItemRecurrenceId == 4)) this.newPlanItemRecurrenceData = this.recurrenceNumberWeeks.toString() + ":" + filter;    
   }
 
+  showKeto(): boolean {
+    return this.data.showKeto;
+  }
+
   showLoginDialog(): boolean {
     return this.data.showLoginDialog;
+  }
+
+  showMainContainer(): boolean {
+    return !this.data.showLoginDialog 
   }
   
   showOrHideProject(projId: number): void {

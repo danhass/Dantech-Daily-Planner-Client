@@ -319,7 +319,10 @@
   <div *ngIf="showLoginDialog()">
     <app-dt-user-credentials></app-dt-user-credentials>
   </div>
-  <div id="dtMainContainer" [style.display]="showLoginDialog() ? 'none' : 'block'">  
+  <div *ngIf="showKeto()">
+    <app-dt-keto></app-dt-keto>
+  </div>  
+  <div id="dtMainContainer" [style.display]="showMainContainer() ? 'block' : 'none'">  
   <!-- Header beg -->
   <div class="dtGrid-30P40P30P dtW-98V dtBorder">              
     <div class="dtBorder-R">
@@ -625,7 +628,19 @@
             <button (click)="addProject()">Add Project</button>
           </div>      
         </div>
-          
+        <div style="background-color: purple;" [ngStyle]="[{'background-color': (data.isMobile == true) ? 'red' : 'blue'}]">
+          <br />
+        </div>
+        <div style="display: grid; grid-template-columns: 30% 21% 15% 34%; border-top: 2px solid black; background-color: #CCFFFF;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
+            <h4>Utilities</h4>
+          </div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
+            <button (click)="this.data.showKeto = !this.data.showKeto">Keto</button>
+          </div>
+
+        </div>
+
       </div>
     </div>
   <!--
@@ -910,6 +925,15 @@
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
             <button (click)="addProject()">Add Project</button>
           </div>      
+        </div>
+        <div style="display: grid; grid-template-columns: 30% 21% 15% 34%; border-top: 2px solid black; background-color: #CCFFFF;">
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
+            <h4>Utilities</h4>
+          </div>
+          <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
+            <button (click)="this.data.showKeto = !this.data.showKeto">Keto</button>
+          </div>
+
         </div>
           
       </div>

@@ -11,6 +11,7 @@ import { dtConstants} from '../services/dt-constants.service';
 export class DtUserCredentialsComponent {
 
   newPW: string = '';
+  doNotSet: boolean = false;
 
   constructor (
     public data: DtData,
@@ -29,7 +30,15 @@ export class DtUserCredentialsComponent {
     if (this.newPW && this.newPW.length > 0) {
       const url = dtConstants.apiTarget + dtConstants.setPWEndPoint + "?sessionId=" + this.data.sessionId + "&pw=" + this.newPW;  
       let res = this.http.get<any>(url).subscribe(data => {
-        //if (data) console.log(data);
+      });
+    }
+  }
+
+  setDoNotSetPWFlag(): void {
+    this.data.showLoginDialog = false;
+    if (this.doNotSet) {
+      const url = dtConstants.apiTarget + dtConstants.setOrClearDoNotSetPWFlag + "?sessionId=" + this.data.sessionId + "&flag=true";  
+      let res = this.http.get<any>(url).subscribe(data => {
       });
     }
   }

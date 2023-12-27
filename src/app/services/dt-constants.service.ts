@@ -19,6 +19,7 @@ export const dtConstants = {
   projectsEndpoint: "/Planner/Projects",
   recurrencesEndpoint: "/Planner/Recurrences",
   sentToGoogleFlag: "sentToGoogle",
+  setOrClearDoNotSetPWFlag: "/Admin/SetOrClearDoNotSetPWFlag",
   setProjectEndpoint: "/Planner/SetProject",
   setPlanItemEndpoint: "/Planner/SetPlanItem",
   setPWEndPoint: "/Admin/SetPW"
