@@ -5,5 +5,8 @@
     Protein: <input type="number" width="10" id="dtKetoProtein" name="dtKetoProtein" [(ngModel)]="ketoProteinGrams"/><br />
     Carb: <input type="number" width="10" id="dtKetoCarb" name="dtKeto" [(ngModel)]="ketoCarbGrams"/><br />
     <button (click)="this.calcKeto()">Calculate</button><br />
-    Is keto? {{this.isKeto}}
+    Is keto? 
+    <span *ngIf="isKeto" style="color:green;"><b>KETO</b></span>&nbsp;
+    <span *ngIf="isKetoHiPro" style="color:green;"><b>Hi-protein Keto</b>
+    </span><span *ngIf="!isKeto && !isKetoHiPro" style="color:red"><b>Not Keto</b></span>    
 </p>
