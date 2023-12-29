@@ -1,9 +1,10 @@
 <p>
     Grams of:
     <br />
-    Fat: <input type="number" width="10" id="dtKetoFat" name="dtKetoFat" [(ngModel)]="ketoFatGrams"/><br />
-    Protein: <input type="number" width="10" id="dtKetoProtein" name="dtKetoProtein" [(ngModel)]="ketoProteinGrams"/><br />
-    Carb: <input type="number" width="10" id="dtKetoCarb" name="dtKeto" [(ngModel)]="ketoCarbGrams"/><br />
+    Fat: <input type="number" width="10" id="dtKetoFat" name="dtKetoFat" [(ngModel)]="ketoFatGrams"/>
+    Carb: <input type="number" width="10" id="dtKetoCarb" name="dtKetoCarb" [(ngModel)]="ketoCarbGrams"/>
+    Fiber: <input type="number" width="10" id="dtKetoFiber" name="dtKetoFiber" [(ngModel)]="ketoFiberGrams"/>
+    Protein: <input type="number" width="10" id="dtKetoProtein" name="dtKetoProtein" [(ngModel)]="ketoProteinGrams"/>
     <button (click)="this.calcKeto()">Calculate</button><br />
     Is keto? 
     <span *ngIf="isKeto" style="color:green;"><b>KETO</b></span>&nbsp;
