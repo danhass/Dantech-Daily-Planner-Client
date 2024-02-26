@@ -460,8 +460,7 @@ export class DtPlannerService {
       id: item.id,
       recurrence: item.recurrence,
       recurrenceData: item.recurrenceData
-    };
-      
+    };      
     return params;
   }
 
@@ -625,7 +624,6 @@ export class DtPlannerService {
     if (isNaN(hr)) hr = 0;
     mins = +item.durationMinutes;
     if (isNaN(mins)) mins = 0;
-    console.log(item);
     if ((isNaN(hr) && isNaN(mins)) || (hr == 0 && mins == 0)) {
       item.durationString = '';
       item.duration = { hours: 0, minutes: 0 }
@@ -655,7 +653,12 @@ export class DtPlannerService {
   updatePlanItem(params: {[index:  string]: any}): void{
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' }; 
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint;
-    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+    let body = "";
+    if (params["note"]) {
+      body = '{ note: ' + params['note'] + ' }';
+      delete params["note"];
+    }
+    this.http.post<[DTPlanItem]>(url, body, { headers: hdrs, params: params }).subscribe(data => {
       this.update();
     });
   }

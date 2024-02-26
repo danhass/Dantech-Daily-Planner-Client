@@ -366,7 +366,12 @@
         <div *ngIf="plannerInitializedFlag" style="display: grid; grid-template-columns: 17% 34% 15% 34%; background-color: lightblue;">
           <!-- Add new plan item BEG -->
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 4;">
-            <h4>Add Item <span style="color: red;">{{this.dtPlanner.updateStatus}}</span></h4>
+            <h4>Add Item <span style="color: red;">{{this.dtPlanner.updateStatus}}</span>              
+              <mat-icon class="dtCen dtFont-White dtMatButton dtBorder" tooltip="clear form">       
+                backspace
+              </mat-icon>      
+            </h4>             
+      
           </div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 1 /span 1;">Title:</div>
           <div class="dtPad-LR dtBorder-B" style="grid-column: 2 /span 3;">
