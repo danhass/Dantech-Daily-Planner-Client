@@ -33,7 +33,12 @@ export class DtPlannerService {
   addPlanItem(params: { [index: string]: any }): void {
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint;
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
-    this.http.post<[DTPlanItem]>(url, '', { headers: hdrs, params: params }).subscribe(data => {
+    let body = "";
+    if (params["note"]) {
+      body = '{ note: ' + params['note'] + ' }';
+      delete params["note"];
+    }
+    this.http.post<[DTPlanItem]>(url, body, { headers: hdrs, params: params }).subscribe(data => {
       this.update();
     });
   }
