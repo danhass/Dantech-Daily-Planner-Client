@@ -33,12 +33,15 @@ export class DtPlannerService {
   addPlanItem(params: { [index: string]: any }): void {
     let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint;
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' };
-    let body = "";
-    if (params["note"]) {
-      body = '{ note: ' + params['note'] + ' }';
-      delete params["note"];
+    let body = new FormData();
+    console.log(params);
+    for (const key in params) {
+      if(params[key]) {
+        body.append(key,params[key].toString());
+      } 
     }
-    this.http.post<[DTPlanItem]>(url, body, { headers: hdrs, params: params }).subscribe(data => {
+
+    this.http.post<[DTPlanItem]>(url, body).subscribe(data => {
       this.update();
     });
   }
@@ -657,13 +660,18 @@ export class DtPlannerService {
 
   updatePlanItem(params: {[index:  string]: any}): void{
     let hdrs = { 'content-type': 'application/x-www-form-urlencoded' }; 
-    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint;
-    let body = "";
-    if (params["note"]) {
-      body = '{ note: ' + params['note'] + ' }';
-      delete params["note"];
+    let url = dtConstants.apiTarget + dtConstants.setPlanItemEndpoint + "?sessionId=" + params['sessionId'];
+    let body = new FormData();
+    console.log(params);
+    for (const key in params) {
+      if(params[key]) {
+        body.append(key,params[key].toString());
+      } else {
+        console.log ("key: ", key);
+      }
     }
-    this.http.post<[DTPlanItem]>(url, body, { headers: hdrs, params: params }).subscribe(data => {
+    console.log(body);
+    this.http.post<[DTPlanItem]>(url, body).subscribe(data => {
       this.update();
     });
   }
